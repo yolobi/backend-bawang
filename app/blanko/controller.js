@@ -51,14 +51,53 @@ module.exports = {
     }
   },
 
-  viewEdit: async (req, res, params) => {
+  viewEdit: async (req, res) => {
     try {
       const { id } = req.params;
 
-      const blanko = await Blanko.findOne({_id:id})
-      console.log(blanko)
+      const blanko = await Blanko.findOne({ _id: id });
+      console.log(blanko);
 
-      res.render('admin/blanko/edit',{blanko})
+      res.render('admin/blanko/edit', { blanko });
     } catch (error) {}
+  },
+
+  actionEdit: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const {
+        jenisCabai,
+        luasTanamanAkhirBulanLalu,
+        luasPanenHabis,
+        luasPanenBelumHabis,
+        luasRusak,
+        luasPenanamanBaru,
+        luasTanamanAkhirBulanLaporan,
+        prodBelumHabis,
+        prodPanenHabis,
+        rataHargaJual,
+      } = req.body;
+
+      const blanko = await Blanko.findOneAndUpdate(
+        { _id: id },
+        {
+          jenisCabai,
+          luasTanamanAkhirBulanLalu,
+          luasPanenHabis,
+          luasPanenBelumHabis,
+          luasRusak,
+          luasPenanamanBaru,
+          luasTanamanAkhirBulanLaporan,
+          prodBelumHabis,
+          prodPanenHabis,
+          rataHargaJual,
+        }
+      );
+      console.log(blanko);
+
+      res.redirect('/blanko');
+    } catch (error) {
+      console.log(error);
+    }
   },
 };
