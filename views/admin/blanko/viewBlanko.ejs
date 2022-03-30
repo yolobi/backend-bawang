@@ -1,5 +1,5 @@
-<%- include ../../partials/header.ejs %> <%- include ../../partials/navbar.ejs %> <%-
-include ../../partials/sidebar.ejs %>
+<%- include ../../partials/header.ejs %> <%- include ../../partials/navbar.ejs
+%> <%- include ../../partials/sidebar.ejs %>
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -8,12 +8,12 @@ include ../../partials/sidebar.ejs %>
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1>DataTables</h1>
+          <h1>Blanko</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item active">Kategori</li>
+            <li class="breadcrumb-item active">Blanko</li>
           </ol>
         </div>
       </div>
@@ -30,14 +30,13 @@ include ../../partials/sidebar.ejs %>
             <div class="card-header">
               <h3 class="card-title">
                 <a href="/blanko/create" class="btn btn-primary">
-                    <i class=""nav-icon far fa-plus-square></i>
-                    Tambah</a>
+                  <i class="" nav-icon far fa-plus-square></i>
+                  Tambah</a
+                >
               </h3>
             </div>
             <!-- /.card-header -->
-            <div class="card-body">
-            
-            </div>
+            <div class="card-body"><%- include ./table.ejs %></div>
             <!-- /.card-body -->
           </div>
           <!-- /.card -->

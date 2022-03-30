@@ -1,27 +1,58 @@
-<table id="example2" class="table table-bordered table-hover">
+<table id="example1" class="table table-bordered table-striped">
   <thead>
     <tr>
       <th>No</th>
-      <th>Nama</th>
+      <th>Jenis Cabai</th>
+      <th>Luas Tanaman Akhir Bulan Lalu (Ha)</th>
+      <th>Luas Panen Habis / Dibongkar (Ha)</th>
+      <th>Luas Panen Belum Habis (Ha)</th>
+      <th>Luas Rusak / Tidak Berhasil / Puso (Ha)</th>
+      <th>Luas Penanaman Baru / Tambah Tanam (Ha)</th>
+      <th>Luas Tanaman Akhir Bulan Laporan (Ha)</th>
+      <th>Produksi Dipanen Habis / Dibongkar (Kwintal)</th>
+      <th>Produksi Belum Habis (Kwintal)</th>
+      <th>Rata-rata Harga Jual per-Kilogram (Rupiah)</th>
       <th>Aksi</th>
     </tr>
   </thead>
   <tbody>
-    <% for(let i=0; i < category.length; i++){ %>
+    <% for(let i=0; i < blanko.length; i++){ %>
     <tr>
       <td><%= i+1 %></td>
-      <td><%= category[i].name %></td>
+      <td><%= blanko[i].jenisCabai %></td>
+      <td><%= blanko[i].luasTanamanAkhirBulanLalu %></td>
+      <td><%= blanko[i].luasPanenHabis %></td>
+      <td><%= blanko[i].luasPanenBelumHabis %></td>
+      <td><%= blanko[i].luasRusak %></td>
+      <td><%= blanko[i].luasPenanamanBaru %></td>
+      <td><%= blanko[i].luasTanamanAkhirBulanLaporan %></td>
+      <td><%= blanko[i].prodPanenHabis %></td>
+      <td><%= blanko[i].prodBelumHabis %></td>
+      <td><%= blanko[i].rataHargaJual %></td>
       <td>
-          <form action="" >
-              <a href="" class="btn btn-warning">
-                <i class="fas fa-pencil-alt"></i>  
-                Ubah</a>
-              <button class="btn btn-danger">
-                <i class="fas fa-trash"></i>  
-                Hapus</button>
-          </form>
+        <form action="">
+          <a href="/blanko/edit/<%= blanko[i]._id %>" class="btn btn-warning">
+            <i class="fas fa-pencil-alt"></i>
+            Ubah</a
+          >
+          <button class="btn btn-danger">
+            <i class="fas fa-trash"></i>
+            Hapus
+          </button>
+        </form>
       </td>
     </tr>
     <% } %>
   </tbody>
+
+  <!-- 
+      <tfoot>
+        <tr>
+          <th>Rendering engine</th>
+          <th>Browser</th>
+          <th>Platform(s)</th>
+          <th>Engine version</th>
+          <th>CSS grade</th>
+        </tr>
+      </tfoot> -->
 </table>

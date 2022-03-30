@@ -12,7 +12,7 @@
           <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="/">Home</a></li>
             <li class="breadcrumb-item"><a href="/blanko">Blanko</a></li>
-            <li class="breadcrumb-item active">Tambah</li>
+            <li class="breadcrumb-item active">Ubah</li>
           </ol>
         </div>
       </div>
@@ -27,7 +27,7 @@
         <div class="col-12">
           <div class="card card-primary">
             <div class="card-header">
-              <h3 class="card-title">Form Isi Blanko</h3>
+              <h3 class="card-title">Form Ubah Blanko</h3>
             </div>
             <!-- /.card-header -->
             <!-- form start -->
@@ -43,11 +43,22 @@
                     required
                   >
                     <option selected="selected">Pilih Jenis Cabai</option>
-                    <option value="cabaiMerahBesar">Cabai Merah Besar</option>
-                    <option value="cabaiMerahKeriting">
+                    <option value="cabaiMerahBesar" <% if(blanko.jenisCabai === 'cabaiMerahBesar'){%>
+                      selected
+                      <%} %>
+                    >
+                      Cabai Merah Besar</option>
+                    <option value="cabaiMerahKeriting" <% if(blanko.jenisCabai === 'cabaiMerahKeriting'){%>
+                      selected
+                      <%} %>
+                      >
                       Cabai Merah Keriting
                     </option>
-                    <option value="cabaiRawitMerah">Cabai Rawit Merah</option>
+                    <option value="cabaiRawitMerah"<% if(blanko.jenisCabai === 'cabaiRawitMerah'){%>
+                      selected
+                      <%} %>
+                      >Cabai Rawit Merah
+                    </option>
                   </select>
                 </div>
                 <!-- Input Luas Tanaman Akhir Bulan Lalu -->
@@ -57,6 +68,7 @@
                   >
                   <input
                     type="number"
+                    value="<%= blanko.luasTanamanAkhirBulanLalu %>"
                     name="luasTanamanAkhirBulanLalu"
                     class="form-control"
                     id="luasTanamanAkhirBulanLalu"
@@ -71,6 +83,7 @@
                   >
                   <input
                     type="number"
+                    value="<%= blanko.luasPanenHabis %>"
                     name="luasPanenHabis"
                     class="form-control"
                     id="luasPanenHabis"
@@ -85,6 +98,7 @@
                   >
                   <input
                     type="number"
+                    value="<%= blanko.luasPanenBelumHabis %>"
                     name="luasPanenBelumHabis"
                     class="form-control"
                     id="luasPanenBelumHabis"
@@ -99,6 +113,7 @@
                   >
                   <input
                     type="number"
+                    value="<%= blanko.luasRusak %>"
                     name="luasRusak"
                     class="form-control"
                     id="luasRusak"
@@ -113,6 +128,7 @@
                   >
                   <input
                     type="number"
+                    value="<%= blanko.luasPenanamanBaru %>"
                     name="luasPenanamanBaru"
                     class="form-control"
                     id="luasPenanamanBaru"
@@ -127,6 +143,7 @@
                   >
                   <input
                     type="number"
+                    value="<%= blanko.luasTanamanAkhirBulanLaporan %>"
                     name="luasTanamanAkhirBulanLaporan"
                     class="form-control"
                     id="luasTanamanAkhirBulanLaporan"
@@ -141,6 +158,7 @@
                   >
                   <input
                     type="number"
+                    value="<%= blanko.prodPanenHabis %>"
                     name="prodPanenHabis"
                     class="form-control"
                     id="prodPanenHabis"
@@ -155,6 +173,7 @@
                   >
                   <input
                     type="number"
+                    value="<%= blanko.prodBelumHabis %>"
                     name="prodBelumHabis"
                     class="form-control"
                     id="prodBelumHabis"
@@ -169,6 +188,7 @@
                   >
                   <input
                     type="number"
+                    value="<%= blanko.rataHargaJual %>"
                     name="rataHargaJual"
                     class="form-control"
                     id="rataHargaJual"
