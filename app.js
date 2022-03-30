@@ -25,6 +25,7 @@ app.use(
 );
 
 app.use('/', dashboardRouter);
+app.use('/blanko', blankoRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
