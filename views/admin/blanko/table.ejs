@@ -30,7 +30,7 @@
       <td><%= blanko[i].prodBelumHabis %></td>
       <td><%= blanko[i].rataHargaJual %></td>
       <td>
-        <form action="">
+        <form action="/blanko/delete/<%= blanko[i]._id %>?_method=DELETE" method="POST">
           <a href="/blanko/edit/<%= blanko[i]._id %>" class="btn btn-warning">
             <i class="fas fa-pencil-alt"></i>
             Ubah</a

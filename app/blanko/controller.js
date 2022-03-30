@@ -59,7 +59,9 @@ module.exports = {
       console.log(blanko);
 
       res.render('admin/blanko/edit', { blanko });
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   },
 
   actionEdit: async (req, res) => {
@@ -95,6 +97,17 @@ module.exports = {
       );
       console.log(blanko);
 
+      res.redirect('/blanko');
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  actionDelete: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const blanko = await Blanko.findOneAndRemove({ _id: id });
       res.redirect('/blanko');
     } catch (error) {
       console.log(error);
