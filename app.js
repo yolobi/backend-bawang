@@ -8,6 +8,7 @@ const methodOverride = require('method-override');
 const dashboardRouter = require('./app/dashboard/router');
 const blankoRouter = require('./app/blanko/router');
 const authRouter = require('./app/auth/router');
+const petaniRouter = require('./app/petani/router');
 
 const app = express();
 const URL = `/api/v1`
@@ -35,6 +36,7 @@ app.use('/blanko', blankoRouter);
 
 // api
 app.use(`${URL}/auth`, authRouter)
+app.use(`${URL}/petani`, petaniRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
