@@ -10,7 +10,16 @@ let userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      require: true,
+      trim: true,
+      lowercase: true,
+      unique: true,
+      validate: {
+        validator: function (v) {
+          return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
+        },
+        message: 'Please enter a valid email',
+      },
+      required: [true, 'Email required'],
     },
     password: {
       type: String,
@@ -34,18 +43,9 @@ let userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Email Count Validation
-userSchema.path('email').validate(async function (value){
-    try {
-        const count = await this.model('User').countDocuments({email: value})
-        return !count
-    } catch (err) {
-        throw err
-    }
-}, attr => `${attr.value} sudah terdaftar`)
 
 // Password Hash
-userSchema.pre("save", function (next) {
+userSchema.pre('save', function (next) {
   this.password = bcrypt.hashSync(this.password, HASH_ROUND);
   next();
 });

@@ -2,18 +2,32 @@ const User = require('../users/model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const config = require('../../config');
+const { use } = require('./router');
 
 module.exports = {
   signup: async (req, res) => {
     try {
-      const payload = req.body;
+      const { name, email, password, role } = req.body;
 
-      let user = new User(payload);
+      // check if email is exist
+      let emailUser = await User.findOne({ email: email });
+      if (emailUser) {
+        return res.status(404).json({
+          message: 'Email sudah terdaftar',
+        });
+      }
 
+      const user = new User({ name, email, password, role });
       await user.save();
+
       res.status(201).json({
         message: 'create user success',
-        data: user,
+        data: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
       });
     } catch (err) {
       if (err && err.name === 'ValidationError') {
