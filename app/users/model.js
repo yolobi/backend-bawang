@@ -6,7 +6,9 @@ let userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      require: true,
+      require: [true, 'nama harus diisi'],
+      minlength: [3, 'panjang nama harus 3-55 karakter'],
+      maxlength: [55, 'panjang nama harus 3-55 karakter'],
     },
     email: {
       type: String,
@@ -17,13 +19,14 @@ let userSchema = new mongoose.Schema(
         validator: function (v) {
           return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
         },
-        message: 'Please enter a valid email',
+        message: 'maukkan email yang valid',
       },
-      required: [true, 'Email required'],
+      required: [true, 'Email wajib diisi'],
     },
     password: {
       type: String,
       require: true,
+      minlength: [6, 'password minimal 6 karakter'],
     },
     role: {
       type: String,
@@ -42,12 +45,5 @@ let userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-
-// Password Hash
-userSchema.pre('save', function (next) {
-  this.password = bcrypt.hashSync(this.password, HASH_ROUND);
-  next();
-});
 
 module.exports = mongoose.model('User', userSchema);

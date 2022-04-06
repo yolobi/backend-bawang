@@ -2,7 +2,6 @@ const User = require('../users/model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const config = require('../../config');
-const { use } = require('./router');
 
 module.exports = {
   signup: async (req, res) => {
@@ -17,7 +16,15 @@ module.exports = {
         });
       }
 
-      const user = new User({ name, email, password, role });
+      // password hashing
+      const hashPassword = await bcrypt.hashSync(password, 10);
+
+      const user = new User({
+        name: name,
+        email: email,
+        password: hashPassword,
+        role: role,
+      });
       await user.save();
 
       res.status(201).json({
