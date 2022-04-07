@@ -12,6 +12,7 @@ const petaniRouter = require('./app/petani/router');
 
 const app = express();
 const URL = `/api/v1`
+const adminURL = `/admin`
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -30,13 +31,14 @@ app.use(
 
 
 // admin page
-app.use('/', dashboardRouter);
-app.use('/blanko', blankoRouter);
+app.use(`${adminURL}/`, dashboardRouter);
+app.use(`${adminURL}/blanko`, blankoRouter);
 
 
 // api
 app.use(`${URL}/auth`, authRouter)
 app.use(`${URL}/petani`, petaniRouter);
+app.use(`${URL}/blanko`, blankoRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

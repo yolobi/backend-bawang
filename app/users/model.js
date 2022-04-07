@@ -31,6 +31,7 @@ let userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: [
+        'admin',
         'petani',
         'agen',
         'distributor',
