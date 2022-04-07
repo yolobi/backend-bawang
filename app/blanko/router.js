@@ -9,6 +9,9 @@ const {
   actionDelete,
   createBlanko,
   allBlanko,
+  editBlanko,
+  seeMyBlanko,
+  deleteBlanko,
 } = require('./controller');
 const authenticateUser = require('../middleware/authentication');
 const { checkIfPetani } = require('../middleware/check-role');
@@ -24,5 +27,13 @@ router.delete('/delete/:id', actionDelete);
 // API
 router.get('/all', authenticateUser, allBlanko);
 router.post('/createblanko', authenticateUser, checkIfPetani, createBlanko);
+router.put('/editblanko/:id', authenticateUser, checkIfPetani, editBlanko);
+router.get('/seemyblanko', authenticateUser, checkIfPetani, seeMyBlanko);
+router.delete(
+  '/deleteblanko/:id',
+  authenticateUser,
+  checkIfPetani,
+  deleteBlanko
+);
 
 module.exports = router;

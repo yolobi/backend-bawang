@@ -175,7 +175,7 @@ module.exports = {
 
   editBlanko: async (req, res) => {
     try {
-      const { id } = req.params;
+      const id = req.params;
       const {
         jenisCabai,
         luasTanamanAkhirBulanLalu,
@@ -189,8 +189,11 @@ module.exports = {
         rataHargaJual,
       } = req.body;
 
+      const user = req.userData.id;
+      console.log(user);
+
       const blanko = await Blanko.findOneAndUpdate(
-        { _id: id },
+        { user: user, _id: id },
         {
           jenisCabai,
           luasTanamanAkhirBulanLalu,
@@ -204,12 +207,71 @@ module.exports = {
           rataHargaJual,
         }
       );
-      console.log(blanko);
+      console.log({
+        oldBlanko: blanko,
+      });
 
-      res.redirect('/blanko');
+      const newBlanko = await Blanko.findById(id);
+      console.log({
+        newBlanko: newBlanko,
+      });
+
+      res.status(201).json({
+        message: 'Update success',
+        data: newBlanko,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  seeMyBlanko: async (req, res) => {
+    try {
+      const user = req.userData.id;
+      console.log(user);
+
+      const myBlanko = await Blanko.find({ user: user }).populate(
+        'user',
+        '_id email name role'
+      );
+      console.log(myBlanko[0]);
+
+      if (myBlanko[0] == undefined) {
+        res.status(404).json({
+          message: 'Belum ada blanko yang diisi',
+        });
+      } else {
+        res.status(200).json({
+          message: 'Berhasil',
+          data: myBlanko,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  },
+
+  deleteBlanko: async (req, res) => {
+    try {
+      const id = req.params.id;
+      const user = req.userData.id;
+      console.log(user);
+
+      const findBlanko = await Blanko.findOne({ _id: id });
+
+      if (findBlanko && user) {
+        const blanko = await Blanko.findOneAndRemove({ _id: id, user: user });
+        res.status(201).json({
+          message: 'Delete success',
+          data: blanko,
+        });
+      } else {
+        res.status(404).json({
+          message: 'Blanko tidak ditemukan',
+        });
+      }
     } catch (error) {
       console.log(error);
     }
   },
 };
-
