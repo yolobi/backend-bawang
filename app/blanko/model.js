@@ -7,7 +7,7 @@ let blankoSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    jenisCabai: {
+    tipeCabai: {
       type: String,
       enum: ['cabaiMerahBesar', 'cabaiMerahKeriting', 'cabaiRawitMerah'],
       require: true,

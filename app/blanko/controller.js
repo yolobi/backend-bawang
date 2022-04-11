@@ -20,7 +20,7 @@ module.exports = {
   actionCreate: async (req, res) => {
     try {
       const {
-        jenisCabai,
+        tipeCabai,
         luasTanamanAkhirBulanLalu,
         luasPanenHabis,
         luasPanenBelumHabis,
@@ -33,7 +33,7 @@ module.exports = {
       } = req.body;
 
       let blanko = new Blanko({
-        jenisCabai,
+        tipeCabai,
         luasTanamanAkhirBulanLalu,
         luasPanenHabis,
         luasPanenBelumHabis,
@@ -69,7 +69,7 @@ module.exports = {
     try {
       const { id } = req.params;
       const {
-        jenisCabai,
+        tipeCabai,
         luasTanamanAkhirBulanLalu,
         luasPanenHabis,
         luasPanenBelumHabis,
@@ -84,7 +84,7 @@ module.exports = {
       const blanko = await Blanko.findOneAndUpdate(
         { _id: id },
         {
-          jenisCabai,
+          tipeCabai,
           luasTanamanAkhirBulanLalu,
           luasPanenHabis,
           luasPanenBelumHabis,
@@ -134,7 +134,7 @@ module.exports = {
     try {
       console.log(req.userData.id);
       const {
-        jenisCabai,
+        tipeCabai,
         luasTanamanAkhirBulanLalu,
         luasPanenHabis,
         luasPanenBelumHabis,
@@ -151,7 +151,7 @@ module.exports = {
 
       let blanko = new Blanko({
         user,
-        jenisCabai,
+        tipeCabai,
         luasTanamanAkhirBulanLalu,
         luasPanenHabis,
         luasPanenBelumHabis,
@@ -177,7 +177,7 @@ module.exports = {
     try {
       const id = req.params;
       const {
-        jenisCabai,
+        tipeCabai,
         luasTanamanAkhirBulanLalu,
         luasPanenHabis,
         luasPanenBelumHabis,
@@ -195,7 +195,7 @@ module.exports = {
       const blanko = await Blanko.findOneAndUpdate(
         { user: user, _id: id },
         {
-          jenisCabai,
+          tipeCabai,
           luasTanamanAkhirBulanLalu,
           luasPanenHabis,
           luasPanenBelumHabis,
