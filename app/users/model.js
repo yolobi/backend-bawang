@@ -28,6 +28,40 @@ let userSchema = new mongoose.Schema(
       require: true,
       minlength: [6, 'password minimal 6 karakter'],
     },
+    kecamatan: {
+      type: Number,
+      require: true,
+      validate: {
+        validator: function (val) {
+          return val.toString().length === 7;
+        },
+        message: 'id kecamatan yang dimasukkan harus berjumlah 7 digit',
+      },
+    },
+    kabupaten: {
+      type: Number,
+      require: true,
+      validate: {
+        validator: function (val) {
+          return val.toString().length === 4;
+        },
+        message: 'id kabupaten/kota yang dimasukkan harus berjumlah 4 digit',
+      },
+    },
+    provinsi: {
+      type: Number,
+      require: true,
+      validate: {
+        validator: function (val) {
+          return val.toString().length === 2;
+        },
+        message: 'id kabupaten/kota yang dimasukkan harus berjumlah 2 digit',
+      },
+    },
+    alamat: {
+      type: String,
+      require: true,
+    },
     role: {
       type: String,
       enum: [
