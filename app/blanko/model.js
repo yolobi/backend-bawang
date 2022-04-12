@@ -7,6 +7,11 @@ let blankoSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
+    tanggalPencatatan: {
+      type: Date,
+      require: true,
+      default: Date.now
+    },
     tipeCabai: {
       type: String,
       enum: ['cabaiMerahBesar', 'cabaiMerahKeriting', 'cabaiRawitMerah'],

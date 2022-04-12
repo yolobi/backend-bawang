@@ -134,6 +134,7 @@ module.exports = {
     try {
       console.log(req.userData.id);
       const {
+        tanggalPencatatan,
         tipeCabai,
         luasTanamanAkhirBulanLalu,
         luasPanenHabis,
@@ -151,6 +152,7 @@ module.exports = {
 
       let blanko = new Blanko({
         user,
+        tanggalPencatatan,
         tipeCabai,
         luasTanamanAkhirBulanLalu,
         luasPanenHabis,
