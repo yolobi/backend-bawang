@@ -7,30 +7,37 @@ const {
   viewEdit,
   actionEdit,
   actionDelete,
+} = require('./admincontroller');
+
+const {
   createBlanko,
-  allBlanko,
-  editBlanko,
   seeMyBlanko,
+  seeABlanko,
   deleteBlanko,
 } = require('./controller');
+
 const authenticateUser = require('../middleware/authentication');
-const { checkIfPetani } = require('../middleware/check-role');
+const { checkIfPetani, checkIfAdmin } = require('../middleware/check-role');
 
 /* GET home page. */
 router.get('/', index);
-router.get('/create', viewCreate);
-router.post('/create', actionCreate);
-router.get('/edit/:id', viewEdit);
-router.put('/edit/:id', actionEdit);
-router.delete('/delete/:id', actionDelete);
+router.get('/create', authenticateUser, checkIfAdmin, viewCreate);
+router.post('/create', authenticateUser, checkIfAdmin, actionCreate);
+router.get('/edit/:id', authenticateUser, checkIfAdmin, viewEdit);
+router.put('/edit/:id', authenticateUser, checkIfAdmin, actionEdit);
+router.delete('/delete/:id', authenticateUser, checkIfAdmin, actionDelete);
 
 // API
-router.get('/all', authenticateUser, allBlanko);
-router.post('/createblanko', authenticateUser, checkIfPetani, createBlanko);
-router.put('/editblanko/:id', authenticateUser, checkIfPetani, editBlanko);
-router.get('/seemyblanko', authenticateUser, checkIfPetani, seeMyBlanko);
+router.post('/tambahblanko', authenticateUser, checkIfPetani, createBlanko);
+router.get('/lihatblanko', authenticateUser, checkIfPetani, seeMyBlanko);
+router.get(
+  '/lihatblanko/:blankoId',
+  authenticateUser,
+  checkIfPetani,
+  seeABlanko
+);
 router.delete(
-  '/deleteblanko/:id',
+  '/hapusblanko/:id',
   authenticateUser,
   checkIfPetani,
   deleteBlanko

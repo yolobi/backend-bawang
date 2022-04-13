@@ -61,7 +61,7 @@ module.exports = {
 
       const countAllStok = await Stok.find({ user: user }).countDocuments();
 
-      const userData = await User.findById(user).select('_id name');
+      const userData = await User.findById(user).select('_id name role');
 
       res.status(200).json({
         message: 'Berhasil lihat data',
@@ -124,7 +124,7 @@ module.exports = {
 
       const countAllStok = await Stok.find({ user: user }).countDocuments();
 
-      const userData = await User.findById(user).select('_id name');
+      const userData = await User.findById(user).select('_id name role');
 
       if (myStok[0] == undefined) {
         res.status(404).json({
@@ -136,6 +136,33 @@ module.exports = {
           petani: userData,
           data: myStok,
           countAllStok: countAllStok,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  },
+
+  seeAStok: async (req, res) => {
+    try {
+      const user = req.userData.id;
+      const id = req.params.stokId
+      console.log(user);
+
+      const aStok = await Stok.find({ user: user, _id: id })
+      console.log(aStok[0]);
+
+      const userData = await User.findById(user).select('_id name role');
+
+      if (aStok[0] == undefined) {
+        res.status(404).json({
+          message: 'Stok tidak ditemukan',
+        });
+      } else {
+        res.status(200).json({
+          message: 'Berhasil lihat stok',
+          petani: userData,
+          data: aStok,
         });
       }
     } catch (err) {

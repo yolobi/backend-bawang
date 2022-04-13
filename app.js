@@ -40,7 +40,7 @@ app.use(`${adminURL}/blanko`, blankoRouter);
 // api
 app.use(`${URL}/auth`, authRouter)
 app.use(`${URL}/petani`, petaniRouter);
-app.use(`${URL}/blanko`, blankoRouter);
+app.use(`${petaniURL}/blanko`, blankoRouter);
 app.use(`${URL}/testing`, testingRouter);
 app.use(`${petaniURL}/stok`, stokRouter);
 
