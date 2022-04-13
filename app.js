@@ -13,6 +13,7 @@ const petaniRouter = require('./app/petani/router');
 const stokRouter = require('./app/stok/router');
 
 const app = express();
+const URL = `/api/v1`;
 const petaniURL = `/api/v1/petani`
 const adminURL = `/admin`
 
@@ -32,10 +33,11 @@ app.use(
 );
 
 
+app.use('/', petaniRouter);
+
 // admin page
 app.use(`${adminURL}/`, dashboardRouter);
 app.use(`${adminURL}/blanko`, blankoRouter);
-
 
 // api
 app.use(`${URL}/auth`, authRouter)
