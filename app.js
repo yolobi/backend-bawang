@@ -9,7 +9,7 @@ const dashboardRouter = require('./app/dashboard/router');
 const blankoRouter = require('./app/blanko/router');
 const authRouter = require('./app/auth/router');
 const petaniRouter = require('./app/petani/router');
-const testingRouter = require('./app/testing/router');
+// const testingRouter = require('./app/testing/router');
 const stokRouter = require('./app/stok/router');
 
 const app = express();
@@ -41,7 +41,7 @@ app.use(`${adminURL}/blanko`, blankoRouter);
 app.use(`${URL}/auth`, authRouter)
 app.use(`${URL}/petani`, petaniRouter);
 app.use(`${petaniURL}/blanko`, blankoRouter);
-app.use(`${URL}/testing`, testingRouter);
+// app.use(`${URL}/testing`, testingRouter);
 app.use(`${petaniURL}/stok`, stokRouter);
 
 // catch 404 and forward to error handler
