@@ -20,7 +20,7 @@ module.exports = {
   },
 
   checkIfPedagang: (req, res, next) => {
-    let pedagang = ['pengepul', 'pengecer', 'distributor', 'agen'];
+    let pedagang = ['pengepul', 'pengecer', 'distributor', 'agen', 'grosir'];
     let isPedagang = pedagang.includes(req.userData.role);
     if (isPedagang) {
       return next();
