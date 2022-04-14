@@ -83,10 +83,12 @@ module.exports = {
           );
           res.status(200).json({
             message: 'Signin success',
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
+            user: {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              role: user.role,
+            },
             token: token,
           });
         } else {
