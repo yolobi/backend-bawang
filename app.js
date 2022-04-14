@@ -1,5 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
+var cors = require('cors');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -14,8 +15,8 @@ const stokRouter = require('./app/stok/router');
 
 const app = express();
 const URL = `/api/v1`;
-const petaniURL = `/api/v1/petani`
-const adminURL = `/admin`
+const petaniURL = `/api/v1/petani`;
+const adminURL = `/admin`;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -31,7 +32,7 @@ app.use(
   '/adminlte',
   express.static(path.join(__dirname, '/node_modules/admin-lte/'))
 );
-
+app.use(cors());
 
 app.use('/', petaniRouter);
 
@@ -40,7 +41,7 @@ app.use(`${adminURL}/`, dashboardRouter);
 app.use(`${adminURL}/blanko`, blankoRouter);
 
 // api
-app.use(`${URL}/auth`, authRouter)
+app.use(`${URL}/auth`, authRouter);
 app.use(`${URL}/petani`, petaniRouter);
 app.use(`${petaniURL}/blanko`, blankoRouter);
 // app.use(`${URL}/testing`, testingRouter);
