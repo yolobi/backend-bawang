@@ -2,12 +2,21 @@ const User = require('../users/model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const config = require('../../config');
-const myFunction = require('../function/function')
+const myFunction = require('../function/function');
 
 module.exports = {
   signup: async (req, res) => {
     try {
-      const { name, email, password, kecamatan, kabupaten, provinsi, alamat, role } = req.body;
+      const {
+        name,
+        email,
+        password,
+        kecamatan,
+        kabupaten,
+        provinsi,
+        alamat,
+        role,
+      } = req.body;
 
       // check if email is exist
       let emailUser = await User.findOne({ email: email });
@@ -74,7 +83,11 @@ module.exports = {
           );
           res.status(200).json({
             message: 'Signin success',
-            data: { token },
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            token: token,
           });
         } else {
           res.status(403).json({
