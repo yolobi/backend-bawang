@@ -71,6 +71,7 @@ let userSchema = new mongoose.Schema(
         'distributor',
         'pengecer',
         'pengepul',
+        'grosir',
         'pdh',
         'dinasPertanianKota',
         'dinasPertanianProvinsi',
