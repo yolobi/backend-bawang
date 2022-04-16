@@ -118,7 +118,7 @@ module.exports = {
       console.log(user);
 
       const myStok = await Stok.find({ user: user }).select(
-        '_id tipeCabai totalHasilPanen hasilPanenSukse hasilPanenGagal hargaJual createdAt'
+        '_id tipeCabai totalHasilPanen hasilPanenSukses hasilPanenGagal hargaJual createdAt'
       );
       console.log(myStok[0]);
 
