@@ -4,6 +4,18 @@ const bcrypt = require('bcryptjs');
 const config = require('../../config');
 const myFunction = require('../function/function');
 
+const RoleEnum = Object.freeze({
+  petani: 'petani',
+  agen: 'pedagang',
+  distributor: 'pedagang',
+  pengepul: 'pedagang',
+  pengecer: 'pedagang',
+  grosir: 'pedagang',
+  pdh: 'pdh',
+  dinasPetanianKota: 'dinas',
+  dinasPertanianKabupaten: 'dinas',
+});
+
 module.exports = {
   signup: async (req, res) => {
     try {
@@ -52,6 +64,7 @@ module.exports = {
           provinsi: await myFunction.teritoryInfo(provinsi),
           alamat: alamat,
           role: user.role,
+          access: RoleEnum[user.role],
         },
       });
     } catch (err) {
@@ -88,6 +101,7 @@ module.exports = {
               name: user.name,
               email: user.email,
               role: user.role,
+              access: RoleEnum[user.role],
             },
             token: token,
           });
