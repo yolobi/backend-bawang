@@ -247,6 +247,36 @@ module.exports = {
     }
   },
 
+  seeTipePenjualan: async (req, res) => {
+    try {
+      const user = req.userData.id;
+      const { tipeCabai } = req.body;
+      console.log(user);
+
+      const tipePenjualan = await Penjualan.find({
+        user: user,
+        tipeCabai: tipeCabai,
+      }).populate('pembeli', '_id name role');
+      console.log(tipePenjualan[0]);
+
+      const userData = await User.findById(user).select('_id name');
+
+      if (tipePenjualan[0] == undefined) {
+        res.status(404).json({
+          message: 'Penjualan tidak ditemukan',
+        });
+      } else {
+        res.status(200).json({
+          message: `Berhasil lihat Penjualan untuk tipe ${tipeCabai}`,
+          user: userData,
+          data: tipePenjualan,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  },
+
   deletePenjualan: async (req, res) => {
     try {
       const id = req.params.penjualanId;

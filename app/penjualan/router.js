@@ -9,6 +9,7 @@ const {
   seePenjualan,
   seeAPenjualan,
   deletePenjualan,
+  seeTipePenjualan,
 } = require('./controller');
 const authenticateUser = require('../middleware/authentication');
 const { checkIfPetani } = require('../middleware/check-role');
@@ -47,6 +48,14 @@ router.get(
   checkIfPetani,
   seeAPenjualan
 );
+
+router.get(
+  '/lihattipepenjualan',
+  authenticateUser,
+  checkIfPetani,
+  seeTipePenjualan
+);
+
 router.delete(
   '/hapuspenjualan/:penjualanId',
   authenticateUser,
