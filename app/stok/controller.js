@@ -13,7 +13,7 @@ module.exports = {
         tipeCabai: 'cabaiMerahBesar',
       })
         .select(
-          '_id tipeCabai totalHasilPanen hasilPanenSukse hasilPanenGagal hargaJual createdAt'
+          '_id tipeCabai totalHasilPanen hasilPanenSukses hasilPanenGagal hargaJual createdAt'
         )
         .sort({ createdAt: 'descending' });
 
@@ -28,7 +28,7 @@ module.exports = {
         tipeCabai: 'cabaiMerahKeriting',
       })
         .select(
-          '_id tipeCabai totalHasilPanen hasilPanenSukse hasilPanenGagal hargaJual createdAt'
+          '_id tipeCabai totalHasilPanen hasilPanenSukses hasilPanenGagal hargaJual createdAt'
         )
         .sort({ createdAt: 'descending' });
 
@@ -43,7 +43,7 @@ module.exports = {
         tipeCabai: 'cabaiRawitMerah',
       })
         .select(
-          '_id tipeCabai totalHasilPanen hasilPanenSukse hasilPanenGagal hargaJual createdAt'
+          '_id tipeCabai totalHasilPanen hasilPanenSukses hasilPanenGagal hargaJual createdAt'
         )
         .sort({ createdAt: 'descending' });
 
@@ -54,7 +54,7 @@ module.exports = {
 
       const myStok = await Stok.find({ user: user })
         .select(
-          '_id tipeCabai totalHasilPanen hasilPanenSukse hasilPanenGagal hargaJual createdAt'
+          '_id tipeCabai totalHasilPanen hasilPanenSukses hasilPanenGagal hargaJual createdAt'
         )
         .sort({ createdAt: 'descending' });
       console.log(myStok[0]);
