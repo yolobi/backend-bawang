@@ -45,10 +45,10 @@ app.use(`${adminURL}/blanko`, blankoRouter);
 // api
 app.use(`${URL}/auth`, authRouter);
 app.use(`${URL}/petani`, petaniRouter);
-app.use(`${petaniURL}/blanko`, blankoRouter);
+app.use(`${URL}/blanko`, blankoRouter);
 // app.use(`${URL}/testing`, testingRouter);
-app.use(`${petaniURL}/stok`, stokRouter);
-app.use(`${petaniURL}/penjualan`, penjualanRouter);
+app.use(`${URL}/stok`, stokRouter);
+app.use(`${URL}/penjualan`, penjualanRouter);
 app.use(`${URL}/usang`, usangRouter);
 
 // catch 404 and forward to error handler
