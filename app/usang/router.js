@@ -12,7 +12,7 @@ router.post('/tambahusang', authenticateUser, checkIfPedagang, createUsang);
 router.get('/lihatusang', authenticateUser, checkIfPedagang, seeMyUsang);
 router.get('/lihatusang/:usangId', authenticateUser, checkIfPedagang, seeAUsang);
 router.get(
-  '/lihatusangbytype',
+  '/lihatusangbytype/:tipecabai',
   authenticateUser,
   checkIfPedagang,
   seeTipeUsang

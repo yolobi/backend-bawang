@@ -40,9 +40,14 @@ module.exports = {
       const user = req.userData.id;
       console.log(user);
 
-      const myUsang = await Usang.find({ user: user }).select(
-        '_id tipeCabai jumlahUsang hargaJual tanggalPencatatan pemanfaatan createdAt'
-      );
+      const myUsang = await Usang.find({ user: user })
+        .select(
+          '_id tipeCabai jumlahUsang hargaJual tanggalPencatatan pemanfaatan createdAt'
+        )
+        .sort({
+          tanggalPencatatan: 'descending',
+          createdAt: 'descending',
+        });
       console.log(myUsang[0]);
 
       const countAllUsang = await Usang.find({ user: user }).countDocuments();
@@ -58,7 +63,7 @@ module.exports = {
           message: 'Berhasil lihat data cabai usang',
           petani: userData,
           data: myUsang,
-          countAllStok: countAllUsang,
+          countAllUsang: countAllUsang,
         });
       }
     } catch (err) {
@@ -96,12 +101,15 @@ module.exports = {
   seeTipeUsang: async (req, res) => {
     try {
       const user = req.userData.id;
-      const { tipeCabai } = req.body;
+      const tipeCabai = req.params.tipecabai;
       console.log(user);
 
       const tipeUsang = await Usang.find({
         user: user,
         tipeCabai: tipeCabai,
+      }).sort({
+        tanggalPencatatan: 'descending',
+        createdAt: 'descending',
       });
       console.log(tipeUsang[0]);
 
