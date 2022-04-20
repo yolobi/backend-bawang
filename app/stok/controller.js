@@ -13,9 +13,13 @@ module.exports = {
         tipeCabai: 'cabaiMerahBesar',
       })
         .select(
-          '_id tipeCabai totalHasilPanen hasilPanenSukses hasilPanenGagal hargaJual createdAt'
+          '_id tanggalPencatatan tipeCabai totalHasilPanen hasilPanenSukses hasilPanenGagal hargaJual'
         )
-        .sort({ createdAt: 'descending' });
+        .sort({
+          tanggalPencatatan: 'descending',
+          createdAt: 'descending',
+        })
+        .limit(5);
 
       const countStokCmb = await Stok.find({
         user: user,
@@ -28,9 +32,13 @@ module.exports = {
         tipeCabai: 'cabaiMerahKeriting',
       })
         .select(
-          '_id tipeCabai totalHasilPanen hasilPanenSukses hasilPanenGagal hargaJual createdAt'
+          '_id tanggalPencatatan tipeCabai totalHasilPanen hasilPanenSukses hasilPanenGagal hargaJual'
         )
-        .sort({ createdAt: 'descending' });
+        .sort({
+          tanggalPencatatan: 'descending',
+          createdAt: 'descending',
+        })
+        .limit(5);
 
       const countStokCmk = await Stok.find({
         user: user,
@@ -43,9 +51,13 @@ module.exports = {
         tipeCabai: 'cabaiRawitMerah',
       })
         .select(
-          '_id tipeCabai totalHasilPanen hasilPanenSukses hasilPanenGagal hargaJual createdAt'
+          '_id tanggalPencatatan tipeCabai totalHasilPanen hasilPanenSukses hasilPanenGagal hargaJual'
         )
-        .sort({ createdAt: 'descending' });
+        .sort({
+          tanggalPencatatan: 'descending',
+          createdAt: 'descending',
+        })
+        .limit(5);
 
       const countStokCrm = await Stok.find({
         user: user,
@@ -54,9 +66,13 @@ module.exports = {
 
       const myStok = await Stok.find({ user: user })
         .select(
-          '_id tipeCabai totalHasilPanen hasilPanenSukses hasilPanenGagal hargaJual createdAt'
+          '_id tanggalPencatatan tipeCabai totalHasilPanen hasilPanenSukses hasilPanenGagal hargaJual'
         )
-        .sort({ createdAt: 'descending' });
+        .sort({
+          tanggalPencatatan: 'descending',
+          createdAt: 'descending',
+        })
+        .limit(5);
       console.log(myStok[0]);
 
       const countAllStok = await Stok.find({ user: user }).countDocuments();
