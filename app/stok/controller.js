@@ -13,7 +13,7 @@ module.exports = {
         tipeCabai: 'cabaiMerahBesar',
       })
         .select(
-          '_id tipeCabai totalHasilPanen hasilPanenSukse hasilPanenGagal hargaJual createdAt'
+          '_id tipeCabai totalHasilPanen hasilPanenSukses hasilPanenGagal hargaJual createdAt'
         )
         .sort({ createdAt: 'descending' });
 
@@ -28,7 +28,7 @@ module.exports = {
         tipeCabai: 'cabaiMerahKeriting',
       })
         .select(
-          '_id tipeCabai totalHasilPanen hasilPanenSukse hasilPanenGagal hargaJual createdAt'
+          '_id tipeCabai totalHasilPanen hasilPanenSukses hasilPanenGagal hargaJual createdAt'
         )
         .sort({ createdAt: 'descending' });
 
@@ -43,7 +43,7 @@ module.exports = {
         tipeCabai: 'cabaiRawitMerah',
       })
         .select(
-          '_id tipeCabai totalHasilPanen hasilPanenSukse hasilPanenGagal hargaJual createdAt'
+          '_id tipeCabai totalHasilPanen hasilPanenSukses hasilPanenGagal hargaJual createdAt'
         )
         .sort({ createdAt: 'descending' });
 
@@ -54,7 +54,7 @@ module.exports = {
 
       const myStok = await Stok.find({ user: user })
         .select(
-          '_id tipeCabai totalHasilPanen hasilPanenSukse hasilPanenGagal hargaJual createdAt'
+          '_id tipeCabai totalHasilPanen hasilPanenSukses hasilPanenGagal hargaJual createdAt'
         )
         .sort({ createdAt: 'descending' });
       console.log(myStok[0]);
@@ -83,6 +83,7 @@ module.exports = {
     try {
       console.log(req.userData.id);
       const {
+        tanggalPencatatan,
         tipeCabai,
         totalHasilPanen,
         hasilPanenSukses,
@@ -95,6 +96,7 @@ module.exports = {
 
       let stok = new Stok({
         user,
+        tanggalPencatatan,
         tipeCabai,
         totalHasilPanen,
         hasilPanenSukses,
@@ -117,9 +119,14 @@ module.exports = {
       const user = req.userData.id;
       console.log(user);
 
-      const myStok = await Stok.find({ user: user }).select(
-        '_id tipeCabai totalHasilPanen hasilPanenSukse hasilPanenGagal hargaJual createdAt'
-      );
+      const myStok = await Stok.find({ user: user })
+        .select(
+          '_id tanggalPencatatan tipeCabai totalHasilPanen hasilPanenSukses hasilPanenGagal hargaJual'
+        )
+        .sort({
+          tanggalPencatatan: 'descending',
+          createdAt: 'descending',
+        });
       console.log(myStok[0]);
 
       const countAllStok = await Stok.find({ user: user }).countDocuments();
@@ -146,10 +153,10 @@ module.exports = {
   seeAStok: async (req, res) => {
     try {
       const user = req.userData.id;
-      const id = req.params.stokId
+      const id = req.params.stokId;
       console.log(user);
 
-      const aStok = await Stok.find({ user: user, _id: id })
+      const aStok = await Stok.find({ user: user, _id: id });
       console.log(aStok[0]);
 
       const userData = await User.findById(user).select('_id name role');
@@ -170,9 +177,42 @@ module.exports = {
     }
   },
 
+  seeTipeStok: async (req, res) => {
+    try {
+      const user = req.userData.id;
+      const tipeCabai = req.params.tipecabai;
+      console.log(user);
+
+      const tipeStok = await Stok.find({
+        user: user,
+        tipeCabai: tipeCabai,
+      }).sort({
+        tanggalPencatatan: 'descending',
+        createdAt: 'descending',
+      });
+      console.log(tipeStok[0]);
+
+      const userData = await User.findById(user).select('_id name');
+
+      if (tipeStok[0] == undefined) {
+        res.status(404).json({
+          message: 'Data stok tidak ditemukan',
+        });
+      } else {
+        res.status(200).json({
+          message: `Berhasil lihat data stok untuk tipe ${tipeCabai}`,
+          user: userData,
+          data: tipeStok,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  },
+
   deleteStok: async (req, res) => {
     try {
-      const id = req.params.idStok;
+      const id = req.params.stokId;
       const user = req.userData.id;
       console.log(user);
 

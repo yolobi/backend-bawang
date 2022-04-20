@@ -31,6 +31,25 @@ module.exports = {
     }
   },
 
+  checkIfPetaniPedagang: (req, res, next) => {
+    let user = [
+      'petani',
+      'pengepul',
+      'pengecer',
+      'distributor',
+      'agen',
+      'grosir',
+    ];
+    let isUser = user.includes(req.userData.role);
+    if (isUser) {
+      return next();
+    } else {
+      return res.status(401).json({
+        message: 'Anda harus login sebagai Petani atau Pedagang',
+      });
+    }
+  },
+
   checkIfDinas: (req, res, next) => {
     let dinasPertanian = [
       'pdh',
