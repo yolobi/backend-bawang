@@ -12,7 +12,7 @@ const authRouter = require('./app/auth/router');
 const petaniRouter = require('./app/petani/router');
 // const testingRouter = require('./app/testing/router');
 const stokRouter = require('./app/stok/router');
-const penjualanRouter = require('./app/penjualan/router');
+const transaksiRouter = require('./app/transaksi/router');
 const usangRouter = require('./app/usang/router');
 
 const app = express();
@@ -48,7 +48,7 @@ app.use(`${URL}/petani`, petaniRouter);
 app.use(`${URL}/blanko`, blankoRouter);
 // app.use(`${URL}/testing`, testingRouter);
 app.use(`${URL}/stok`, stokRouter);
-app.use(`${URL}/penjualan`, penjualanRouter);
+app.use(`${URL}/transaksi`, transaksiRouter);
 app.use(`${URL}/usang`, usangRouter);
 
 // catch 404 and forward to error handler

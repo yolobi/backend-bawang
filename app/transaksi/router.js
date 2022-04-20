@@ -1,66 +1,66 @@
 var express = require('express');
 var router = express.Router();
 const {
-  createPenjualan,
+  createTransaksi,
   seePedagang,
   changeStatusTerima,
   changeStatusTolak,
   changeStatusAjukan,
-  seePenjualan,
-  seeAPenjualan,
-  deletePenjualan,
-  seeTipePenjualan,
+  seeMyTransaksi,
+  seeATransaksi,
+  deleteTransaksi,
+  seeTipeTransaksi,
 } = require('./controller');
 const authenticateUser = require('../middleware/authentication');
 const { checkIfPetaniPedagang } = require('../middleware/check-role');
 
 /* GET home page. */
 router.post(
-  '/tambahpenjualan',
+  '/tambahtransaksi',
   authenticateUser,
   checkIfPetaniPedagang,
-  createPenjualan
+  createTransaksi
 );
-router.get('/lihatpedagang', authenticateUser, checkIfPetaniPedagang, seePedagang);
+router.get('/lihatpedagang/:tipepedagang', authenticateUser, checkIfPetaniPedagang, seePedagang);
 router.put(
-  '/ubahstatus/terima/:penjualanId',
+  '/ubahstatus/terima/:transaksiId',
   authenticateUser,
   checkIfPetaniPedagang,
   changeStatusTerima
 );
 router.put(
-  '/ubahstatus/tolak/:penjualanId',
+  '/ubahstatus/tolak/:transaksiId',
   authenticateUser,
   checkIfPetaniPedagang,
   changeStatusTolak
 );
 router.put(
-  '/ubahstatus/ajukankembali/:penjualanId',
+  '/ubahstatus/ajukankembali/:transaksiId',
   authenticateUser,
   checkIfPetaniPedagang,
   changeStatusAjukan
 );
 
-router.get('/lihatpenjualan', authenticateUser, checkIfPetaniPedagang, seePenjualan);
+router.get('/lihattransaksi', authenticateUser, checkIfPetaniPedagang, seeMyTransaksi);
 router.get(
-  '/lihatpenjualan/:penjualanId',
+  '/lihattransaksi/:transaksiId',
   authenticateUser,
   checkIfPetaniPedagang,
-  seeAPenjualan
+  seeATransaksi
 );
 
 router.get(
-  '/lihattipepenjualan',
+  '/lihattransaksibytype/:tipecabai',
   authenticateUser,
   checkIfPetaniPedagang,
-  seeTipePenjualan
+  seeTipeTransaksi
 );
 
 router.delete(
-  '/hapuspenjualan/:penjualanId',
+  '/hapustransaksi/:transaksiId',
   authenticateUser,
   checkIfPetaniPedagang,
-  deletePenjualan
+  deleteTransaksi
 );
 
 module.exports = router;

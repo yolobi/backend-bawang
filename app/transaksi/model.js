@@ -1,7 +1,18 @@
 const mongoose = require('mongoose');
 
-let penjualanSchema = new mongoose.Schema(
+const statusEnum = Object.freeze({
+  diajukan : 0,
+  ditolak: 1,
+  diterima: 2,
+});
+
+let transaksiSchema = new mongoose.Schema(
   {
+    tanggalPencatatan: {
+      type: Date,
+      require: true,
+      default: Date.now,
+    },
     penjual: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -13,7 +24,7 @@ let penjualanSchema = new mongoose.Schema(
       require: true,
     },
     jumlahDijual: {
-      type: String,
+      type: Number,
       require: true,
     },
     hargaJual: {
@@ -25,11 +36,11 @@ let penjualanSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    statusPenjualan: {
-      type: String,
-      enum: ['diajukan', 'diterima', 'ditolak'],
+    statusTransaksi: {
+      type: Number,
+      enum: Object.values(statusEnum),
       require: true,
-      default: 'diajukan',
+      default: statusEnum.diajukan,
     },
     alasanDitolak: {
       type: String,
@@ -39,4 +50,4 @@ let penjualanSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Penjualan', penjualanSchema);
+module.exports = mongoose.model('Transaksi', transaksiSchema);
