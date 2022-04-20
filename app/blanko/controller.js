@@ -52,7 +52,10 @@ module.exports = {
       const user = req.userData.id;
       console.log(user);
 
-      const myBlanko = await Blanko.find({ user: user });
+      const myBlanko = await Blanko.find({ user: user }).sort({
+        tanggalPencatatan: 'descending',
+        createdAt: 'descending',
+      });
       console.log(myBlanko[0]);
 
       const countAllBlanko = await Blanko.find({
@@ -114,8 +117,10 @@ module.exports = {
       const tipeBlanko = await Blanko.find({
         user: user,
         tipeCabai: tipeCabai,
+      }).sort({
+        tanggalPencatatan: 'descending',
+        createdAt: 'descending',
       });
-      console.log(tipeBlanko[0]);
 
       const userData = await User.findById(user).select('_id name');
 
