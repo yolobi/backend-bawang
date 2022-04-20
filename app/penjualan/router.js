@@ -12,54 +12,54 @@ const {
   seeTipePenjualan,
 } = require('./controller');
 const authenticateUser = require('../middleware/authentication');
-const { checkIfPetani } = require('../middleware/check-role');
+const { checkIfPetaniPedagang } = require('../middleware/check-role');
 
 /* GET home page. */
 router.post(
   '/tambahpenjualan',
   authenticateUser,
-  checkIfPetani,
+  checkIfPetaniPedagang,
   createPenjualan
 );
-router.get('/lihatpedagang', authenticateUser, checkIfPetani, seePedagang);
+router.get('/lihatpedagang', authenticateUser, checkIfPetaniPedagang, seePedagang);
 router.put(
   '/ubahstatus/terima/:penjualanId',
   authenticateUser,
-  checkIfPetani,
+  checkIfPetaniPedagang,
   changeStatusTerima
 );
 router.put(
   '/ubahstatus/tolak/:penjualanId',
   authenticateUser,
-  checkIfPetani,
+  checkIfPetaniPedagang,
   changeStatusTolak
 );
 router.put(
   '/ubahstatus/ajukankembali/:penjualanId',
   authenticateUser,
-  checkIfPetani,
+  checkIfPetaniPedagang,
   changeStatusAjukan
 );
 
-router.get('/lihatpenjualan', authenticateUser, checkIfPetani, seePenjualan);
+router.get('/lihatpenjualan', authenticateUser, checkIfPetaniPedagang, seePenjualan);
 router.get(
   '/lihatpenjualan/:penjualanId',
   authenticateUser,
-  checkIfPetani,
+  checkIfPetaniPedagang,
   seeAPenjualan
 );
 
 router.get(
   '/lihattipepenjualan',
   authenticateUser,
-  checkIfPetani,
+  checkIfPetaniPedagang,
   seeTipePenjualan
 );
 
 router.delete(
   '/hapuspenjualan/:penjualanId',
   authenticateUser,
-  checkIfPetani,
+  checkIfPetaniPedagang,
   deletePenjualan
 );
 
