@@ -83,6 +83,7 @@ module.exports = {
     try {
       console.log(req.userData.id);
       const {
+        tanggalPencatatan,
         tipeCabai,
         totalHasilPanen,
         hasilPanenSukses,
@@ -95,6 +96,7 @@ module.exports = {
 
       let stok = new Stok({
         user,
+        tanggalPencatatan,
         tipeCabai,
         totalHasilPanen,
         hasilPanenSukses,
@@ -117,9 +119,14 @@ module.exports = {
       const user = req.userData.id;
       console.log(user);
 
-      const myStok = await Stok.find({ user: user }).select(
-        '_id tipeCabai totalHasilPanen hasilPanenSukses hasilPanenGagal hargaJual createdAt'
-      );
+      const myStok = await Stok.find({ user: user })
+        .select(
+          '_id tanggalPencatatan tipeCabai totalHasilPanen hasilPanenSukses hasilPanenGagal hargaJual'
+        )
+        .sort({
+          tanggalPencatatan: 'descending',
+          createdAt: 'descending',
+        });
       console.log(myStok[0]);
 
       const countAllStok = await Stok.find({ user: user }).countDocuments();
@@ -179,6 +186,9 @@ module.exports = {
       const tipeStok = await Stok.find({
         user: user,
         tipeCabai: tipeCabai,
+      }).sort({
+        tanggalPencatatan: 'descending',
+        createdAt: 'descending',
       });
       console.log(tipeStok[0]);
 
