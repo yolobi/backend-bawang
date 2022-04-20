@@ -105,6 +105,36 @@ module.exports = {
     }
   },
 
+  seeTipeBlanko: async (req, res) => {
+    try {
+      const user = req.userData.id;
+      const tipeCabai = req.params.tipecabai;
+      console.log(user);
+
+      const tipeBlanko = await Blanko.find({
+        user: user,
+        tipeCabai: tipeCabai,
+      });
+      console.log(tipeBlanko[0]);
+
+      const userData = await User.findById(user).select('_id name');
+
+      if (tipeBlanko[0] == undefined) {
+        res.status(404).json({
+          message: 'Data blanko tidak ditemukan',
+        });
+      } else {
+        res.status(200).json({
+          message: `Berhasil lihat data blanko untuk tipe ${tipeCabai}`,
+          user: userData,
+          data: tipeBlanko,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  },
+
   deleteBlanko: async (req, res) => {
     try {
       const id = req.params.blankoId;

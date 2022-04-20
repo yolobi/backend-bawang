@@ -14,6 +14,7 @@ const {
   seeMyBlanko,
   seeABlanko,
   deleteBlanko,
+  seeTipeBlanko,
 } = require('./controller');
 
 const authenticateUser = require('../middleware/authentication');
@@ -35,6 +36,12 @@ router.get(
   authenticateUser,
   checkIfPetani,
   seeABlanko
+);
+router.get(
+  '/lihatblankobytype/:tipecabai',
+  authenticateUser,
+  checkIfPetani,
+  seeTipeBlanko
 );
 router.delete(
   '/hapusblanko/:blankoId',

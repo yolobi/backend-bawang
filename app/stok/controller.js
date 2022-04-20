@@ -146,10 +146,10 @@ module.exports = {
   seeAStok: async (req, res) => {
     try {
       const user = req.userData.id;
-      const id = req.params.stokId
+      const id = req.params.stokId;
       console.log(user);
 
-      const aStok = await Stok.find({ user: user, _id: id })
+      const aStok = await Stok.find({ user: user, _id: id });
       console.log(aStok[0]);
 
       const userData = await User.findById(user).select('_id name role');
@@ -163,6 +163,36 @@ module.exports = {
           message: 'Berhasil lihat stok',
           petani: userData,
           data: aStok,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  },
+
+  seeTipeStok: async (req, res) => {
+    try {
+      const user = req.userData.id;
+      const tipeCabai = req.params.tipecabai;
+      console.log(user);
+
+      const tipeStok = await Stok.find({
+        user: user,
+        tipeCabai: tipeCabai,
+      });
+      console.log(tipeStok[0]);
+
+      const userData = await User.findById(user).select('_id name');
+
+      if (tipeStok[0] == undefined) {
+        res.status(404).json({
+          message: 'Data stok tidak ditemukan',
+        });
+      } else {
+        res.status(200).json({
+          message: `Berhasil lihat data stok untuk tipe ${tipeCabai}`,
+          user: userData,
+          data: tipeStok,
         });
       }
     } catch (err) {
