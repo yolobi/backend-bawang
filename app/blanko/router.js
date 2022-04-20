@@ -37,7 +37,7 @@ router.get(
   seeABlanko
 );
 router.delete(
-  '/hapusblanko/:id',
+  '/hapusblanko/:blankoId',
   authenticateUser,
   checkIfPetani,
   deleteBlanko

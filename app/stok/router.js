@@ -15,7 +15,7 @@ router.post('/tambahstok', authenticateUser, checkIfPetani, createStok);
 router.get('/lihatstok', authenticateUser, checkIfPetani, seeMyStok);
 router.get('/lihatstok/:stokId', authenticateUser, checkIfPetani, seeAStok);
 router.delete(
-  '/hapusstok/:idStok',
+  '/hapusstok/:stokId',
   authenticateUser,
   checkIfPetani,
   deleteStok

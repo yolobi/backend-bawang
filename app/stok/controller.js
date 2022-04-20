@@ -172,7 +172,7 @@ module.exports = {
 
   deleteStok: async (req, res) => {
     try {
-      const id = req.params.idStok;
+      const id = req.params.stokId;
       const user = req.userData.id;
       console.log(user);
 

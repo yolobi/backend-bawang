@@ -81,10 +81,10 @@ module.exports = {
   seeABlanko: async (req, res) => {
     try {
       const user = req.userData.id;
-      const id = req.params.blankoId
+      const id = req.params.blankoId;
       console.log(user);
 
-      const aBlanko = await Blanko.find({user: user, _id: id });
+      const aBlanko = await Blanko.find({ user: user, _id: id });
       console.log(aBlanko[0]);
 
       const userData = await User.findById(user).select('_id name');
@@ -107,11 +107,11 @@ module.exports = {
 
   deleteBlanko: async (req, res) => {
     try {
-      const id = req.params.id;
+      const id = req.params.blankoId;
       const user = req.userData.id;
       console.log(user);
 
-      const findBlanko = await Blanko.findOne({ _id: id });
+      const findBlanko = Blanko.findOne({ _id: id });
 
       if (findBlanko && user) {
         const blanko = await Blanko.findOneAndRemove({ _id: id, user: user });
