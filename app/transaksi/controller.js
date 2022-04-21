@@ -223,12 +223,25 @@ module.exports = {
       console.log(myTransaksi[0]);
 
       const countAllTransaksi = await Transaksi.find({
-        user: user,
+        penjual: user,
+      }).countDocuments();
+
+      const myBeliTransaksi = await Transaksi.find({ pembeli: user })
+        .sort({
+          tanggalPencatatan: 'descending',
+          createdAt: 'descending',
+        })
+        .populate('pembeli', '_id name role')
+        .populate('penjual', '_id name role');
+      console.log(myTransaksi[0]);
+
+      const countAllBeliTransaksi = await Transaksi.find({
+        pembeli: user,
       }).countDocuments();
 
       const userData = await User.findById(user).select('_id name');
 
-      if (myTransaksi[0] == undefined) {
+      if (myTransaksi[0] == undefined && myBeliTransaksi[0] == undefined) {
         res.status(404).json({
           message: 'Belum ada Transaksi yang diisi',
         });
@@ -236,8 +249,10 @@ module.exports = {
         res.status(200).json({
           message: 'Berhasil lihat Transaksi',
           user: userData,
-          data: myTransaksi,
-          countAllTransaksi: countAllTransaksi,
+          dijual: myTransaksi,
+          countAllJualTransaksi: countAllTransaksi,
+          dibeli: myBeliTransaksi,
+          countAllBeliTransaksi: countAllBeliTransaksi,
         });
       }
     } catch (err) {
@@ -295,9 +310,20 @@ module.exports = {
         .populate('penjual', '_id name role');
       console.log(tipeTransaksi[0]);
 
+      const tipeBeliTransaksi = await Transaksi.find({
+        pembeli: user,
+        tipeCabai: tipeCabai,
+      })
+        .sort({
+          tanggalPencatatan: 'descending',
+          createdAt: 'descending',
+        })
+        .populate('pembeli', '_id name role')
+        .populate('penjual', '_id name role');
+
       const userData = await User.findById(user).select('_id name');
 
-      if (tipeTransaksi[0] == undefined) {
+      if (tipeTransaksi[0] == undefined && tipeBeliTransaksi[0] == undefined) {
         res.status(404).json({
           message: 'Transaksi tidak ditemukan',
         });
@@ -305,7 +331,8 @@ module.exports = {
         res.status(200).json({
           message: `Berhasil lihat Transaksi untuk tipe ${tipeCabai}`,
           user: userData,
-          data: tipeTransaksi,
+          dijual: tipeTransaksi,
+          dibeli: tipeBeliTransaksi,
         });
       }
     } catch (err) {
