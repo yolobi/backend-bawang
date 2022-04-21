@@ -218,7 +218,8 @@ module.exports = {
           tanggalPencatatan: 'descending',
           createdAt: 'descending',
         })
-        .populate('pembeli', '_id name role');
+        .populate('pembeli', '_id name role')
+        .populate('penjual', '_id name role');
       console.log(myTransaksi[0]);
 
       const countAllTransaksi = await Transaksi.find({
@@ -253,7 +254,9 @@ module.exports = {
       const aTransaksi = await Transaksi.find({
         penjual: user,
         _id: id,
-      }).populate('pembeli', '_id name role');
+      })
+        .populate('pembeli', '_id name role')
+        .populate('penjual', '_id name role');
       console.log(aTransaksi[0]);
 
       const userData = await User.findById(user).select('_id name');
@@ -288,7 +291,8 @@ module.exports = {
           tanggalPencatatan: 'descending',
           createdAt: 'descending',
         })
-        .populate('pembeli', '_id name role');
+        .populate('pembeli', '_id name role')
+        .populate('penjual', '_id name role');
       console.log(tipeTransaksi[0]);
 
       const userData = await User.findById(user).select('_id name');
