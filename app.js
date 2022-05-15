@@ -14,6 +14,8 @@ const petaniRouter = require('./app/petani/router');
 const stokRouter = require('./app/stok/router');
 const transaksiRouter = require('./app/transaksi/router');
 const usangRouter = require('./app/usang/router');
+const userRouter = require('./app/users/router');
+const supervisiRouter = require('./app/supervisi/router');
 
 const app = express();
 const URL = `/api/v1`;
@@ -50,6 +52,8 @@ app.use(`${URL}/blanko`, blankoRouter);
 app.use(`${URL}/stok`, stokRouter);
 app.use(`${URL}/transaksi`, transaksiRouter);
 app.use(`${URL}/usang`, usangRouter);
+app.use(`${URL}/user`, userRouter);
+app.use(`${URL}/supervisi`, supervisiRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

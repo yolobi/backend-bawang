@@ -65,4 +65,14 @@ module.exports = {
       });
     }
   },
+
+  checkIfPdh: (req, res, next) => {
+    if (req.userData.role == 'pdh') {
+      return next();
+    } else {
+      return res.status(401).json({
+        message: 'Anda harus login sebagai PDH',
+      });
+    }
+  },
 };
