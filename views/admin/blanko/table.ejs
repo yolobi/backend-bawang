@@ -1,9 +1,15 @@
 <div class="table-responsive">
-  <table id="example1" class="table table-bordered table-striped table-hover">
+  <table
+    id="example1"
+    class="table table-bordered table-hover"
+    style="width: 100%"
+  >
     <thead>
       <tr>
         <th>No</th>
-        <th>Jenis Cabai</th>
+        <th>User</th>
+        <th>Tanggal Pencatatan</th>
+        <th>Tipe Cabai</th>
         <th>Luas Tanaman Akhir Bulan Lalu (Ha)</th>
         <th>Luas Panen Habis / Dibongkar (Ha)</th>
         <th>Luas Panen Belum Habis (Ha)</th>
@@ -20,7 +26,9 @@
       <% for(let i=0; i < blanko.length; i++){ %>
       <tr>
         <td><%= i+1 %></td>
-        <td><%= blanko[i].jenisCabai %></td>
+        <td><%= blanko[i].user.name %></td>
+        <td><%= blanko[i].tanggalPencatatan %></td>
+        <td><%= blanko[i].tipeCabai %></td>
         <td><%= blanko[i].luasTanamanAkhirBulanLalu %></td>
         <td><%= blanko[i].luasPanenHabis %></td>
         <td><%= blanko[i].luasPanenBelumHabis %></td>
@@ -30,16 +38,35 @@
         <td><%= blanko[i].prodPanenHabis %></td>
         <td><%= blanko[i].prodBelumHabis %></td>
         <td><%= blanko[i].rataHargaJual %></td>
-        <td>
+        <td class="container-fluid">
+          <a
+            href="/admin/blanko/edit/<%= blanko[i]._id %>"
+            class="btn btn-warning btn-sm"
+          >
+            <i class="fas fa-pencil-alt"></i>
+            Ubah</a
+          >
+
           <form
-            action="/blanko/delete/<%= blanko[i]._id %>?_method=DELETE"
+            action="/admin/blanko/delete/<%= blanko[i]._id %>?_method=DELETE"
+            method="POST" class="btn btn-danger btn-sm"
+          >
+            <i class="fas fa-trash"></i>
+            Hapus</form
+          >
+
+          <form
+            action="/admin/blanko/delete/<%= blanko[i]._id %>?_method=DELETE"
             method="POST"
           >
-            <a href="/blanko/edit/<%= blanko[i]._id %>" class="btn btn-warning">
+            <a
+              href="/admin/blanko/edit/<%= blanko[i]._id %>"
+              class="btn btn-warning btn-sm"
+            >
               <i class="fas fa-pencil-alt"></i>
               Ubah</a
             >
-            <button class="btn btn-danger">
+            <button class="btn btn-danger btn-sm">
               <i class="fas fa-trash"></i>
               Hapus
             </button>

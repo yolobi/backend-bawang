@@ -10,8 +10,8 @@
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item"><a href="/blanko">Blanko</a></li>
+            <li class="breadcrumb-item"><a href="/admin">Home</a></li>
+            <li class="breadcrumb-item"><a href="/admin/blanko">Blanko</a></li>
             <li class="breadcrumb-item active">Tambah</li>
           </ol>
         </div>
@@ -31,18 +31,59 @@
             </div>
             <!-- /.card-header -->
             <!-- form start -->
-            <form action="/blanko/create" method="POST">
+            <form action="/admin/blanko/create" method="POST">
               <div class="card-body">
-                <!-- Input Jenis Cabai -->
+                <!-- Input ID Petani -->
                 <div class="form-group">
-                  <label>Jenis Cabai</label>
+                  <label for="luasPanenHabis">Nama Petani</label>
+                  <input
+                    type="text"
+                    name="user"
+                    class="form-control"
+                    id="user"
+                    placeholder="Masukan ID Petani"
+                    required
+                  />
+                </div>
+
+                <!-- Tanggal Pencatatan -->
+                <div class="form-group">
+                  <label>Tanggal Pencatatan</label>
+                  <div
+                    class="input-group date"
+                    id="reservationdate"
+                    data-target-input="nearest"
+                  >
+                    <input
+                      type="text"
+                      class="form-control datetimepicker-input"
+                      data-target="#reservationdate"
+                      placeholder="Masukkan Tanggal Pencatatan"
+                    />
+                    <div
+                      class="input-group-append"
+                      data-target="#reservationdate"
+                      data-toggle="datetimepicker"
+                    >
+                      <div class="input-group-text">
+                        <i class="fa fa-calendar"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Input Tipe Cabai -->
+                <div class="form-group">
+                  <label>Tipe Cabai</label>
                   <select
                     class="form-control select2"
                     style="width: 100%"
-                    name="jenisCabai"
+                    name="tipeCabai"
                     required
                   >
-                    <option selected="selected">Pilih Jenis Cabai</option>
+                    <option selected="selected" disabled>
+                      Pilih Tipe Cabai
+                    </option>
                     <option value="cabaiMerahBesar">Cabai Merah Besar</option>
                     <option value="cabaiMerahKeriting">
                       Cabai Merah Keriting
@@ -50,6 +91,7 @@
                     <option value="cabaiRawitMerah">Cabai Rawit Merah</option>
                   </select>
                 </div>
+
                 <!-- Input Luas Tanaman Akhir Bulan Lalu -->
                 <div class="form-group">
                   <label for="luasTanamanAkhirBulanLalu"
@@ -64,6 +106,7 @@
                     required
                   />
                 </div>
+
                 <!-- Input Luas Panen Habis -->
                 <div class="form-group">
                   <label for="luasPanenHabis"
@@ -78,6 +121,7 @@
                     required
                   />
                 </div>
+
                 <!-- Input Luas Panen Belum Habis -->
                 <div class="form-group">
                   <label for="luasPanenBelumHabis"
@@ -92,6 +136,7 @@
                     required
                   />
                 </div>
+
                 <!-- Input Luas Rusak -->
                 <div class="form-group">
                   <label for="luasRusak"
@@ -106,6 +151,7 @@
                     required
                   />
                 </div>
+
                 <!-- Input Luas Penanaman Baru -->
                 <div class="form-group">
                   <label for="luasPenanamanBaru"
@@ -120,6 +166,7 @@
                     required
                   />
                 </div>
+
                 <!-- Input Luas Tanaman Akhir Bulan Laporan -->
                 <div class="form-group">
                   <label for="luasTanamanAkhirBulanLaporan"
@@ -134,6 +181,7 @@
                     required
                   />
                 </div>
+
                 <!-- Input Produksi Dipanen Habis/Dibongkar -->
                 <div class="form-group">
                   <label for="prodPanenHabis"
@@ -148,6 +196,7 @@
                     required
                   />
                 </div>
+
                 <!-- Input Produksi Belum Habis -->
                 <div class="form-group">
                   <label for="prodBelumHabis"
@@ -162,6 +211,7 @@
                     required
                   />
                 </div>
+                
                 <!-- Input Rata-rata harga Jual -->
                 <div class="form-group">
                   <label for="rataHargaJual"

@@ -1,10 +1,10 @@
-const Blanko = require('./model');
+const Blanko = require('../../blanko/model');
 
 module.exports = {
   // ---------------------- ADMIN ----------------------
   index: async (req, res) => {
     try {
-      const blanko = await Blanko.find();
+      const blanko = await Blanko.find().populate('user', '_id name');
       res.render('admin/blanko/viewBlanko', {
         blanko,
       });
@@ -20,6 +20,8 @@ module.exports = {
   actionCreate: async (req, res) => {
     try {
       const {
+        user,
+        tanggalPencatatan,
         tipeCabai,
         luasTanamanAkhirBulanLalu,
         luasPanenHabis,
@@ -33,6 +35,8 @@ module.exports = {
       } = req.body;
 
       let blanko = new Blanko({
+        user,
+        tanggalPencatatan,
         tipeCabai,
         luasTanamanAkhirBulanLalu,
         luasPanenHabis,
@@ -46,7 +50,7 @@ module.exports = {
       });
       await blanko.save();
 
-      res.redirect('/blanko');
+      res.redirect('/admin/blanko');
     } catch (error) {
       console.log(error);
     }
@@ -69,6 +73,8 @@ module.exports = {
     try {
       const { id } = req.params;
       const {
+        user,
+        tanggalPencatatan,
         tipeCabai,
         luasTanamanAkhirBulanLalu,
         luasPanenHabis,
@@ -84,6 +90,8 @@ module.exports = {
       const blanko = await Blanko.findOneAndUpdate(
         { _id: id },
         {
+          user,
+          tanggalPencatatan,
           tipeCabai,
           luasTanamanAkhirBulanLalu,
           luasPanenHabis,
@@ -98,7 +106,7 @@ module.exports = {
       );
       console.log(blanko);
 
-      res.redirect('/blanko');
+      res.redirect('/admin/blanko');
     } catch (error) {
       console.log(error);
     }
@@ -109,7 +117,7 @@ module.exports = {
       const { id } = req.params;
 
       const blanko = await Blanko.findOneAndRemove({ _id: id });
-      res.redirect('/blanko');
+      res.redirect('/admin/blanko');
     } catch (error) {
       console.log(error);
     }

@@ -6,7 +6,12 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const methodOverride = require('method-override');
 
-const dashboardRouter = require('./app/dashboard/router');
+// ADMIN
+const dashboardRouter = require('./app/admin/dashboard/router');
+const admBlankoRouter = require('./app/admin/blanko/router');
+
+
+// API
 const blankoRouter = require('./app/blanko/router');
 const authRouter = require('./app/auth/router');
 const petaniRouter = require('./app/petani/router');
@@ -40,11 +45,11 @@ app.use(cors());
 
 app.use('/', petaniRouter);
 
-// admin page
+// ADMIN PAGE ---------------------------
 app.use(`${adminURL}/`, dashboardRouter);
-app.use(`${adminURL}/blanko`, blankoRouter);
+app.use(`${adminURL}/blanko`, admBlankoRouter);
 
-// api
+// API ----------------------------------
 app.use(`${URL}/auth`, authRouter);
 app.use(`${URL}/petani`, petaniRouter);
 app.use(`${URL}/blanko`, blankoRouter);
