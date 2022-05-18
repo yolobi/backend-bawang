@@ -4,7 +4,7 @@
     class="table table-bordered table-hover"
     style="width: 100%"
   >
-    <thead>
+    <thead align="center">
       <tr>
         <th>No</th>
         <th>User</th>
@@ -38,39 +38,28 @@
         <td><%= blanko[i].prodPanenHabis %></td>
         <td><%= blanko[i].prodBelumHabis %></td>
         <td><%= blanko[i].rataHargaJual %></td>
-        <td class="container-fluid">
-          <a
-            href="/admin/blanko/edit/<%= blanko[i]._id %>"
-            class="btn btn-warning btn-sm"
-          >
-            <i class="fas fa-pencil-alt"></i>
-            Ubah</a
-          >
-
-          <form
-            action="/admin/blanko/delete/<%= blanko[i]._id %>?_method=DELETE"
-            method="POST" class="btn btn-danger btn-sm"
-          >
-            <i class="fas fa-trash"></i>
-            Hapus</form
-          >
-
-          <form
-            action="/admin/blanko/delete/<%= blanko[i]._id %>?_method=DELETE"
-            method="POST"
-          >
+        <td
+          style="display: block; text-align: center; margin: auto; width: 120px"
+        >
+          <div class="btn-group">
             <a
               href="/admin/blanko/edit/<%= blanko[i]._id %>"
-              class="btn btn-warning btn-sm"
+              class="btn btn-warning btn-sm mr-1"
             >
               <i class="fas fa-pencil-alt"></i>
               Ubah</a
             >
-            <button class="btn btn-danger btn-sm">
-              <i class="fas fa-trash"></i>
-              Hapus
-            </button>
-          </form>
+
+            <form
+              action="/admin/blanko/delete/<%= blanko[i]._id %>?_method=DELETE"
+              method="POST"
+            >
+              <button class="btn btn-danger btn-sm">
+                <i class="fas fa-trash"></i>
+                Hapus
+              </button>
+            </form>
+          </div>
         </td>
       </tr>
       <% } %>
