@@ -4,18 +4,30 @@ module.exports = {
   // ---------------------- ADMIN ----------------------
   index: async (req, res) => {
     try {
+      const alertMessage = req.flash('alertMessage');
+      const alertStatus = req.flash('alertStatus');
+
+      const alert = { message: alertMessage, status: alertStatus };
+
       const blanko = await Blanko.find().populate('user', '_id name');
       res.render('admin/blanko/viewBlanko', {
         blanko,
+        alert,
       });
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/blanko');
     }
   },
   viewCreate: async (req, res) => {
     try {
       res.render('admin/blanko/create');
-    } catch (error) {}
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/blanko');
+    }
   },
   actionCreate: async (req, res) => {
     try {
@@ -50,9 +62,14 @@ module.exports = {
       });
       await blanko.save();
 
+      req.flash('alertMessage', 'Berhasil menambahkan blanko');
+      req.flash('alertStatus', 'success');
+
       res.redirect('/admin/blanko');
     } catch (error) {
-      console.log(error);
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/blanko');
     }
   },
 
@@ -65,7 +82,9 @@ module.exports = {
 
       res.render('admin/blanko/edit', { blanko });
     } catch (error) {
-      console.log(error);
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/blanko');
     }
   },
 
@@ -87,7 +106,7 @@ module.exports = {
         rataHargaJual,
       } = req.body;
 
-      const blanko = await Blanko.findOneAndUpdate(
+      await Blanko.findOneAndUpdate(
         { _id: id },
         {
           user,
@@ -104,10 +123,15 @@ module.exports = {
           rataHargaJual,
         }
       );
-      console.log(blanko);
+
+      req.flash('alertMessage', 'Berhasil mengubah blanko');
+      req.flash('alertStatus', 'success');
 
       res.redirect('/admin/blanko');
     } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/blanko');
       console.log(error);
     }
   },
@@ -116,10 +140,15 @@ module.exports = {
     try {
       const { id } = req.params;
 
-      const blanko = await Blanko.findOneAndRemove({ _id: id });
+      await Blanko.findOneAndRemove({ _id: id });
+
+      req.flash('alertMessage', 'Berhasil menghapus blanko');
+      req.flash('alertStatus', 'success');
       res.redirect('/admin/blanko');
     } catch (error) {
-      console.log(error);
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/blanko');
     }
   },
 };
