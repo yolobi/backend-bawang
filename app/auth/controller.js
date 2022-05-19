@@ -79,12 +79,21 @@ module.exports = {
     }
   },
 
-  signin: (req, res, next) => {
-    const { email, password } = req.body;
+  signin: async(req, res, next) => {
+    try {
+      const { email, password } = req.body;
 
-    User.findOne({ email: email }).then((user) => {
-      if (user) {
+      const user = await User.findOne({ email: email });
+      console.log(user);
+
+      if (!user) {
+        res.status(403).json({ message: 'Email not registered' });
+      } else {
+        const supervisi = await Supervisi.findOne({
+          petani: user._id,
+        }).populate('petugas', '_id name');
         const checkPassword = bcrypt.compareSync(password, user.password);
+        
         if (checkPassword) {
           const token = jwt.sign(
             {
@@ -104,6 +113,10 @@ module.exports = {
               role: user.role,
               access: RoleEnum[user.role],
             },
+            supervisi: {
+              id: supervisi.petugas._id,
+              name: supervisi.petugas.name,
+            },
             token: token,
           });
         } else {
@@ -111,12 +124,8 @@ module.exports = {
             message: 'Incorrect password',
           });
         }
-      } else {
-        res.status(403).json({
-          message: 'Email not registered',
-        });
       }
-    });
+    } catch (error) {}
   },
 
   signinSupervise: async (req, res) => {
@@ -124,18 +133,14 @@ module.exports = {
       const { email, password } = req.body;
 
       const user = await User.findOne({ email: email });
-      console.log(user.password);
       console.log(user);
-
-      const supervisi = await Supervisi.findOne({ petani: user._id }).populate(
-        'petugas',
-        '_id name'
-      );
-      console.log(supervisi.petugas.name);
 
       if (!user) {
         res.status(403).json({ message: 'Email not registered' });
       } else {
+        const supervisi = await Supervisi.findOne({
+          petani: user._id,
+        }).populate('petugas', '_id name');
         if (user.password === password) {
           const token = jwt.sign(
             {
@@ -155,9 +160,9 @@ module.exports = {
               role: user.role,
               access: RoleEnum[user.role],
             },
-            supervisi:{
+            supervisi: {
               id: supervisi.petugas._id,
-              name : supervisi.petugas.name,
+              name: supervisi.petugas.name,
             },
             token: token,
           });
