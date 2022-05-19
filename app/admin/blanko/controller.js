@@ -1,25 +1,39 @@
-const Blanko = require('./model');
+const Blanko = require('../../blanko/model');
 
 module.exports = {
   // ---------------------- ADMIN ----------------------
   index: async (req, res) => {
     try {
-      const blanko = await Blanko.find();
+      const alertMessage = req.flash('alertMessage');
+      const alertStatus = req.flash('alertStatus');
+
+      const alert = { message: alertMessage, status: alertStatus };
+
+      const blanko = await Blanko.find().populate('user', '_id name');
       res.render('admin/blanko/viewBlanko', {
         blanko,
+        alert,
       });
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/blanko');
     }
   },
   viewCreate: async (req, res) => {
     try {
       res.render('admin/blanko/create');
-    } catch (error) {}
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/blanko');
+    }
   },
   actionCreate: async (req, res) => {
     try {
       const {
+        user,
+        tanggalPencatatan,
         tipeCabai,
         luasTanamanAkhirBulanLalu,
         luasPanenHabis,
@@ -33,6 +47,8 @@ module.exports = {
       } = req.body;
 
       let blanko = new Blanko({
+        user,
+        tanggalPencatatan,
         tipeCabai,
         luasTanamanAkhirBulanLalu,
         luasPanenHabis,
@@ -46,9 +62,14 @@ module.exports = {
       });
       await blanko.save();
 
-      res.redirect('/blanko');
+      req.flash('alertMessage', 'Berhasil menambahkan blanko');
+      req.flash('alertStatus', 'success');
+
+      res.redirect('/admin/blanko');
     } catch (error) {
-      console.log(error);
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/blanko');
     }
   },
 
@@ -61,7 +82,9 @@ module.exports = {
 
       res.render('admin/blanko/edit', { blanko });
     } catch (error) {
-      console.log(error);
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/blanko');
     }
   },
 
@@ -69,6 +92,8 @@ module.exports = {
     try {
       const { id } = req.params;
       const {
+        user,
+        tanggalPencatatan,
         tipeCabai,
         luasTanamanAkhirBulanLalu,
         luasPanenHabis,
@@ -81,9 +106,11 @@ module.exports = {
         rataHargaJual,
       } = req.body;
 
-      const blanko = await Blanko.findOneAndUpdate(
+      await Blanko.findOneAndUpdate(
         { _id: id },
         {
+          user,
+          tanggalPencatatan,
           tipeCabai,
           luasTanamanAkhirBulanLalu,
           luasPanenHabis,
@@ -96,10 +123,15 @@ module.exports = {
           rataHargaJual,
         }
       );
-      console.log(blanko);
 
-      res.redirect('/blanko');
+      req.flash('alertMessage', 'Berhasil mengubah blanko');
+      req.flash('alertStatus', 'success');
+
+      res.redirect('/admin/blanko');
     } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/blanko');
       console.log(error);
     }
   },
@@ -108,10 +140,15 @@ module.exports = {
     try {
       const { id } = req.params;
 
-      const blanko = await Blanko.findOneAndRemove({ _id: id });
-      res.redirect('/blanko');
+      await Blanko.findOneAndRemove({ _id: id });
+
+      req.flash('alertMessage', 'Berhasil menghapus blanko');
+      req.flash('alertStatus', 'success');
+      res.redirect('/admin/blanko');
     } catch (error) {
-      console.log(error);
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/blanko');
     }
   },
 };

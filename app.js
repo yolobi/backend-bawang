@@ -5,8 +5,14 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const methodOverride = require('method-override');
+const session = require('express-session');
+const flash = require('connect-flash');
 
-const dashboardRouter = require('./app/dashboard/router');
+// ADMIN
+const dashboardRouter = require('./app/admin/dashboard/router');
+const admBlankoRouter = require('./app/admin/blanko/router');
+
+// API
 const blankoRouter = require('./app/blanko/router');
 const authRouter = require('./app/auth/router');
 const petaniRouter = require('./app/petani/router');
@@ -26,6 +32,15 @@ const adminURL = `/admin`;
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.use(
+  session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {},
+  })
+);
+app.use(flash());
 app.use(methodOverride('_method'));
 app.use(logger('dev'));
 app.use(express.json());
@@ -40,11 +55,11 @@ app.use(cors());
 
 app.use('/', petaniRouter);
 
-// admin page
+// ADMIN PAGE ---------------------------
 app.use(`${adminURL}/`, dashboardRouter);
-app.use(`${adminURL}/blanko`, blankoRouter);
+app.use(`${adminURL}/blanko`, admBlankoRouter);
 
-// api
+// API ----------------------------------
 app.use(`${URL}/auth`, authRouter);
 app.use(`${URL}/petani`, petaniRouter);
 app.use(`${URL}/blanko`, blankoRouter);
