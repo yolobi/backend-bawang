@@ -4,11 +4,13 @@ const {
   createSupervisi,
   seeMySupervisi,
   deleteSupervisi,
+  signinSupervise,
 } = require('./controller');
 const authenticateUser = require('../middleware/authentication');
 const { checkIfPdh } = require('../middleware/check-role');
 
 /* GET home page. */
+router.post('/relog', authenticateUser, checkIfPdh, signinSupervise);
 router.post('/tambahsupervisi', authenticateUser, checkIfPdh, createSupervisi);
 router.get('/lihatsupervisi', authenticateUser, checkIfPdh, seeMySupervisi);
 router.delete('/hapussupervisi/:petaniId', authenticateUser, checkIfPdh, deleteSupervisi);
