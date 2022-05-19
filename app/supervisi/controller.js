@@ -58,7 +58,7 @@ module.exports = {
         .populate('petugas', '_id name role')
         .populate(
           'petani',
-          '_id name email kecamatan kabupaten provinsi alamat role'
+          '_id name email password'
         );
 
       res.status(201).json({

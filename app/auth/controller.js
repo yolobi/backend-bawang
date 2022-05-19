@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const config = require('../../config');
 const myFunction = require('../function/function');
+const Supervisi = require('../supervisi/model');
 
 const RoleEnum = Object.freeze({
   petani: 'petani',
@@ -116,5 +117,56 @@ module.exports = {
         });
       }
     });
+  },
+
+  signinSupervise: async (req, res) => {
+    try {
+      const { email, password } = req.body;
+
+      const user = await User.findOne({ email: email });
+      console.log(user.password);
+      console.log(user);
+
+      const supervisi = await Supervisi.findOne({ petani: user._id }).populate(
+        'petugas',
+        '_id name'
+      );
+      console.log(supervisi.petugas.name);
+
+      if (!user) {
+        res.status(403).json({ message: 'Email not registered' });
+      } else {
+        if (user.password === password) {
+          const token = jwt.sign(
+            {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              role: user.role,
+            },
+            config.jwtKey
+          );
+          res.status(200).json({
+            message: 'Signin success',
+            user: {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              role: user.role,
+              access: RoleEnum[user.role],
+            },
+            supervisi:{
+              id: supervisi.petugas._id,
+              name : supervisi.petugas.name,
+            },
+            token: token,
+          });
+        } else {
+          res.status(403).json({
+            message: 'Incorrect password',
+          });
+        }
+      }
+    } catch (error) {}
   },
 };
