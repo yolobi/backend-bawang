@@ -18,6 +18,70 @@ const RoleEnum = Object.freeze({
 });
 
 module.exports = {
+  signinSupervise: async (req, res) => {
+    try {
+      const petugas = req.userData.id;
+      const { email, password } = req.body;
+
+      const user = await User.findOne({ email: email });
+      console.log(user);
+
+      const onSupervise = await Supervisi.findOne({
+        petugas: petugas,
+        petani: user.id,
+      });
+      console.log(onSupervise);
+
+      if (!user) {
+        res.status(400).json({ message: 'Email not registered' });
+      } else if (!onSupervise) {
+        res.status(400).json({
+          message:
+            'Bukan merupakan akun yang anda akuisisi, Silahkan akuisisi terlebih dahulu',
+        });
+      } else {
+        const supervisi = await Supervisi.findOne({
+          petani: user._id,
+        }).populate('petugas', '_id name');
+        if (user.password === password) {
+          const token = jwt.sign(
+            {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              role: user.role,
+            },
+            config.jwtKey
+          );
+          res.status(200).json({
+            message: 'Signin success',
+            user: {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              role: user.role,
+              access: RoleEnum[user.role],
+            },
+            petugas: {
+              id: supervisi.petugas._id,
+              name: supervisi.petugas.name,
+            },
+            token: token,
+          });
+        } else {
+          res.status(403).json({
+            message: 'Incorrect password',
+          });
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
+    }
+  },
+
   createSupervisi: async (req, res) => {
     try {
       console.log(req.userData.id);
