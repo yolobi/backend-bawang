@@ -88,10 +88,7 @@ module.exports = {
 
       if (!user) {
         res.status(403).json({ message: 'Email not registered' });
-      } else {
-        const supervisi = await Supervisi.findOne({
-          petani: user._id,
-        }).populate('petugas', '_id name');
+      } else {  
         const checkPassword = bcrypt.compareSync(password, user.password);
         
         if (checkPassword) {
@@ -112,10 +109,6 @@ module.exports = {
               email: user.email,
               role: user.role,
               access: RoleEnum[user.role],
-            },
-            supervisi: {
-              id: supervisi.petugas._id,
-              name: supervisi.petugas.name,
             },
             token: token,
           });
@@ -160,7 +153,7 @@ module.exports = {
               role: user.role,
               access: RoleEnum[user.role],
             },
-            supervisi: {
+            petugas: {
               id: supervisi.petugas._id,
               name: supervisi.petugas.name,
             },
