@@ -107,35 +107,26 @@ module.exports = {
           );
 
           const petani = user._id;
-          const checkPetani = await Supervisi.findOne({
-            petugas: petugas,
-            petani: petani,
-          });
-          if (!checkPetani) {
-            let supervisi = await Supervisi.findOneAndUpdate(
-              { petugas: petugas },
-              { $push: { petani: petani } },
-              { upsert: true, new: true, setDefaultsOnInsert: true }
-            ).populate('petugas', '_id name role');
 
-            res.status(201).json({
-              message: 'berhasil tambah petani untuk di supervisi',
-              supervisiId: supervisi._id,
-              petugas: supervisi.petugas,
-              petani: {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                access: RoleEnum[user.role],
-              },
-              token: token,
-            });
-          } else {
-            res.status(409).json({
-              message: 'petani sudah menjadi list supervisi',
-            });
-          }
+          let supervisi = await Supervisi.findOneAndUpdate(
+            { petugas: petugas },
+            { $addToSet: { petani: petani } },
+            { upsert: true, new: true, setDefaultsOnInsert: true }
+          ).populate('petugas', '_id name role');
+
+          res.status(201).json({
+            message: 'berhasil tambah petani untuk di supervisi',
+            supervisiId: supervisi._id,
+            petugas: supervisi.petugas,
+            petani: {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              role: user.role,
+              access: RoleEnum[user.role],
+            },
+            token: token,
+          });
         } else {
           res.status(403).json({
             message: 'Incorrect password',
