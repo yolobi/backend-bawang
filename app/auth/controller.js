@@ -53,20 +53,28 @@ module.exports = {
         role: role,
       });
       await user.save();
+      console.log(user);
 
-      res.status(201).json({
-        message: 'create user success',
-        data: {
+      const token = jwt.sign(
+        {
           id: user._id,
           name: user.name,
           email: user.email,
-          kecamatan: await myFunction.teritoryInfo(kecamatan),
-          kabupaten: await myFunction.teritoryInfo(kabupaten),
-          provinsi: await myFunction.teritoryInfo(provinsi),
-          alamat: alamat,
+          role: user.role,
+        },
+        config.jwtKey
+      );
+
+      res.status(201).json({
+        message: 'Create user success',
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
           role: user.role,
           access: RoleEnum[user.role],
         },
+        token: token,
       });
     } catch (err) {
       if (err && err.name === 'ValidationError') {

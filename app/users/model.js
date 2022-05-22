@@ -1,12 +1,10 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const HASH_ROUND = 10;
 
 let userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      require: [true, 'nama harus diisi'],
+      required: [true, 'nama harus diisi'],
       minlength: [3, 'panjang nama harus 3-55 karakter'],
       maxlength: [55, 'panjang nama harus 3-55 karakter'],
     },
@@ -25,12 +23,12 @@ let userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      require: true,
+      required: true,
       minlength: [6, 'password minimal 6 karakter'],
     },
     kecamatan: {
       type: Number,
-      require: true,
+      required: true,
       validate: {
         validator: function (val) {
           return val.toString().length === 7;
@@ -40,7 +38,7 @@ let userSchema = new mongoose.Schema(
     },
     kabupaten: {
       type: Number,
-      require: true,
+      required: true,
       validate: {
         validator: function (val) {
           return val.toString().length === 4;
@@ -50,7 +48,7 @@ let userSchema = new mongoose.Schema(
     },
     provinsi: {
       type: Number,
-      require: true,
+      required: true,
       validate: {
         validator: function (val) {
           return val.toString().length === 2;
@@ -60,7 +58,7 @@ let userSchema = new mongoose.Schema(
     },
     alamat: {
       type: String,
-      require: true,
+      required: true,
     },
     role: {
       type: String,
@@ -76,7 +74,7 @@ let userSchema = new mongoose.Schema(
         'dinasPertanianKota',
         'dinasPertanianProvinsi',
       ],
-      require: true,
+      required: true,
     },
   },
   { timestamps: true }

@@ -152,18 +152,18 @@ module.exports = {
 
       if (!checkPetugas) {
         res.status(201).json({ message: 'Belum ada petani yang di supervisi' });
+      } else {
+        let supervisi = await Supervisi.findOne({ petugas: petugas })
+          .populate('petugas', '_id name role')
+          .populate('petani', '_id name email password');
+
+        res.status(201).json({
+          message: 'berhasil lihat daftar petani yang di supervisi',
+          id: supervisi._id,
+          petugas: supervisi.petugas,
+          petani: supervisi.petani,
+        });
       }
-
-      let supervisi = await Supervisi.findOne({ petugas: petugas })
-        .populate('petugas', '_id name role')
-        .populate('petani', '_id name email password');
-
-      res.status(201).json({
-        message: 'berhasil lihat daftar petani yang di supervisi',
-        id: supervisi._id,
-        petugas: supervisi.petugas,
-        petani: supervisi.petani,
-      });
     } catch (error) {
       console.log(error);
       res
