@@ -23,12 +23,12 @@ let userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: [true, 'password harus diisi'],
       minlength: [6, 'password minimal 6 karakter'],
     },
     kecamatan: {
       type: Number,
-      required: true,
+      required: [true, 'kecamatan harus diisi'],
       validate: {
         validator: function (val) {
           return val.toString().length === 7;
@@ -38,7 +38,7 @@ let userSchema = new mongoose.Schema(
     },
     kabupaten: {
       type: Number,
-      required: true,
+      required: [true, 'kabupaten harus diisi'],
       validate: {
         validator: function (val) {
           return val.toString().length === 4;
@@ -48,7 +48,7 @@ let userSchema = new mongoose.Schema(
     },
     provinsi: {
       type: Number,
-      required: true,
+      required: [true, 'provinsi harus diisi'],
       validate: {
         validator: function (val) {
           return val.toString().length === 2;
@@ -58,7 +58,7 @@ let userSchema = new mongoose.Schema(
     },
     alamat: {
       type: String,
-      required: true,
+      required: [true, 'alamat harus diisi'],
     },
     role: {
       type: String,
@@ -74,7 +74,7 @@ let userSchema = new mongoose.Schema(
         'dinasPertanianKota',
         'dinasPertanianProvinsi',
       ],
-      required: true,
+      required: [true, 'role harus diisi'],
     },
   },
   { timestamps: true }

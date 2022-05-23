@@ -80,7 +80,7 @@ module.exports = {
       const userData = await User.findById(user).select('_id name role');
 
       res.status(200).json({
-        message: 'Berhasil lihat data',
+        message: 'Berhasil melihat data Stok',
         petani: userData,
         stokCmb: stokCmb,
         countStokCmb: countStokCmb,
@@ -124,7 +124,7 @@ module.exports = {
       await stok.save();
 
       res.status(201).json({
-        message: 'create stok success',
+        message: 'Berhasil menambahkan Stok',
         data: stok,
       });
     } catch (error) {
@@ -155,11 +155,11 @@ module.exports = {
 
       if (myStok[0] == undefined) {
         res.status(404).json({
-          message: 'Belum ada stok yang diisi',
+          message: 'Belum ada Stok yang diisi',
         });
       } else {
         res.status(200).json({
-          message: 'Berhasil lihat stok',
+          message: 'Berhasil melihat Stok',
           petani: userData,
           data: myStok,
           countAllStok: countAllStok,
@@ -189,7 +189,7 @@ module.exports = {
         });
       } else {
         res.status(200).json({
-          message: 'Berhasil lihat stok',
+          message: 'Berhasil melihat Stok',
           petani: userData,
           data: aStok,
         });
@@ -220,11 +220,11 @@ module.exports = {
 
       if (tipeStok[0] == undefined) {
         res.status(404).json({
-          message: 'Data stok tidak ditemukan',
+          message: 'Data Stok tidak ditemukan',
         });
       } else {
         res.status(200).json({
-          message: `Berhasil lihat data stok untuk tipe ${tipeCabai}`,
+          message: `Berhasil melihat data Stok untuk tipe ${tipeCabai}`,
           user: userData,
           data: tipeStok,
         });
@@ -247,7 +247,7 @@ module.exports = {
       if (findStok && user) {
         const stok = await Stok.findOneAndRemove({ _id: id, user: user });
         res.status(201).json({
-          message: 'Delete success',
+          message: 'Berhasil menghapus Stok',
           data: stok,
         });
       } else {

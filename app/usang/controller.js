@@ -27,7 +27,7 @@ module.exports = {
       await usang.save();
 
       res.status(201).json({
-        message: 'create usang success',
+        message: 'Berhasil menambahkan Cabai Usang',
         data: usang,
       });
     } catch (error) {
@@ -58,11 +58,11 @@ module.exports = {
 
       if (myUsang[0] == undefined) {
         res.status(404).json({
-          message: 'Belum ada usang yang diisi',
+          message: 'Belum ada Cabai Usang yang diisi',
         });
       } else {
         res.status(200).json({
-          message: 'Berhasil lihat data cabai usang',
+          message: 'Berhasil melihat data Cabai Usang',
           petani: userData,
           data: myUsang,
           countAllUsang: countAllUsang,
@@ -88,11 +88,11 @@ module.exports = {
 
       if (aUsang[0] == undefined) {
         res.status(404).json({
-          message: 'Data cabai usang tidak ditemukan',
+          message: 'Data Cabai Usang tidak ditemukan',
         });
       } else {
         res.status(200).json({
-          message: 'Berhasil lihat data cabai usang',
+          message: 'Berhasil melihat data Cabai Usang',
           petani: userData,
           data: aUsang,
         });
@@ -123,11 +123,11 @@ module.exports = {
 
       if (tipeUsang[0] == undefined) {
         res.status(404).json({
-          message: 'Data cabai usang tidak ditemukan',
+          message: 'Data Cabai Usang tidak ditemukan',
         });
       } else {
         res.status(200).json({
-          message: `Berhasil lihat data cabai usang untuk tipe ${tipeCabai}`,
+          message: `Berhasil melihat data Cabai Usang untuk tipe ${tipeCabai}`,
           user: userData,
           data: tipeUsang,
         });
@@ -150,12 +150,12 @@ module.exports = {
       if (findUsang && user) {
         const usang = await Usang.findOneAndRemove({ _id: id, user: user });
         res.status(201).json({
-          message: 'Delete success',
+          message: 'Berhasil menghapus data Cabai Usang',
           data: usang,
         });
       } else {
         res.status(404).json({
-          message: 'Data cabai usang tidak ditemukan',
+          message: 'Data Cabai Usang tidak ditemukan',
         });
       }
     } catch (error) {

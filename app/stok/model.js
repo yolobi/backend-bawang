@@ -9,29 +9,29 @@ let stokSchema = new mongoose.Schema(
     },
     tanggalPencatatan: {
       type: Date,
-      require: true,
+      required: [true, 'tanggalPencatatan harus diisi'],
       default: Date.now,
     },
     tipeCabai: {
       type: String,
       enum: ['cabaiMerahBesar', 'cabaiMerahKeriting', 'cabaiRawitMerah'],
-      require: true,
+      required: [true, 'tipeCabai harus diisi'],
     },
     totalHasilPanen: {
       type: Number,
-      require: true,
+      required: [true, 'totalHasilPanen harus diisi'],
     },
     hasilPanenSukses: {
       type: Number,
-      require: true,
+      required: [true, 'hasilPanenSukses harus diisi'],
     },
     hasilPanenGagal: {
       type: Number,
-      require: true,
+      required: [true, 'hasilPanenGagal harus diisi'],
     },
     hargaJual: {
       type: Number,
-      require: true,
+      required: [true, 'hargaJual harus diisi'],
     },
   },
   { timestamps: true }
