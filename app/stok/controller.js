@@ -92,7 +92,9 @@ module.exports = {
         countAllStok: countAllStok,
       });
     } catch (error) {
-      console.log(error);
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
     }
   },
   createStok: async (req, res) => {
@@ -126,7 +128,9 @@ module.exports = {
         data: stok,
       });
     } catch (error) {
-      console.log(error);
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
     }
   },
 
@@ -161,8 +165,10 @@ module.exports = {
           countAllStok: countAllStok,
         });
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
     }
   },
 
@@ -188,8 +194,10 @@ module.exports = {
           data: aStok,
         });
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
     }
   },
 
@@ -221,8 +229,10 @@ module.exports = {
           data: tipeStok,
         });
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
     }
   },
 
@@ -246,7 +256,9 @@ module.exports = {
         });
       }
     } catch (error) {
-      console.log(error);
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
     }
   },
 };
