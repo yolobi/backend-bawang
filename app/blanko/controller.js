@@ -43,7 +43,9 @@ module.exports = {
         data: blanko,
       });
     } catch (error) {
-      console.log(error);
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
     }
   },
 
@@ -76,8 +78,10 @@ module.exports = {
           countAllBlanko: countAllBlanko,
         });
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
     }
   },
 
@@ -103,8 +107,10 @@ module.exports = {
           data: aBlanko,
         });
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
     }
   },
 
@@ -135,8 +141,10 @@ module.exports = {
           data: tipeBlanko,
         });
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
     }
   },
 
@@ -160,7 +168,9 @@ module.exports = {
         });
       }
     } catch (error) {
-      console.log(error);
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
     }
   },
 };

@@ -31,7 +31,9 @@ module.exports = {
         data: usang,
       });
     } catch (error) {
-      console.log(error);
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
     }
   },
 
@@ -66,8 +68,10 @@ module.exports = {
           countAllUsang: countAllUsang,
         });
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
     }
   },
 
@@ -93,8 +97,10 @@ module.exports = {
           data: aUsang,
         });
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
     }
   },
 
@@ -126,8 +132,10 @@ module.exports = {
           data: tipeUsang,
         });
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
     }
   },
 
@@ -151,7 +159,9 @@ module.exports = {
         });
       }
     } catch (error) {
-      console.log(error);
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
     }
   },
 };

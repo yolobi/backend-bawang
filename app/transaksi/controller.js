@@ -54,7 +54,9 @@ module.exports = {
         statusTransaksi: statusEnum.diajukan,
       });
     } catch (error) {
-      console.log(error);
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
     }
   },
 
@@ -80,7 +82,9 @@ module.exports = {
         });
       }
     } catch (error) {
-      console.log(error);
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
     }
   },
 
@@ -255,8 +259,10 @@ module.exports = {
           countAllBeliTransaksi: countAllBeliTransaksi,
         });
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
     }
   },
 
@@ -287,8 +293,10 @@ module.exports = {
           data: aTransaksi,
         });
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
     }
   },
 
@@ -335,8 +343,10 @@ module.exports = {
           dibeli: tipeBeliTransaksi,
         });
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
     }
   },
 
@@ -365,7 +375,9 @@ module.exports = {
         });
       }
     } catch (error) {
-      console.log(error);
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
     }
   },
 };
