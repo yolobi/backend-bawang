@@ -82,6 +82,65 @@ module.exports = {
     }
   },
 
+  signinSuperviseId: async (req, res) => {
+    try {
+      const petugas = req.userData.id;
+      const petani = req.params.userId
+
+      const user = await User.findById(petani);
+      console.log(user);
+
+      const onSupervise = await Supervisi.findOne({
+        petugas: petugas,
+        petani: petani,
+      });
+      console.log(onSupervise);
+
+      if (!user) {
+        res.status(400).json({ message: 'User tidak ditemukan' });
+      } else if (!onSupervise) {
+        res.status(400).json({
+          message:
+            'Bukan merupakan akun yang anda akuisisi, Silahkan akuisisi terlebih dahulu',
+        });
+      } else {
+        const supervisi = await Supervisi.findOne({
+          petani: user._id,
+        }).populate('petugas', '_id name');
+
+        const token = jwt.sign(
+          {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+          },
+          config.jwtKey
+        );
+        res.status(200).json({
+          message: 'Signin success',
+          user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            access: RoleEnum[user.role],
+          },
+          petugas: {
+            id: supervisi.petugas._id,
+            name: supervisi.petugas.name,
+          },
+          token: token,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
+    }
+  },
+
   createSupervisi: async (req, res) => {
     try {
       console.log(req.userData.id);
