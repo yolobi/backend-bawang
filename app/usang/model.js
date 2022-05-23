@@ -10,19 +10,19 @@ let usangSchema = new mongoose.Schema(
     tipeCabai: {
       type: String,
       enum: ['cabaiMerahBesar', 'cabaiMerahKeriting', 'cabaiRawitMerah'],
-      require: true,
+      required: [true, 'tipeCabai harus diisi'],
     },
     jumlahUsang: {
       type: Number,
-      require: true,
+      required: [true, 'jumlahUsang harus diisi'],
     },
     hargaJual: {
       type: Number,
-      require: true,
+      required: [true, 'hargaJual harus diisi'],
     },
     tanggalPencatatan: {
       type: Date,
-      require: true,
+      required: [true, 'tanggalPencatatan harus diisi'],
       default: Date.now,
     },
     pemanfaatan: {

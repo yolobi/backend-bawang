@@ -10,7 +10,7 @@ let transaksiSchema = new mongoose.Schema(
   {
     tanggalPencatatan: {
       type: Date,
-      require: true,
+      required: [true, 'tanggalPencatatan harus diisi'],
       default: Date.now,
     },
     penjual: {
@@ -21,15 +21,15 @@ let transaksiSchema = new mongoose.Schema(
     tipeCabai: {
       type: String,
       enum: ['cabaiMerahBesar', 'cabaiMerahKeriting', 'cabaiRawitMerah'],
-      require: true,
+      required: [true, 'tipeCabai harus diisi'],
     },
     jumlahDijual: {
       type: Number,
-      require: true,
+      required: [true, 'jumlahDijual harus diisi'],
     },
     hargaJual: {
       type: Number,
-      require: true,
+      required: [true, 'hargaJual harus diisi'],
     },
     pembeli: {
       type: mongoose.Schema.Types.ObjectId,
@@ -39,7 +39,7 @@ let transaksiSchema = new mongoose.Schema(
     statusTransaksi: {
       type: Number,
       enum: Object.values(statusEnum),
-      require: true,
+      required: [true, 'statusTransaksi harus diisi'],
       default: statusEnum.diajukan,
     },
     alasanDitolak: {
