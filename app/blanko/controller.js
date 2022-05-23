@@ -39,7 +39,7 @@ module.exports = {
       await blanko.save();
 
       res.status(201).json({
-        message: 'create blanko success',
+        message: 'Berhasil menambahkan Blanko',
         data: blanko,
       });
     } catch (error) {
@@ -72,7 +72,7 @@ module.exports = {
         });
       } else {
         res.status(200).json({
-          message: 'Berhasil lihat blanko',
+          message: 'Berhasil melihat Blanko yang telah diisi',
           user: userData,
           data: myBlanko,
           countAllBlanko: countAllBlanko,
@@ -102,7 +102,7 @@ module.exports = {
         });
       } else {
         res.status(200).json({
-          message: 'Berhasil lihat blanko',
+          message: 'Berhasil melihat Blanko yang telah diisi',
           user: userData,
           data: aBlanko,
         });
@@ -132,11 +132,11 @@ module.exports = {
 
       if (tipeBlanko[0] == undefined) {
         res.status(404).json({
-          message: 'Data blanko tidak ditemukan',
+          message: 'Data Blanko tidak ditemukan',
         });
       } else {
         res.status(200).json({
-          message: `Berhasil lihat data blanko untuk tipe ${tipeCabai}`,
+          message: `Berhasil melihat data Blanko untuk tipe ${tipeCabai}`,
           user: userData,
           data: tipeBlanko,
         });
@@ -159,7 +159,7 @@ module.exports = {
       if (findBlanko && user) {
         const blanko = await Blanko.findOneAndRemove({ _id: id, user: user });
         res.status(201).json({
-          message: 'Delete success',
+          message: 'Berhasil menghapus Blanko',
           data: blanko,
         });
       } else {

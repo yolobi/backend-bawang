@@ -33,11 +33,11 @@ module.exports = {
       console.log(onSupervise);
 
       if (!user) {
-        res.status(400).json({ message: 'Email not registered' });
+        res.status(400).json({ message: 'Email belum terdaftar' });
       } else if (!onSupervise) {
         res.status(400).json({
           message:
-            'Bukan merupakan akun yang anda akuisisi, Silahkan akuisisi terlebih dahulu',
+            'Bukan merupakan akun Petani yang anda akuisisi, Silahkan akuisisi terlebih dahulu',
         });
       } else {
         const supervisi = await Supervisi.findOne({
@@ -54,7 +54,7 @@ module.exports = {
             config.jwtKey
           );
           res.status(200).json({
-            message: 'Signin success',
+            message: 'Sign-in Berhasil',
             user: {
               id: user.id,
               name: user.name,
@@ -70,7 +70,7 @@ module.exports = {
           });
         } else {
           res.status(403).json({
-            message: 'Incorrect password',
+            message: 'Password yang dimasukkan Salah',
           });
         }
       }
@@ -101,7 +101,7 @@ module.exports = {
       } else if (!onSupervise) {
         res.status(400).json({
           message:
-            'Bukan merupakan akun yang anda akuisisi, Silahkan akuisisi terlebih dahulu',
+            'Bukan merupakan akun Petani yang anda akuisisi, Silahkan akuisisi terlebih dahulu',
         });
       } else {
         const supervisi = await Supervisi.findOne({
@@ -118,7 +118,7 @@ module.exports = {
           config.jwtKey
         );
         res.status(200).json({
-          message: 'Signin success',
+          message: 'Sign-in Berhasil',
           user: {
             id: user.id,
             name: user.name,
@@ -151,7 +151,7 @@ module.exports = {
       const user = await User.findOne({ email: email, role: 'petani' });
       console.log(user);
       if (!user) {
-        res.status(403).json({ message: 'Email not registered or not petani' });
+        res.status(403).json({ message: 'Email belum terdaftar atau bukan merupakan akun Petani' });
       } else {
         const checkPassword = bcrypt.compareSync(password, user.password);
         if (checkPassword) {
@@ -174,7 +174,7 @@ module.exports = {
           ).populate('petugas', '_id name role');
 
           res.status(201).json({
-            message: 'berhasil tambah petani untuk di supervisi',
+            message: 'Berhasil menambahkan akun Petani untuk di Supervisi',
             supervisiId: supervisi._id,
             petugas: supervisi.petugas,
             petani: {
@@ -188,7 +188,7 @@ module.exports = {
           });
         } else {
           res.status(403).json({
-            message: 'Incorrect password',
+            message: 'Password yang dimasukkan salah',
           });
         }
       }
@@ -210,14 +210,14 @@ module.exports = {
       console.log(checkPetugas);
 
       if (!checkPetugas) {
-        res.status(201).json({ message: 'Belum ada petani yang di supervisi' });
+        res.status(201).json({ message: 'Belum ada akun Petani yang di Supervisi' });
       } else {
         let supervisi = await Supervisi.findOne({ petugas: petugas })
           .populate('petugas', '_id name role')
           .populate('petani', '_id name email password');
 
         res.status(201).json({
-          message: 'berhasil lihat daftar petani yang di supervisi',
+          message: 'Berhasil melihat daftar akun Petani yang di Supervisi',
           id: supervisi._id,
           petugas: supervisi.petugas,
           petani: supervisi.petani,
@@ -250,14 +250,14 @@ module.exports = {
         ).populate('petugas', '_id name role');
 
         res.status(200).json({
-          message: 'berhasil hapus petani untuk di supervisi',
+          message: 'Berhasil menghapus akun Petani untuk di Supervisi',
           id: supervisi._id,
           petugas: supervisi.petugas,
           petani: await User.findOne({ _id: petani }, '_id name role'),
         });
       } else {
         res.status(404).json({
-          message: 'petani tidak ditemukan pada list supervisi',
+          message: 'Akun Petani tidak ditemukan pada list akun yang di Supervisi',
         });
       }
     } catch (error) {

@@ -18,7 +18,7 @@ module.exports = {
       console.log(penjual);
       if (penjual == pembeli) {
         res.status(400).json({
-          message: 'Tidak bisa menjual kepada diri sendiri',
+          message: 'Tidak dapat melakukan penjualan terhadap diri sendiri',
         });
       }
 
@@ -35,7 +35,7 @@ module.exports = {
       const dataPembeli = await User.findById(pembeli);
 
       res.status(201).json({
-        message: 'berhasil buat Transaksi',
+        message: 'Berhasil membuat Transaksi',
         id: transaksi._id,
         penjual: {
           id: req.userData.id,
@@ -78,7 +78,7 @@ module.exports = {
         });
       } else {
         res.status(404).json({
-          message: 'bukan tipe pedagang',
+          message: 'Bukan merupakan tipe akun Pedagang',
         });
       }
     } catch (error) {
@@ -107,13 +107,13 @@ module.exports = {
         );
 
         res.status(200).json({
-          message: 'Status Transaksi berhasil dirubah',
-          status: 'Transaksi  diterima Pembeli',
+          message: 'Status Transaksi berhasil diubah',
+          status: 'Transaksi diterima Pembeli',
           statusTransaksi: statusEnum.diterima,
         });
       } else {
         res.status(400).json({
-          message: 'Harus ajukan kembali terlebih dahulu',
+          message: 'Harus mengajukan kembali Transaksi terlebih dahulu',
         });
       }
     } catch (error) {
@@ -150,8 +150,8 @@ module.exports = {
           }
         );
         res.status(200).json({
-          message: 'Status Transaksi berhasil dirubah',
-          status: 'Transaksi  ditolak Pembeli',
+          message: 'Status Transaksi berhasil diubah',
+          status: 'Transaksi ditolak Pembeli',
           statusTransaksi: statusEnum.ditolak,
           alasanDitolak: alasanDitolak,
         });
@@ -194,7 +194,7 @@ module.exports = {
         );
         res.status(200).json({
           message: 'Status Transaksi berhasil dirubah',
-          status: 'Transaksi  diajukan kembali ke Pembeli',
+          status: 'Transaksi diajukan kembali ke Pembeli',
           statusTransaksi: statusEnum.diajukan,
           alasanDitolak: transaksi.alasanDitolak,
           data: transaksi,
@@ -251,7 +251,7 @@ module.exports = {
         });
       } else {
         res.status(200).json({
-          message: 'Berhasil lihat Transaksi',
+          message: 'Berhasil melihat Transaksi',
           user: userData,
           dijual: myTransaksi,
           countAllJualTransaksi: countAllTransaksi,
@@ -288,7 +288,7 @@ module.exports = {
         });
       } else {
         res.status(200).json({
-          message: 'Berhasil lihat Transaksi',
+          message: 'Berhasil melihat Transaksi',
           user: userData,
           data: aTransaksi,
         });
@@ -337,7 +337,7 @@ module.exports = {
         });
       } else {
         res.status(200).json({
-          message: `Berhasil lihat Transaksi untuk tipe ${tipeCabai}`,
+          message: `Berhasil melihat Transaksi untuk tipe ${tipeCabai}`,
           user: userData,
           dijual: tipeTransaksi,
           dibeli: tipeBeliTransaksi,
@@ -366,7 +366,7 @@ module.exports = {
           .populate('pembeli', '_id name role')
           .populate('penjual', '_id name role');
         res.status(201).json({
-          message: 'Delete success',
+          message: 'Berhasil menghapus Transaksi',
           data: transaksi,
         });
       } else {

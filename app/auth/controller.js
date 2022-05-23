@@ -66,7 +66,7 @@ module.exports = {
       );
 
       res.status(201).json({
-        message: 'Create user success',
+        message: 'Berhasil membuat akun baru',
         user: {
           id: user._id,
           name: user.name,
@@ -95,7 +95,7 @@ module.exports = {
       console.log(user);
 
       if (!user) {
-        res.status(403).json({ message: 'Email not registered' });
+        res.status(403).json({ message: 'Email belum terdaftar' });
       } else {  
         const checkPassword = bcrypt.compareSync(password, user.password);
         
@@ -110,7 +110,7 @@ module.exports = {
             config.jwtKey
           );
           res.status(200).json({
-            message: 'Signin success',
+            message: 'Sign-in Berhasil',
             user: {
               id: user.id,
               name: user.name,
@@ -122,7 +122,7 @@ module.exports = {
           });
         } else {
           res.status(403).json({
-            message: 'Incorrect password',
+            message: 'Password yang dimasukkan Salah',
           });
         }
       }

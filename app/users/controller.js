@@ -13,7 +13,7 @@ module.exports = {
       console.log(myProfile[0]);
 
       res.status(200).json({
-        message: 'Berhasil lihat data profil',
+        message: 'Berhasil melihat Profil',
         id: myProfile._id,
         name: myProfile.name,
         email: myProfile.email,
@@ -41,7 +41,7 @@ module.exports = {
       console.log(myProfile[0]);
 
       res.status(200).json({
-        message: 'Berhasil lihat data profil',
+        message: 'Berhasil melihat Profil',
         id: myProfile._id,
         name: myProfile.name,
         email: myProfile.email,
@@ -72,7 +72,7 @@ module.exports = {
       );
 
       res.status(201).json({
-        message: 'Profile berhasil diupdate',
+        message: 'Berhasil mengupdate Profil',
         name: name,
         email: email,
         kecamatan: await myFunction.teritoryInfo(kecamatan),
@@ -96,7 +96,7 @@ module.exports = {
       );
 
       res.status(200).json({
-        message: 'Berhasil lihat petani',
+        message: 'Berhasil melihat akun Petani',
         data: petani,
       });
     } catch (error) {
