@@ -5,6 +5,8 @@ const config = require('../../config');
 const myFunction = require('../function/function');
 const Supervisi = require('../supervisi/model');
 
+
+
 const RoleEnum = Object.freeze({
   petani: 'petani',
   agen: 'pedagang',
