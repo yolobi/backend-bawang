@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const {
-  createLahan, seeNameLahan, addLuasRusak,
+  createLahan, seeNameLahan, addLuasRusak,seeMyLahan
 } = require('./controller');
 const authenticateUser = require('../middleware/authentication');
 const { checkIfPetani } = require('../middleware/check-role');
@@ -15,7 +15,8 @@ router.put(
   addLuasRusak
 );
 
-
 router.get('/namalahan', authenticateUser, checkIfPetani, seeNameLahan);
+router.get('/lihatlahan', authenticateUser, checkIfPetani, seeMyLahan);
+
 
 module.exports = router;

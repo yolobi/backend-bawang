@@ -63,28 +63,16 @@ let lahanSchema = new mongoose.Schema(
       type: String,
       required: [true, 'namaLahan harus diisi'],
     },
-    jumlahBenih: {
+    modalBenih: {
       type: Number,
     },
-    hargaBenih: {
+    modalPupuk: {
       type: Number,
     },
-    jumlahPupuk: {
+    modalPestisida: {
       type: Number,
     },
-    hargaPupuk: {
-      type: Number,
-    },
-    jumlahPestisida: {
-      type: Number,
-    },
-    hargaPestisida: {
-      type: Number,
-    },
-    jumlahPekerja: {
-      type: Number,
-    },
-    hargaPekerja: {
+    modalPekerja: {
       type: Number,
     },
   },

@@ -18,14 +18,10 @@ module.exports = {
         tanggalTanam,
         jumlahBatang,
         luasLahan,
-        jumlahBenih,
-        hargaBenih,
-        jumlahPupuk,
-        hargaPupuk,
-        jumlahPestisida,
-        hargaPestisida,
-        jumlahPekerja,
-        hargaPekerja,
+        modalBenih,
+        modalPupuk,
+        modalPestisida,
+        modalPekerja,
       } = req.body;
 
       let lahan = new Lahan({
@@ -35,14 +31,10 @@ module.exports = {
         tanggalTanam,
         jumlahBatang,
         luasLahan,
-        jumlahBenih,
-        hargaBenih,
-        jumlahPupuk,
-        hargaPupuk,
-        jumlahPestisida,
-        hargaPestisida,
-        jumlahPekerja,
-        hargaPekerja,
+        modalBenih,
+        modalPupuk,
+        modalPestisida,
+        modalPekerja,
       });
       await lahan.save();
 
@@ -116,43 +108,41 @@ module.exports = {
     }
   },
 
-  //   seeMyTanam: async (req, res) => {
-  //     try {
-  //       const user = req.userData.id;
-  //       console.log(user);
+  seeMyLahan: async (req, res) => {
+    try {
+      const user = req.userData.id;
+      console.log(user);
 
-  //       const myTanam = await Tanam.find({ user: user })
-  //         .select(
-  //           '_id tanggalPenanaman tipeCabai namaLahan jumlahTanam statusLahan createdAt'
-  //         )
-  //         .sort({
-  //           tanggalPenanaman: 'descending',
-  //           createdAt: 'descending',
-  //         });
-  //       console.log(myTanam[0]);
+      const myLahan = await Lahan.find({ user: user })
+        .select(
+          '_id namaLahan tipeCabai jumlahPanen transaksi jumlahPenjualan jumlahBatang tanggalTanam createdAt'
+        )
+        .populate('transaksi', '_id totalProduksi')
+        .sort({
+          tanggalPenanaman: 'descending',
+          createdAt: 'descending',
+        });
+      console.log(myLahan[0]);
 
-  //       const countAllUsang = await Tanam.find({ user: user }).countDocuments();
+      const userData = await User.findById(user).select('_id name role');
 
-  //       const userData = await User.findById(user).select('_id name role');
-
-  //       if (myTanam[0] == undefined) {
-  //         res.status(404).json({
-  //           message: 'Belum ada Lahan yang diisi',
-  //         });
-  //       } else {
-  //         res.status(200).json({
-  //           message: 'Berhasil melihat data Lahan',
-  //           petani: userData,
-  //           data: myTanam,
-  //           countAllUsang: countAllUsang,
-  //         });
-  //       }
-  //     } catch (error) {
-  //       res
-  //         .status(500)
-  //         .json({ message: error.message || `Internal server error` });
-  //     }
-  //   },
+      if (myLahan[0] == undefined) {
+        res.status(404).json({
+          message: 'Belum ada Lahan yang diisi',
+        });
+      } else {
+        res.status(200).json({
+          message: 'Berhasil melihat data Lahan',
+          user: userData,
+          data: myLahan
+        });
+      }
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
+    }
+  },
 
   //   seeATanam: async (req, res) => {
   //     try {

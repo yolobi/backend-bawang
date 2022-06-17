@@ -1,4 +1,8 @@
 const indonesia = require('territory-indonesia');
+const Transaksi2 = require('../transaksi2/model');
+const User = require('../users/model');
+const Lahan = require('../lahan/model');
+const { find } = require('../lahan/model');
 
 module.exports = {
   teritoryInfo: async (id) => {
@@ -14,8 +18,36 @@ module.exports = {
       let dataKecamatan = await indonesia.getDistrictById(id.toString());
       let { latitude, longitude, ...newdataKecamatan } = dataKecamatan;
       return newdataKecamatan;
-    } else{
-        return 'data tidak valid'
+    } else {
+      return 'data tidak valid';
+    }
+  },
+
+  updateJumlahPanen: async (idLahan, idUser) => {
+    const penjual = idUser;
+    const lahan = idLahan;
+
+    const findLahan = await Lahan.findOne({ _id: lahan, user: penjual })
+      .select('_id transaksi')
+      .populate('transaksi', '_id hasilPanen');
+
+    if (findLahan.transaksi[0] == undefined) {
+      await Lahan.findOneAndUpdate(
+        { _id: lahan, user: penjual },
+        { jumlahPanen: 0 }
+      );
+      return 0;
+    } else {
+      const jumlahPanen = findLahan.transaksi
+        .map((item) => item.hasilPanen)
+        .reduce((prev, next) => prev + next);
+
+      await Lahan.findOneAndUpdate(
+        { _id: lahan, user: penjual },
+        { jumlahPanen: jumlahPanen }
+      );
+
+      return jumlahPanen;
     }
   },
 };

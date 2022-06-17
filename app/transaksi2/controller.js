@@ -1,6 +1,7 @@
 const Transaksi2 = require('./model');
 const User = require('../users/model');
 const Lahan = require('../lahan/model');
+const myFunction = require('../function/function');
 
 const statusEnum = Object.freeze({
   diajukan: '0',
@@ -12,8 +13,14 @@ module.exports = {
   createTransaksi: async (req, res) => {
     try {
       console.log(req.userData.id);
-      const { lahan, tanggalPencatatan, hasilPanen, hargaJual,grade, pembeli } =
-        req.body;
+      const {
+        lahan,
+        tanggalPencatatan,
+        hasilPanen,
+        hargaJual,
+        grade,
+        pembeli,
+      } = req.body;
 
       const penjual = req.userData.id;
       if (penjual == pembeli) {
@@ -48,6 +55,8 @@ module.exports = {
         { $addToSet: { transaksi: transaksi2._id } }
       );
 
+      const jumlahPanen = await myFunction.updateJumlahPanen(lahan, penjual);
+
       const dataPembeli = await User.findById(pembeli);
 
       res.status(201).json({
@@ -74,6 +83,7 @@ module.exports = {
           namaLahan: addtoLahan.namaLahan,
         },
         statusTransaksi: statusEnum.diajukan,
+        jumlahPanen: jumlahPanen,
       });
     } catch (error) {
       res
@@ -221,6 +231,8 @@ module.exports = {
           { _id: transaksi.lahan },
           { $pull: { transaksi: id } }
         );
+
+        const jumlahPanen = await myFunction.updateJumlahPanen(transaksi.lahan, user);
 
         res.status(201).json({
           message: 'Berhasil menghapus Transaksi',
