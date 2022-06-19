@@ -55,7 +55,15 @@ module.exports = {
         { $addToSet: { transaksi: transaksi2._id } }
       );
 
+      // UPDATE KE LAHAN
+
       const jumlahPanen = await myFunction.updateJumlahPanen(lahan, penjual);
+      const jumlahPenjualan = await myFunction.updateJumlahPenjualan(
+        lahan,
+        penjual
+      );
+      const rjumlahPanen = await myFunction.updateRJumlahPanen(lahan, penjual);
+      const rjumlahPenjualan = await myFunction.updateRJumlahPenjualan(lahan, penjual);
 
       const dataPembeli = await User.findById(pembeli);
 
@@ -83,7 +91,6 @@ module.exports = {
           namaLahan: addtoLahan.namaLahan,
         },
         statusTransaksi: statusEnum.diajukan,
-        jumlahPanen: jumlahPanen,
       });
     } catch (error) {
       res
@@ -232,7 +239,24 @@ module.exports = {
           { $pull: { transaksi: id } }
         );
 
-        const jumlahPanen = await myFunction.updateJumlahPanen(transaksi.lahan, user);
+        // UPDATE KE LAHAN
+
+        const jumlahPanen = await myFunction.updateJumlahPanen(
+          transaksi.lahan,
+          user
+        );
+        const jumlahPenjualan = await myFunction.updateJumlahPenjualan(
+          transaksi.lahan,
+          user
+        );
+        const rjumlahPanen = await myFunction.updateRJumlahPanen(
+          transaksi.lahan,
+          user
+        );
+        const rjumlahPenjualan = await myFunction.updateRJumlahPenjualan(
+          transaksi.lahan,
+          user
+        );
 
         res.status(201).json({
           message: 'Berhasil menghapus Transaksi',
