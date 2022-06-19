@@ -1,5 +1,6 @@
 const Lahan = require('./model');
 const User = require('../users/model');
+const myFunction = require('../function/function');
 
 const statusEnum = Object.freeze({
   active: '0',
@@ -57,6 +58,10 @@ module.exports = {
       console.log(id);
 
       const { luasRusak } = req.body;
+      
+      
+      const persenRusak = await myFunction.luasLahan(id, user)
+      console.log(persenRusak);
 
       const lahanRusak = await Lahan.findOneAndUpdate(
         { _id: id },

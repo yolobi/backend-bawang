@@ -50,4 +50,15 @@ module.exports = {
       return jumlahPanen;
     }
   },
+
+  luasLahan: async (idLahan, idUser) => {
+    const penjual = idUser;
+    const lahan = idLahan;
+
+    const findLahan = await Lahan.findOne({ _id: lahan, user: penjual })
+      .select('_id luasLahan')
+
+      return findLahan.luasLahan;
+    
+  },
 };
