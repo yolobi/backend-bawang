@@ -1,5 +1,6 @@
 const Lahan = require('./model');
 const User = require('../users/model');
+const Transaksi2 = require('../transaksi2/model');
 const myFunction = require('../function/function');
 
 const statusEnum = Object.freeze({
@@ -25,6 +26,12 @@ module.exports = {
         modalPekerja,
       } = req.body;
 
+      const totalModal =
+        Number(modalBenih) +
+        Number(modalPupuk) +
+        Number(modalPestisida) +
+        Number(modalPekerja);
+
       let lahan = new Lahan({
         user,
         tipeCabai,
@@ -36,6 +43,7 @@ module.exports = {
         modalPupuk,
         modalPestisida,
         modalPekerja,
+        totalModal,
       });
       await lahan.save();
 
@@ -58,22 +66,66 @@ module.exports = {
       console.log(id);
 
       const { luasRusak } = req.body;
-      
-      
-      const persenRusak = await myFunction.luasLahan(id, user)
-      console.log(persenRusak);
+
+      const persenRusak =
+        Number(luasRusak) / ((await myFunction.luasLahan(id, user)) * 100);
 
       const lahanRusak = await Lahan.findOneAndUpdate(
         { _id: id },
-        { $set: { luasRusak: luasRusak } },
+        { $set: { luasRusak: luasRusak, persenRusak: persenRusak } },
         { new: true }
       );
       console.log(lahanRusak);
 
       res.status(201).json({
-        message: 'Berhasil menambahkan Luas Lahan Rusak',
+        message: 'Berhasil menambahkan Luas Lahan Rusak dalam m2',
         data: lahanRusak,
       });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
+    }
+  },
+
+  editModal: async (req, res) => {
+    try {
+      const id = req.params.lahanId;
+      const user = req.userData.id;
+      console.log(user);
+      console.log(id);
+
+      const { modalBenih, modalPupuk, modalPestisida, modalPekerja } = req.body;
+
+      const totalModal =
+        Number(modalBenih) +
+        Number(modalPupuk) +
+        Number(modalPestisida) +
+        Number(modalPekerja);
+
+      const hasilUpdate = await Lahan.findOneAndUpdate(
+        { _id: id, user: user },
+        {
+          $set: {
+            modalBenih: modalBenih,
+            modalPupuk: modalPupuk,
+            modalPestisida: modalPestisida,
+            modalPekerja: modalPekerja,
+            totalModal: totalModal,
+          },
+        },
+        { new: true }
+      );
+      if (!hasilUpdate) {
+        res.status(400).json({
+          message: 'ID Lahan tidak ditemukan',
+        });
+      } else {
+        res.status(201).json({
+          message: 'Berhasil mengedit modal',
+          data: hasilUpdate,
+        });
+      }
     } catch (error) {
       res
         .status(500)
@@ -120,7 +172,7 @@ module.exports = {
 
       const myLahan = await Lahan.find({ user: user })
         .select(
-          '_id namaLahan tipeCabai jumlahPanen transaksi jumlahPenjualan jumlahBatang tanggalTanam createdAt'
+          '_id namaLahan tipeCabai jumlahPanen rataanJumlahPanen transaksi jumlahPenjualan rataanHargaJual jumlahBatang tanggalTanam createdAt'
         )
         .populate('transaksi', '_id totalProduksi')
         .sort({
@@ -139,7 +191,7 @@ module.exports = {
         res.status(200).json({
           message: 'Berhasil melihat data Lahan',
           user: userData,
-          data: myLahan
+          data: myLahan,
         });
       }
     } catch (error) {
@@ -149,34 +201,136 @@ module.exports = {
     }
   },
 
-  //   seeATanam: async (req, res) => {
-  //     try {
-  //       const user = req.userData.id;
-  //       const id = req.params.tanamId;
-  //       console.log(user);
+  seeALahan: async (req, res) => {
+    try {
+      const user = req.userData.id;
+      const id = req.params.lahanId;
+      console.log(user);
 
-  //       const aTanam = await Tanam.find({ user: user, _id: id });
-  //       console.log(aTanam[0]);
+      const aLahan = await Lahan.findOne({ user: user, _id: id }).populate(
+        'transaksi',
+        '_id hasilPanen hargaJual totalProduksi'
+      );
 
-  //       const userData = await User.findById(user).select('_id name role');
+      const countTransaksi = aLahan.transaksi.length;
+      const keuntungan = () => {
+        let total = aLahan.jumlahPenjualan - aLahan.totalModal;
+        if (total < 0) {
+          return 0;
+        } else {
+          return total;
+        }
+      };
+      console.log(keuntungan());
 
-  //       if (aTanam[0] == undefined) {
-  //         res.status(404).json({
-  //           message: 'Data Lahan tidak ditemukan',
-  //         });
-  //       } else {
-  //         res.status(200).json({
-  //           message: `Berhasil melihat data Lahan dengan nama ${aTanam[0].namaLahan}`,
-  //           petani: userData,
-  //           data: aTanam,
-  //         });
-  //       }
-  //     } catch (error) {
-  //       res
-  //         .status(500)
-  //         .json({ message: error.message || `Internal server error` });
-  //     }
-  //   },
+      const userData = await User.findById(user).select('_id name role');
+
+      if (!aLahan) {
+        res.status(404).json({
+          message: 'Data Lahan tidak ditemukan',
+        });
+      } else {
+        res.status(200).json({
+          message: `Berhasil melihat data Lahan dengan nama ${aLahan.namaLahan}`,
+          user: userData,
+          data: aLahan,
+          countTransaksi: countTransaksi,
+          keuntungan: keuntungan(),
+        });
+      }
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
+    }
+  },
+
+  lahanFinish: async (req, res) => {
+    try {
+      const user = req.userData.id;
+      const id = req.params.lahanId;
+      console.log(user);
+
+      const { tanggalSelesai } = req.body;
+
+      const aLahan = await Lahan.findOneAndUpdate(
+        { user: user, _id: id },
+        { tanggalSelesai: tanggalSelesai }
+      );
+
+      if (!aLahan) {
+        res.status(404).json({
+          message: 'Data Lahan tidak ditemukan',
+        });
+      } else {
+        res.status(200).json({
+          message: `Lahan dengan nama ${aLahan.namaLahan} telah selesai`,
+          tanggalSelesai: tanggalSelesai,
+        });
+      }
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
+    }
+  },
+
+  lahanUnfinish: async (req, res) => {
+    try {
+      const user = req.userData.id;
+      const id = req.params.lahanId;
+      console.log(user);
+
+      const aLahan = await Lahan.findOneAndUpdate(
+        { user: user, _id: id },
+        { tanggalSelesai: null }
+      );
+
+      if (!aLahan) {
+        res.status(404).json({
+          message: 'Data Lahan tidak ditemukan',
+        });
+      } else {
+        res.status(200).json({
+          message: `Lahan dengan nama ${aLahan.namaLahan} berhasil diubah menjadi belum selesai`,
+          tanggalSelesai: null,
+        });
+      }
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
+    }
+  },
+
+  deleteLahan: async (req, res) => {
+    try {
+      const user = req.userData.id;
+      const id = req.params.lahanId;
+      console.log(user);
+
+      const userData = await User.findById(user).select('_id name role');
+      const aLahan = await Lahan.findOneAndRemove({ user: user, _id: id });
+
+      if (!aLahan) {
+        res.status(404).json({
+          message: 'Data Lahan tidak ditemukan',
+        });
+      } else {
+        await Transaksi2.deleteMany({lahan: id})
+
+        res.status(200).json({
+          message: `Lahan dengan nama ${aLahan.namaLahan} berhasil dihapus`,
+          user: userData,
+          data : aLahan,
+        });
+      }
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
+    }
+  },
 
   //   changeStatus: async (req, res) => {
   //     try {

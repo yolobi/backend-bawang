@@ -33,7 +33,6 @@ let transaksi2Schema = new mongoose.Schema(
     },
     totalProduksi: {
       type: Number,
-      required: [true, 'hargaJual harus diisi'],
     },
     penjual: {
       type: mongoose.Schema.Types.ObjectId,

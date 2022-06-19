@@ -33,15 +33,19 @@ let lahanSchema = new mongoose.Schema(
     },
     tanggalSelesai: {
       type: Date,
+      default: null,
     },
     persenRusak: {
       type: Number,
+      default: 0,
     },
     luasRusak: {
       type: Number,
+      default: 0,
     },
     rataanJumlahPanen: {
       type: Number,
+      default: 0,
     },
     jumlahPanen: {
       type: Number,
@@ -49,6 +53,7 @@ let lahanSchema = new mongoose.Schema(
     },
     rataanHargaJual: {
       type: Number,
+      default: 0,
     },
     jumlahPenjualan: {
       type: Number,
@@ -73,6 +78,9 @@ let lahanSchema = new mongoose.Schema(
       type: Number,
     },
     modalPekerja: {
+      type: Number,
+    },
+    totalModal: {
       type: Number,
     },
   },
