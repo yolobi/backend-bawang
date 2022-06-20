@@ -30,6 +30,7 @@ let lahanSchema = new mongoose.Schema(
     },
     tanggalMulaiPanen: {
       type: Date,
+      default: null,
     },
     tanggalSelesai: {
       type: Date,

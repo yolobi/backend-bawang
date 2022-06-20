@@ -130,7 +130,8 @@ module.exports = {
       user: idUser,
     }).select('_id transaksi jumlahPenjualan');
 
-    const rjumlahPenjualan = findLahan.jumlahPenjualan / findLahan.transaksi.length;
+    const rjumlahPenjualan =
+      findLahan.jumlahPenjualan / findLahan.transaksi.length;
 
     if (findLahan.transaksi[0] == undefined) {
       await Lahan.findOneAndUpdate(
@@ -145,6 +146,29 @@ module.exports = {
       );
 
       return rjumlahPenjualan;
+    }
+  },
+
+  checkMulaiPanen: async (idLahan, idUser) => {
+    const findLahan = await Lahan.findOne({
+      _id: idLahan,
+      user: idUser,
+    })
+      .select('_id transaksi tanggalMulaiPanen')
+      .populate('transaksi', '_id tanggalPencatatan');
+
+    if (!findLahan.transaksi[0]) {
+      await Lahan.findOneAndUpdate(
+        { _id: idLahan, user: idUser },
+        { tanggalMulaiPanen: null }
+      );
+    } else if (
+      findLahan.transaksi[0].tanggalPencatatan !== findLahan.tanggalMulaiPanen
+    ) {
+      await Lahan.findOneAndUpdate(
+        { _id: idLahan, user: idUser },
+        { tanggalMulaiPanen: findLahan.transaksi[0].tanggalPencatatan }
+      );
     }
   },
 };

@@ -56,7 +56,7 @@ module.exports = {
       );
 
       // UPDATE KE LAHAN
-
+      
       const jumlahPanen = await myFunction.updateJumlahPanen(lahan, penjual);
       const jumlahPenjualan = await myFunction.updateJumlahPenjualan(
         lahan,
@@ -64,6 +64,10 @@ module.exports = {
       );
       const rjumlahPanen = await myFunction.updateRJumlahPanen(lahan, penjual);
       const rjumlahPenjualan = await myFunction.updateRJumlahPenjualan(lahan, penjual);
+      const checkMulaiPanen = await myFunction.checkMulaiPanen(
+        lahan,
+        penjual
+      );
 
       const dataPembeli = await User.findById(pembeli);
 
@@ -254,6 +258,10 @@ module.exports = {
           user
         );
         const rjumlahPenjualan = await myFunction.updateRJumlahPenjualan(
+          transaksi.lahan,
+          user
+        );
+        const checkMulaiPanen = await myFunction.checkMulaiPanen(
           transaksi.lahan,
           user
         );
