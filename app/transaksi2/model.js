@@ -42,7 +42,6 @@ let transaksi2Schema = new mongoose.Schema(
     pembeli: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
     },
     statusTransaksi: {
       type: Number,
@@ -53,6 +52,13 @@ let transaksi2Schema = new mongoose.Schema(
     alasanDitolak: {
       type: String,
       minlength: [6, 'alasan ditolak minimal 6 karakter'],
+    },
+    tipePedagang: {
+      type: String,
+      enum: ['petani', 'agen', 'distributor', 'pengecer', 'pengepul', 'grosir'],
+    },
+    namaPedagang: {
+      type: String,
     },
   },
   { timestamps: true }

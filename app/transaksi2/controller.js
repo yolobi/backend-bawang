@@ -2,6 +2,7 @@ const Transaksi2 = require('./model');
 const User = require('../users/model');
 const Lahan = require('../lahan/model');
 const myFunction = require('../function/function');
+const { populate } = require('../lahan/model');
 
 const statusEnum = Object.freeze({
   diajukan: '0',
@@ -20,6 +21,8 @@ module.exports = {
         hargaJual,
         grade,
         pembeli,
+        namaPedagang,
+        tipePedagang,
       } = req.body;
 
       const penjual = req.userData.id;
@@ -38,59 +41,73 @@ module.exports = {
 
       const totalProduksi = hasilPanen * hargaJual * 100;
 
-      let transaksi2 = new Transaksi2({
-        lahan,
-        tanggalPencatatan,
-        penjual,
-        hasilPanen,
-        hargaJual,
-        grade,
-        totalProduksi,
-        pembeli,
-      });
-      await transaksi2.save();
+      let transaksi2 = async () => {
+        if (!pembeli) {
+          let newTransaksi = new Transaksi2({
+            lahan,
+            tanggalPencatatan,
+            penjual,
+            hasilPanen,
+            hargaJual,
+            grade,
+            totalProduksi,
+            statusTransaksi: 2,
+            namaPedagang,
+            tipePedagang,
+          });
+          await newTransaksi.save();
 
-      const addtoLahan = await Lahan.findOneAndUpdate(
-        { _id: lahan, user: penjual },
-        { $addToSet: { transaksi: transaksi2._id } }
-      );
+          const addtoLahan = await Lahan.findOneAndUpdate(
+            { _id: lahan, user: penjual },
+            { $addToSet: { transaksi: newTransaksi._id } }
+          );
+          return newTransaksi.populate([
+            { path: 'lahan', select: '_id tipeCabai namaLahan' },
+            { path: 'penjual', select: 'id name role' },
+          ]);
+        } else {
+          let newTransaksi = new Transaksi2({
+            lahan,
+            tanggalPencatatan,
+            penjual,
+            hasilPanen,
+            hargaJual,
+            grade,
+            totalProduksi,
+            pembeli,
+          });
+          await newTransaksi.save();
+          const addtoLahan = await Lahan.findOneAndUpdate(
+            { _id: lahan, user: penjual },
+            { $addToSet: { transaksi: newTransaksi._id } }
+          );
+          return newTransaksi.populate([
+            { path: 'lahan', select: '_id tipeCabai namaLahan' },
+            { path: 'penjual', select: 'id name role' },
+            { path: 'pembeli', select: 'id name role' },
+          ]);
+        }
+      };
+
+      const dataTransaksi = await transaksi2();
+      console.log(dataTransaksi);
 
       // UPDATE KE LAHAN
-
       const jumlahPanen = await myFunction.updateJumlahPanen(lahan, penjual);
       const jumlahPenjualan = await myFunction.updateJumlahPenjualan(
         lahan,
         penjual
       );
       const rjumlahPanen = await myFunction.updateRJumlahPanen(lahan, penjual);
-      const rjumlahPenjualan = await myFunction.updateRJumlahPenjualan(lahan, penjual);
-
-      const dataPembeli = await User.findById(pembeli);
+      const rjumlahPenjualan = await myFunction.updateRJumlahPenjualan(
+        lahan,
+        penjual
+      );
+      const checkMulaiPanen = await myFunction.checkMulaiPanen(lahan, penjual);
 
       res.status(201).json({
         message: 'Berhasil membuat Transaksi',
-        id: transaksi2._id,
-        penjual: {
-          id: req.userData.id,
-          name: req.userData.name,
-          role: req.userData.role,
-        },
-        tanggalPencatatan: tanggalPencatatan,
-        tipeCabai: addtoLahan.tipeCabai,
-        hasilPanen: hasilPanen,
-        hargaJual: hargaJual,
-        grade: grade,
-        totalProduksi: totalProduksi,
-        pembeli: {
-          id: dataPembeli._id,
-          name: dataPembeli.name,
-          role: dataPembeli.role,
-        },
-        lahan: {
-          id: addtoLahan._id,
-          namaLahan: addtoLahan.namaLahan,
-        },
-        statusTransaksi: statusEnum.diajukan,
+        data: dataTransaksi,
       });
     } catch (error) {
       res
@@ -254,6 +271,10 @@ module.exports = {
           user
         );
         const rjumlahPenjualan = await myFunction.updateRJumlahPenjualan(
+          transaksi.lahan,
+          user
+        );
+        const checkMulaiPanen = await myFunction.checkMulaiPanen(
           transaksi.lahan,
           user
         );
