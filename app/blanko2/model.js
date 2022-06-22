@@ -84,9 +84,6 @@ let lahanSchema = new mongoose.Schema(
     totalModal: {
       type: Number,
     },
-    keuntungan: {
-      type: Number,
-    },
   },
   { timestamps: true }
 );

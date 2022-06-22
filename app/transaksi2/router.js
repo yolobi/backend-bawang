@@ -1,37 +1,72 @@
 var express = require('express');
 var router = express.Router();
-const { createTransaksi, seePedagang, seeMyTransaksi, seeATransaksi, deleteTransaksi } = require('./controller');
+const {
+  createTransaksi,
+  seePedagang,
+  seeMyTransaksi,
+  seeATransaksi,
+  deleteTransaksi,
+  changeStatusAjukan,
+  changeStatusTerima,
+  changeStatusTolak,
+} = require('./controller');
 const authenticateUser = require('../middleware/authentication');
-const { checkIfPetani } = require('../middleware/check-role');
+const {
+  checkIfPetani,
+  checkIfPetaniPedagang,
+} = require('../middleware/check-role');
 
 /* GET home page. */
-router.post('/tambahtransaksi', authenticateUser, checkIfPetani, createTransaksi);
+router.post(
+  '/tambahtransaksi',
+  authenticateUser,
+  checkIfPetaniPedagang,
+  createTransaksi
+);
 router.get(
   '/lihatpedagang/:tipepedagang',
   authenticateUser,
-  checkIfPetani,
+  checkIfPetaniPedagang,
   seePedagang
 );
 
 router.get(
   '/lihattransaksi',
   authenticateUser,
-  checkIfPetani,
+  checkIfPetaniPedagang,
   seeMyTransaksi
 );
 
 router.get(
   '/lihattransaksi/:transaksiId',
   authenticateUser,
-  checkIfPetani,
+  checkIfPetaniPedagang,
   seeATransaksi
 );
 
 router.delete(
   '/hapustransaksi/:transaksiId',
   authenticateUser,
-  checkIfPetani,
+  checkIfPetaniPedagang,
   deleteTransaksi
 );
 
+router.put(
+  '/ubahstatus/terima/:transaksiId',
+  authenticateUser,
+  checkIfPetaniPedagang,
+  changeStatusTerima
+);
+router.put(
+  '/ubahstatus/tolak/:transaksiId',
+  authenticateUser,
+  checkIfPetaniPedagang,
+  changeStatusTolak
+);
+router.put(
+  '/ubahstatus/ajukankembali/:transaksiId',
+  authenticateUser,
+  checkIfPetaniPedagang,
+  changeStatusAjukan
+);
 module.exports = router;

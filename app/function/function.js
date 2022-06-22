@@ -50,7 +50,7 @@ module.exports = {
 
     const findLahan = await Lahan.findOne({ _id: lahan, user: penjual })
       .select('_id transaksi')
-      .populate('transaksi', '_id hasilPanen');
+      .populate('transaksi', '_id jumlahDijual');
 
     if (findLahan.transaksi[0] == undefined) {
       await Lahan.findOneAndUpdate(
@@ -60,7 +60,7 @@ module.exports = {
       return 0;
     } else {
       const jumlahPanen = findLahan.transaksi
-        .map((item) => item.hasilPanen)
+        .map((item) => item.jumlahDijual)
         .reduce((prev, next) => prev + next);
 
       await Lahan.findOneAndUpdate(
@@ -170,5 +170,19 @@ module.exports = {
         { tanggalMulaiPanen: findLahan.transaksi[0].tanggalPencatatan }
       );
     }
+  },
+
+  updateKeuntungan: async (idLahan, idUser) => {
+    const findLahan = await Lahan.findOne({
+      _id: idLahan,
+      user: idUser,
+    });
+
+    const keuntungan = findLahan.jumlahPenjualan - findLahan.totalModal;
+
+    await Lahan.findOneAndUpdate(
+      { _id: idLahan, user: idUser },
+      { keuntungan: keuntungan }
+    );
   },
 };

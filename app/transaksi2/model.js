@@ -11,16 +11,19 @@ let transaksi2Schema = new mongoose.Schema(
     lahan: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Lahan',
-      required: true,
+    },
+    tipeCabai: {
+      type: String,
+      enum: ['cabaiMerahBesar', 'cabaiMerahKeriting', 'cabaiRawitMerah'],
     },
     tanggalPencatatan: {
       type: Date,
       required: [true, 'tanggalPencatatan harus diisi'],
       default: Date.now,
     },
-    hasilPanen: {
+    jumlahDijual: {
       type: Number,
-      required: [true, 'hasilPanen harus diisi'],
+      required: [true, 'jumlahDijual harus diisi'],
     },
     hargaJual: {
       type: Number,
@@ -29,7 +32,6 @@ let transaksi2Schema = new mongoose.Schema(
     grade: {
       type: String,
       enum: ['a', 'b', 'c', 'd', 'n'],
-      required: [true, 'grade harus diisi'],
     },
     totalProduksi: {
       type: Number,

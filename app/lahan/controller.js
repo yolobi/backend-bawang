@@ -209,20 +209,10 @@ module.exports = {
 
       const aLahan = await Lahan.findOne({ user: user, _id: id }).populate(
         'transaksi',
-        '_id hasilPanen hargaJual totalProduksi'
+        '_id jumlahDijual hargaJual totalProduksi'
       );
 
       const countTransaksi = aLahan.transaksi.length;
-      const keuntungan = () => {
-        let total = aLahan.jumlahPenjualan - aLahan.totalModal;
-        if (total < 0) {
-          return 0;
-        } else {
-          return total;
-        }
-      };
-      console.log(keuntungan());
-
       const userData = await User.findById(user).select('_id name role');
 
       if (!aLahan) {
@@ -235,7 +225,6 @@ module.exports = {
           user: userData,
           data: aLahan,
           countTransaksi: countTransaksi,
-          keuntungan: keuntungan(),
         });
       }
     } catch (error) {
@@ -317,12 +306,12 @@ module.exports = {
           message: 'Data Lahan tidak ditemukan',
         });
       } else {
-        await Transaksi2.deleteMany({lahan: id})
+        await Transaksi2.deleteMany({ lahan: id });
 
         res.status(200).json({
           message: `Lahan dengan nama ${aLahan.namaLahan} berhasil dihapus`,
           user: userData,
-          data : aLahan,
+          data: aLahan,
         });
       }
     } catch (error) {

@@ -154,7 +154,7 @@ module.exports = {
       const user = req.userData.id;
       console.log(user);
 
-      const findBlanko = Blanko.findOne({ _id: id });
+      const findBlanko = await Blanko.findOne({ _id: id });
 
       if (findBlanko && user) {
         const blanko = await Blanko.findOneAndRemove({ _id: id, user: user });
