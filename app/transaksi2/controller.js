@@ -62,14 +62,15 @@ module.exports = {
             });
           }
 
-          const totalProduksi = jumlahDijual * hargaJual * 100;
+          let convjumlahDijual = jumlahDijual / 100;
+          const totalProduksi = jumlahDijual * hargaJual;
 
           if (!pembeli) {
             let newTransaksi = new Transaksi2({
               lahan,
               tanggalPencatatan,
               penjual,
-              jumlahDijual,
+              jumlahDijual: convjumlahDijual,
               hargaJual,
               grade,
               totalProduksi,
@@ -84,7 +85,7 @@ module.exports = {
               { $addToSet: { transaksi: newTransaksi._id } }
             );
             return newTransaksi.populate([
-              { path: 'lahan', select: '_id tipeCabai namaLahan' },
+              { path: 'lahan', select: '_id tipeCabai namaLahan tanggalTanam' },
               { path: 'penjual', select: 'id name role' },
             ]);
           } else {
@@ -92,7 +93,7 @@ module.exports = {
               lahan,
               tanggalPencatatan,
               penjual,
-              jumlahDijual,
+              jumlahDijual: convjumlahDijual,
               hargaJual,
               grade,
               totalProduksi,
@@ -104,7 +105,7 @@ module.exports = {
               { $addToSet: { transaksi: newTransaksi._id } }
             );
             return newTransaksi.populate([
-              { path: 'lahan', select: '_id tipeCabai namaLahan' },
+              { path: 'lahan', select: '_id tipeCabai namaLahan tanggalTanam' },
               { path: 'penjual', select: 'id name role' },
               { path: 'pembeli', select: 'id name role' },
             ]);
@@ -225,7 +226,7 @@ module.exports = {
           })
           .populate('pembeli', '_id name role')
           .populate('penjual', '_id name role')
-          .populate('lahan', '_id namaLahan tipeCabai');
+          .populate('lahan', '_id namaLahan tipeCabai tanggalTanam');
         console.log(myTransaksi[0]);
 
         const countAllTransaksi = await Transaksi2.find({
@@ -239,7 +240,7 @@ module.exports = {
           })
           .populate('pembeli', '_id name role')
           .populate('penjual', '_id name role')
-          .populate('lahan', '_id namaLahan tipeCabai');
+          .populate('lahan', '_id namaLahan tipeCabai tanggalTanam');
 
         const countAllBeliTransaksi = await Transaksi2.find({
           pembeli: user,
@@ -304,7 +305,7 @@ module.exports = {
         })
           .populate('pembeli', '_id name role')
           .populate('penjual', '_id name role')
-          .populate('lahan', '_id namaLahan tipeCabai');
+          .populate('lahan', '_id namaLahan tipeCabai tanggalTanam');
 
         const userData = await User.findById(user).select('_id name');
 
@@ -363,7 +364,7 @@ module.exports = {
           })
             .populate('pembeli', '_id name role')
             .populate('penjual', '_id name role')
-            .populate('lahan', '_id namaLahan tipeCabai');
+            .populate('lahan', '_id namaLahan tipeCabai tanggalTanam');
           console.log(transaksi.lahan);
 
           await Lahan.findOneAndUpdate(
@@ -505,6 +506,8 @@ module.exports = {
 
       const { tipeCabai, jumlahDijual, hargaJual } = req.body;
 
+      let convjumlahDijual = jumlahDijual / 100;
+
       const checkStatus = await Transaksi2.findById(id);
       console.log(checkStatus.statusTransaksi);
 
@@ -513,7 +516,7 @@ module.exports = {
           { _id: id },
           {
             tipeCabai,
-            jumlahDijual,
+            jumlahDijual: convjumlahDijual,
             hargaJual,
             statusTransaksi: statusEnum.diajukan,
           }
