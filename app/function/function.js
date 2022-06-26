@@ -2,7 +2,7 @@ const indonesia = require('territory-indonesia');
 const Transaksi2 = require('../transaksi2/model');
 const User = require('../users/model');
 const Lahan = require('../lahan/model');
-const { find } = require('../lahan/model');
+const Blanko2 = require('../blanko2/model');
 
 module.exports = {
   teritoryInfo: async (id) => {
@@ -184,5 +184,38 @@ module.exports = {
       { _id: idLahan, user: idUser },
       { keuntungan: keuntungan }
     );
+  },
+
+  cekBlanko: async (idUser, tanggalPencatatan, tipeCabai) => {
+    const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
+    const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
+
+    const start = `${tahun}-${bulan}-01`;
+    const end = `${tahun}-${bulan}-31`;
+
+    const bulanBlanko = await Blanko2.findOne({
+      user: idUser,
+      tipeCabai: tipeCabai,
+      tanggalPencatatan: { $gte: start, $lte: end },
+    });
+
+    if (!bulanBlanko) {
+      const teritory = await User.findById(idUser).select(
+        '_id provinsi kabupaten kecamatan'
+      );
+      console.log(teritory);
+
+      let blanko = new Blanko2({
+        user: idUser,
+        tanggalPencatatan,
+        tipeCabai,
+        provinsi: teritory.provinsi,
+        kabupaten: teritory.kabupaten,
+        kecamatan: teritory.kecamatan,
+      });
+      await blanko.save();
+
+      return blanko;
+    }
   },
 };

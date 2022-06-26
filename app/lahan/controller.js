@@ -139,7 +139,7 @@ module.exports = {
       console.log(user);
 
       const myLahan = await Lahan.find({ user: user })
-        .select('_id namaLahan')
+        .select('_id namaLahan tanggalTanam')
         .sort({
           tanggalTanam: 'descending',
           createdAt: 'descending',
@@ -176,7 +176,7 @@ module.exports = {
         )
         .populate('transaksi', '_id totalProduksi')
         .sort({
-          tanggalPenanaman: 'descending',
+          tanggalTanam: 'descending',
           createdAt: 'descending',
         });
       console.log(myLahan[0]);

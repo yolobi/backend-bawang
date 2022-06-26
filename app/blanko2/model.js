@@ -1,91 +1,85 @@
 const mongoose = require('mongoose');
 
-// const statusEnum = Object.freeze({
-//   active: '0',
-//   finish: '1',
-// });
-
-let lahanSchema = new mongoose.Schema(
+let blanko2Schema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true,
     },
-    transaksi: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: 'Transaksi2',
-      required: true,
-    },
-    jumlahBatang: {
-      type: Number,
-      required: [true, 'jumlahBatang harus diisi'],
-    },
-    luasLahan: {
-      type: Number,
-      required: [true, 'luasLahan harus diisi'],
-    },
-    tanggalTanam: {
+    tanggalPencatatan: {
       type: Date,
-    },
-    tanggalMulaiPanen: {
-      type: Date,
-      default: null,
-    },
-    tanggalSelesai: {
-      type: Date,
-      default: null,
-    },
-    persenRusak: {
-      type: Number,
-      default: 0,
-    },
-    luasRusak: {
-      type: Number,
-      default: 0,
-    },
-    rataanJumlahPanen: {
-      type: Number,
-      default: 0,
-    },
-    jumlahPanen: {
-      type: Number,
-      default: 0,
-    },
-    rataanHargaJual: {
-      type: Number,
-      default: 0,
-    },
-    jumlahPenjualan: {
-      type: Number,
-      default: 0,
+      default: Date.now,
     },
     tipeCabai: {
       type: String,
       enum: ['cabaiMerahBesar', 'cabaiMerahKeriting', 'cabaiRawitMerah'],
-      required: [true, 'tipeCabai harus diisi'],
     },
-    namaLahan: {
-      type: String,
-      required: [true, 'namaLahan harus diisi'],
-    },
-    modalBenih: {
+    luasTanamanAkhirBulanLalu: {
       type: Number,
+      default: null,
     },
-    modalPupuk: {
+    luasPanenHabis: {
       type: Number,
+      default: null,
     },
-    modalPestisida: {
+    luasPanenBelumHabis: {
       type: Number,
+      default: null,
     },
-    modalPekerja: {
+    luasRusak: {
       type: Number,
+      default: null,
     },
-    totalModal: {
+    luasPenanamanBaru: {
       type: Number,
+      default: null,
+    },
+    luasTanamanAkhirBulanLaporan: {
+      type: Number,
+      default: null,
+    },
+    prodPanenHabis: {
+      type: Number,
+      default: null,
+    },
+    prodBelumHabis: {
+      type: Number,
+      default: null,
+    },
+    rataHargaJual: {
+      type: Number,
+      default: null,
+    },
+    kecamatan: {
+      type: Number,
+      validate: {
+        validator: function (val) {
+          return val.toString().length === 7;
+        },
+        message: 'id kecamatan yang dimasukkan harus berjumlah 7 digit',
+      },
+    },
+    kabupaten: {
+      type: Number,
+      validate: {
+        validator: function (val) {
+          return val.toString().length === 4;
+        },
+        message: 'id kabupaten/kota yang dimasukkan harus berjumlah 4 digit',
+      },
+    },
+    provinsi: {
+      type: Number,
+      validate: {
+        validator: function (val) {
+          return val.toString().length === 2;
+        },
+        message: 'id kabupaten/kota yang dimasukkan harus berjumlah 2 digit',
+      },
     },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Lahan', lahanSchema);
+module.exports = mongoose.model('Blanko2', blanko2Schema);
