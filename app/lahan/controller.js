@@ -68,7 +68,7 @@ module.exports = {
       const { luasRusak } = req.body;
 
       const persenRusak =
-        parseInt(luasRusak) / ((await myFunction.luasLahan(id, user)) * 100);
+        (Number(luasRusak) / await myFunction.luasLahan(id, user)) * 100;
 
       const lahanRusak = await Lahan.findOneAndUpdate(
         { _id: id },
@@ -78,7 +78,7 @@ module.exports = {
       console.log(lahanRusak);
 
       res.status(201).json({
-        message: 'Berhasil menambahkan Luas Lahan Rusak dalam m2',
+        message: 'Berhasil menambahkan Luas Lahan Rusak dalam hektar',
         data: lahanRusak,
       });
     } catch (error) {

@@ -200,6 +200,7 @@ module.exports = {
     });
 
     if (!bulanBlanko) {
+      console.log('kesini dulu');
       const teritory = await User.findById(idUser).select(
         '_id provinsi kabupaten kecamatan'
       );
@@ -255,7 +256,7 @@ module.exports = {
     const findLahan = await Lahan.find({
       user: idUser,
       tipeCabai: tipeCabai,
-      tanggalSelesai: null,
+      tanggalSelesai: null || { $gte: start, $lte: end },
     }).select('_id namaLahan tanggalSelesai luasLahan luasRusak tipeCabai');
     // console.log(findLahan);
 
@@ -271,6 +272,15 @@ module.exports = {
         tanggalPencatatan: { $gte: start, $lte: end },
       },
       { luasRusak: sum }
+    );
+
+    await Lahan.updateMany(
+      {
+        user: idUser,
+        tipeCabai: tipeCabai,
+        tanggalSelesai: null,
+      },
+      { luasRusak: 0, persenRusak: 0 }
     );
   },
 
@@ -303,6 +313,7 @@ module.exports = {
   },
 
   updateKolom10: async (idUser, tanggalPencatatan, tipeCabai) => {
+    console.log('sini masuk kolom 10');
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
 
@@ -326,28 +337,30 @@ module.exports = {
 
     // const jumlahPenjualan1 = findLahan.map((item) => item.transaksi);
     // console.log(jumlahPenjualan1);
+    if (findLahan.length !== 0) {
+      const jumlahPanen = findLahan
+        .map((item) =>
+          item.transaksi.reduce((accumulator, object) => {
+            return accumulator + object.jumlahDijual;
+          }, 0)
+        )
+        .reduce((prev, next) => prev + next);
 
-    const jumlahPanen = findLahan
-      .map((item) =>
-        item.transaksi.reduce((accumulator, object) => {
-          return accumulator + object.jumlahDijual;
-        }, 0)
-      )
-      .reduce((prev, next) => prev + next);
-
-    // console.log(jumlahPenjualan);
-    // console.log(sum1);
-    await Blanko2.findOneAndUpdate(
-      {
-        user: idUser,
-        tipeCabai: tipeCabai,
-        tanggalPencatatan: { $gte: start, $lte: end },
-      },
-      { prodBelumHabis: jumlahPanen }
-    );
+      // console.log(jumlahPenjualan);
+      // console.log(sum1);
+      await Blanko2.findOneAndUpdate(
+        {
+          user: idUser,
+          tipeCabai: tipeCabai,
+          tanggalPencatatan: { $gte: start, $lte: end },
+        },
+        { prodBelumHabis: jumlahPanen }
+      );
+    }
   },
 
   updateKolom11: async (idUser, tanggalPencatatan, tipeCabai) => {
+    console.log('sini masuk kolom 11');
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
 
@@ -368,31 +381,34 @@ module.exports = {
           jumlahDijual: { $ne: null || undefined },
         },
       });
-
+    console.log(findLahan);
     // const jumlahPenjualan1 = findLahan.map((item) => item.transaksi);
     // console.log(jumlahPenjualan1);
 
-    const jumlahPanen = findLahan
-      .map((item) =>
-        item.transaksi.reduce((accumulator, object) => {
-          return accumulator + object.jumlahDijual;
-        }, 0)
-      )
-      .reduce((prev, next) => prev + next);
+    if (findLahan.length !== 0) {
+      const jumlahPanen = findLahan
+        .map((item) =>
+          item.transaksi.reduce((accumulator, object) => {
+            return accumulator + object.jumlahDijual;
+          }, 0)
+        )
+        .reduce((prev, next) => prev + next);
 
-    // console.log(jumlahPanen);
-    // console.log(sum1);
-    await Blanko2.findOneAndUpdate(
-      {
-        user: idUser,
-        tipeCabai: tipeCabai,
-        tanggalPencatatan: { $gte: start, $lte: end },
-      },
-      { prodPanenHabis: jumlahPanen }
-    );
+      // console.log(jumlahPanen);
+      // console.log(sum1);
+      await Blanko2.findOneAndUpdate(
+        {
+          user: idUser,
+          tipeCabai: tipeCabai,
+          tanggalPencatatan: { $gte: start, $lte: end },
+        },
+        { prodPanenHabis: jumlahPanen }
+      );
+    }
   },
 
   updateKolom12: async (idUser, tanggalPencatatan, tipeCabai) => {
+    console.log('sini masuk kolom 12');
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
 
@@ -402,7 +418,6 @@ module.exports = {
     const findLahan = await Lahan.find({
       user: idUser,
       tipeCabai: tipeCabai,
-      tanggalSelesai: null,
     })
       .select('_id namaLahan tanggalTanam tanggalSelesai transaksi tipeCabai')
       .populate({
@@ -413,7 +428,8 @@ module.exports = {
           jumlahDijual: { $ne: null || undefined },
         },
       });
-
+    console.log('sampai sini itu findlahan kolom 12');
+    console.log(findLahan);
     // const jumlahPenjualan1 = findLahan.map((item) => item.transaksi);
     // console.log(jumlahPenjualan1);
 
@@ -424,6 +440,8 @@ module.exports = {
         }, 0)
       )
       .reduce((prev, next) => prev + next);
+    console.log('sampai sini itu jumlah panen');
+    console.log(jumlahPanen);
 
     const totalProd = findLahan
       .map((item) =>
@@ -432,6 +450,8 @@ module.exports = {
         }, 0)
       )
       .reduce((prev, next) => prev + next);
+    console.log('sampai sini itu totalprod');
+    console.log(totalProd);
 
     const sum = totalProd / (jumlahPanen * 100);
     // console.log(jumlahPanen);
@@ -449,11 +469,73 @@ module.exports = {
   },
 
   updateKolom4: async (idUser, tanggalPencatatan, tipeCabai) => {
+    console.log('masuk kolom 4');
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
 
-    const prevstart = `${tahun}-${parseInt(bulan) - 1}-01`;
-    const prevend = `${tahun}-${parseInt(bulan) - 1}-31`;
+    const prevstart =
+      bulan === '01' ? `${tahun}-12-01` : `${tahun}-0${parseInt(bulan) - 1}-01`;
+    const prevend =
+      bulan === '01' ? `${tahun}-12-31` : `${tahun}-0${parseInt(bulan) - 1}-31`;
+
+    const start = `${tahun}-${bulan}-01`;
+    const end = `${tahun}-${bulan}-31`;
+
+    const prevbulanBlanko = await Blanko2.findOne({
+      user: idUser,
+      tipeCabai: tipeCabai,
+      tanggalPencatatan: { $gte: prevstart, $lte: prevend },
+    });
+
+    const bulanBlanko = await Blanko2.findOne({
+      user: idUser,
+      tipeCabai: tipeCabai,
+      tanggalPencatatan: { $gte: start, $lte: end },
+    });
+
+    if (prevbulanBlanko) {
+      console.log('masuk sini');
+      await Blanko2.findOneAndUpdate(
+        {
+          user: idUser,
+          tipeCabai: tipeCabai,
+          tanggalPencatatan: { $gte: start, $lte: end },
+        },
+        {
+          luasTanamanAkhirBulanLalu:
+            prevbulanBlanko.luasTanamanAkhirBulanLaporan,
+        }
+      );
+    } else {
+      console.log('masuk sana');
+
+      const findLahan = await Lahan.find({
+        user: idUser,
+        tipeCabai: tipeCabai,
+        tanggalSelesai: null,
+      }).select('_id namaLahan tanggalTanam luasLahan tipeCabai');
+
+      const sum = findLahan.reduce((accumulator, object) => {
+        return accumulator + object.luasLahan;
+      }, 0);
+
+      await Blanko2.findOneAndUpdate(
+        {
+          user: idUser,
+          tipeCabai: tipeCabai,
+          tanggalPencatatan: { $gte: start, $lte: end },
+        },
+        {
+          luasTanamanAkhirBulanLalu: sum,
+        }
+      );
+    }
+  },
+
+  updateKolom9: async (idUser, tanggalPencatatan, tipeCabai) => {
+    console.log('masuk sini 9');
+    const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
+    const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
 
     const start = `${tahun}-${bulan}-01`;
     const end = `${tahun}-${bulan}-31`;
@@ -461,30 +543,16 @@ module.exports = {
     const bulanBlanko = await Blanko2.findOne({
       user: idUser,
       tipeCabai: tipeCabai,
-      tanggalPencatatan: { $gte: prevstart, $lte: prevend },
+      tanggalPencatatan: { $gte: start, $lte: end },
     });
 
-    if (bulanBlanko) {
-      await Blanko2.findOneAndUpdate(
-        {
-          user: idUser,
-          tipeCabai: tipeCabai,
-          tanggalPencatatan: { $gte: start, $lte: end },
-        },
-        { luasTanamanAkhirBulanLalu: bulanBlanko.luasTanamanAkhirBulanLaporan }
-      );
-    } else{
-      
-    }
-    const findLahan = await Lahan.find({
-      user: idUser,
-      tipeCabai: tipeCabai,
-      tanggalSelesai: { $gte: start, $lte: end },
-    }).select('_id namaLahan tanggalSelesai luasLahan tipeCabai');
-
-    const sum = findLahan.reduce((accumulator, object) => {
-      return accumulator + object.luasLahan;
-    }, 0);
+    let sum = 
+      bulanBlanko.luasTanamanAkhirBulanLalu -
+      bulanBlanko.luasPanenHabis -
+      bulanBlanko.luasRusak +
+      bulanBlanko.luasPenanamanBaru;
+    
+    let realsum = (sum < 0.001) ? 0 : sum
 
     await Blanko2.findOneAndUpdate(
       {
@@ -492,7 +560,103 @@ module.exports = {
         tipeCabai: tipeCabai,
         tanggalPencatatan: { $gte: start, $lte: end },
       },
-      { luasPanenHabis: sum }
+      {
+        luasTanamanAkhirBulanLaporan: realsum,
+      }
     );
+  },
+
+  updateKolom5baru: async (idUser, tanggalPencatatan, tipeCabai) => {
+    const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
+    const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
+
+    const start = `${tahun}-${bulan}-01`;
+    const end = `${tahun}-${bulan}-31`;
+
+    const findLahan = await Lahan.find({
+      user: idUser,
+      tipeCabai: tipeCabai,
+      tanggalSelesai: { $gte: start, $lte: end },
+    }).select('_id namaLahan tanggalTanam tanggalSelesai luasLahan tipeCabai');
+
+    const bulanBlanko = await Blanko2.findOne({
+      user: idUser,
+      tipeCabai: tipeCabai,
+      tanggalPencatatan: { $gte: start, $lte: end },
+    });
+
+    if (findLahan.length !== 0) {
+      const sum = bulanBlanko.luasTanamanAkhirBulanLalu - bulanBlanko.luasRusak;
+      await Blanko2.findOneAndUpdate(
+        {
+          user: idUser,
+          tipeCabai: tipeCabai,
+          tanggalPencatatan: { $gte: start, $lte: end },
+        },
+        {
+          luasPanenHabis: sum,
+        }
+      );
+    } else {
+      console.log('masuk sana');
+
+      await Blanko2.findOneAndUpdate(
+        {
+          user: idUser,
+          tipeCabai: tipeCabai,
+          tanggalPencatatan: { $gte: start, $lte: end },
+        },
+        {
+          luasPanenHabis: 0,
+        }
+      );
+    }
+  },
+
+  updateKolom6: async (idUser, tanggalPencatatan, tipeCabai) => {
+    const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
+    const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
+
+    const start = `${tahun}-${bulan}-01`;
+    const end = `${tahun}-${bulan}-31`;
+
+    const findLahan = await Lahan.find({
+      user: idUser,
+      tipeCabai: tipeCabai,
+      tanggalSelesai: null,
+    }).select('_id namaLahan tanggalTanam tanggalSelesai luasLahan tipeCabai');
+
+    const bulanBlanko = await Blanko2.findOne({
+      user: idUser,
+      tipeCabai: tipeCabai,
+      tanggalPencatatan: { $gte: start, $lte: end },
+    });
+
+    if (findLahan.length !== 0) {
+      const sum = bulanBlanko.luasTanamanAkhirBulanLalu - bulanBlanko.luasRusak;
+      await Blanko2.findOneAndUpdate(
+        {
+          user: idUser,
+          tipeCabai: tipeCabai,
+          tanggalPencatatan: { $gte: start, $lte: end },
+        },
+        {
+          luasPanenBelumHabis: sum,
+        }
+      );
+    } else {
+      console.log('masuk sana');
+
+      await Blanko2.findOneAndUpdate(
+        {
+          user: idUser,
+          tipeCabai: tipeCabai,
+          tanggalPencatatan: { $gte: start, $lte: end },
+        },
+        {
+          luasPanenBelumHabis: 0,
+        }
+      );
+    }
   },
 };
