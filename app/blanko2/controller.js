@@ -5,11 +5,9 @@ const myFunction = require('../function/function');
 module.exports = {
   createBlanko: async (req, res) => {
     try {
-      console.log(req.userData.id);
       const { tanggalPencatatan, tipeCabai } = req.body;
 
       const user = req.userData.id;
-      console.log(user);
 
       const blanko = await myFunction.cekBlanko(
         user,
@@ -19,6 +17,11 @@ module.exports = {
 
       if (blanko) {
         await myFunction.updateKolom5(user, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom7(user, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom8(user, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom10(user, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom11(user, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom12(user, tanggalPencatatan, tipeCabai);
         res.status(201).json({
           message: 'Berhasil menambahkan Blanko',
           data: blanko,
@@ -68,34 +71,51 @@ module.exports = {
     }
   },
 
-    seeABlanko: async (req, res) => {
-      try {
-        const user = req.userData.id;
-        const id = req.params.blankoId;
-        console.log(user);
+  seeABlanko: async (req, res) => {
+    try {
+      const user = req.userData.id;
+      const id = req.params.blankoId;
+      console.log(user);
 
-        const aBlanko = await Blanko.find({ user: user, _id: id });
-        console.log(aBlanko[0]);
+      const aBlanko = await Blanko.find({ user: user, _id: id });
+      console.log(aBlanko[0]);
 
-        const userData = await User.findById(user).select('_id name role');
+      const userData = await User.findById(user).select('_id name role');
 
-        if (aBlanko[0] == undefined) {
-          res.status(404).json({
-            message: 'Blanko tidak ditemukan',
-          });
-        } else {
-          res.status(200).json({
-            message: 'Berhasil melihat Blanko yang telah diisi',
-            user: userData,
-            data: aBlanko,
-          });
-        }
-      } catch (error) {
-        res
-          .status(500)
-          .json({ message: error.message || `Internal server error` });
+      if (aBlanko[0] == undefined) {
+        res.status(404).json({
+          message: 'Blanko tidak ditemukan',
+        });
+      } else {
+        res.status(200).json({
+          message: 'Berhasil melihat Blanko yang telah diisi',
+          user: userData,
+          data: aBlanko,
+        });
       }
-    },
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
+    }
+  },
+
+  untuktestisng: async (req, res) => {
+    try {
+      const { tanggalPencatatan, tipeCabai } = req.body;
+
+      const user = req.userData.id;
+
+      await myFunction.updateKolom5(user, tanggalPencatatan, tipeCabai);
+      await myFunction.updateKolom7(user, tanggalPencatatan, tipeCabai);
+      await myFunction.updateKolom8(user, tanggalPencatatan, tipeCabai);
+      await myFunction.updateKolom10(user, tanggalPencatatan, tipeCabai);
+      await myFunction.updateKolom11(user, tanggalPencatatan, tipeCabai);
+      await myFunction.updateKolom12(user, tanggalPencatatan, tipeCabai);
+
+      res.status(200).json({ message: 'testing berhasil' });
+    } catch (error) {}
+  },
 
   //   seeTipeBlanko: async (req, res) => {
   //     try {

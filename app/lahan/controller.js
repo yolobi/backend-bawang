@@ -68,7 +68,7 @@ module.exports = {
       const { luasRusak } = req.body;
 
       const persenRusak =
-        Number(luasRusak) / ((await myFunction.luasLahan(id, user)) * 100);
+        parseInt(luasRusak) / ((await myFunction.luasLahan(id, user)) * 100);
 
       const lahanRusak = await Lahan.findOneAndUpdate(
         { _id: id },
@@ -172,7 +172,7 @@ module.exports = {
 
       const myLahan = await Lahan.find({ user: user })
         .select(
-          '_id namaLahan tipeCabai jumlahPanen rataanJumlahPanen transaksi jumlahPenjualan rataanHargaJual jumlahBatang tanggalTanam createdAt'
+          '_id namaLahan tipeCabai jumlahPanen rataanJumlahPanen transaksi jumlahPenjualan rataanHargaJual jumlahBatang tanggalTanam tanggalSelesai createdAt'
         )
         .populate('transaksi', '_id totalProduksi')
         .sort({
