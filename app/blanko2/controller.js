@@ -18,6 +18,7 @@ module.exports = {
       );
 
       if (blanko) {
+        await myFunction.updateKolom5(user, tanggalPencatatan, tipeCabai);
         res.status(201).json({
           message: 'Berhasil menambahkan Blanko',
           data: blanko,

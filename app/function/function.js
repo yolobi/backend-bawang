@@ -218,4 +218,20 @@ module.exports = {
       return blanko;
     }
   },
+
+  updateKolom5: async (idUser, tanggalPencatatan, tipeCabai) => {
+    const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
+    const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
+
+    const start = `${tahun}-${bulan}-01`;
+    const end = `${tahun}-${bulan}-31`;
+
+    const findLahan = await Lahan.find({
+      user: idUser,
+      tipeCabai: tipeCabai,
+      tanggaslSelesai: { $gte: start, $lte: end },
+    });
+    console.log(findLahan);
+
+  },
 };
