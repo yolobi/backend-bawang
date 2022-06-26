@@ -13,7 +13,7 @@ const dashboardRouter = require('./app/admin/dashboard/router');
 const admBlankoRouter = require('./app/admin/blanko/router');
 
 // API
-const blankoRouter = require('./app/blanko/router');
+const blankoRouter = require('./app/blanko2/router');
 const authRouter = require('./app/auth/router');
 const petaniRouter = require('./app/petani/router');
 // const testingRouter = require('./app/testing/router');
