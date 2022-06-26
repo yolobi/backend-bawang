@@ -1,6 +1,7 @@
 const Blanko = require('./model');
 const User = require('../users/model');
 const myFunction = require('../function/function');
+const Transaksi = require('../transaksi2/model');
 
 module.exports = {
   createBlanko: async (req, res) => {
@@ -15,13 +16,30 @@ module.exports = {
         tipeCabai
       );
 
-      if (blanko) {
-        await myFunction.updateKolom5(user, tanggalPencatatan, tipeCabai);
+      const transaksi = await Transaksi.findOne({ penjual: user });
+      console.log(transaksi);
+
+      if (!transaksi) {
+        console.log('masuk ana');
+        await myFunction.updateKolom8(user, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom4(user, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom9(user, tanggalPencatatan, tipeCabai);
+        res.status(201).json({
+          message: 'Berhasil menambahkan Blanko 1',
+          data: blanko,
+        });
+      } else if (blanko) {
+        console.log('masuk inituh');
         await myFunction.updateKolom7(user, tanggalPencatatan, tipeCabai);
         await myFunction.updateKolom8(user, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom4(user, tanggalPencatatan, tipeCabai);
         await myFunction.updateKolom10(user, tanggalPencatatan, tipeCabai);
         await myFunction.updateKolom11(user, tanggalPencatatan, tipeCabai);
         await myFunction.updateKolom12(user, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom5baru(user, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom6(user, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom9(user, tanggalPencatatan, tipeCabai);
+
         res.status(201).json({
           message: 'Berhasil menambahkan Blanko',
           data: blanko,
@@ -106,12 +124,15 @@ module.exports = {
 
       const user = req.userData.id;
 
-      await myFunction.updateKolom5(user, tanggalPencatatan, tipeCabai);
       await myFunction.updateKolom7(user, tanggalPencatatan, tipeCabai);
       await myFunction.updateKolom8(user, tanggalPencatatan, tipeCabai);
       await myFunction.updateKolom10(user, tanggalPencatatan, tipeCabai);
       await myFunction.updateKolom11(user, tanggalPencatatan, tipeCabai);
       await myFunction.updateKolom12(user, tanggalPencatatan, tipeCabai);
+      await myFunction.updateKolom4(user, tanggalPencatatan, tipeCabai);
+      await myFunction.updateKolom9(user, tanggalPencatatan, tipeCabai);
+      await myFunction.updateKolom5baru(user, tanggalPencatatan, tipeCabai);
+      await myFunction.updateKolom6(user, tanggalPencatatan, tipeCabai);
 
       res.status(200).json({ message: 'testing berhasil' });
     } catch (error) {}
