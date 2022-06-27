@@ -214,8 +214,9 @@ module.exports = {
         kecamatan: teritory.kecamatan,
       });
       await blanko.save();
-
       return blanko;
+    } else {
+      return bulanBlanko;
     }
   },
 
@@ -467,7 +468,7 @@ module.exports = {
         },
         { rataHargaJual: sum }
       );
-    } else{
+    } else {
       await Blanko2.findOneAndUpdate(
         {
           user: idUser,
