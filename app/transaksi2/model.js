@@ -32,6 +32,7 @@ let transaksi2Schema = new mongoose.Schema(
     grade: {
       type: String,
       enum: ['a', 'b', 'c', 'd', 'n'],
+      required: [true, 'grade harus diisi'],
     },
     totalProduksi: {
       type: Number,
