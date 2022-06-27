@@ -270,6 +270,12 @@ module.exports = {
 
       const { tanggalSelesai } = req.body;
 
+      if(!tanggalSelesai){
+        res.status(404).json({
+          message: 'tanggal selesai harus diisi',
+        });
+      }
+
       const aLahan = await Lahan.findOneAndUpdate(
         { user: user, _id: id },
         { tanggalSelesai: tanggalSelesai }
