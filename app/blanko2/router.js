@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const { createBlanko, seeMyBlanko, seeABlanko, untuktestisng } = require('./controller');
+const { createBlanko, seeMyBlanko, seeABlanko, checkinBlanko ,untuktestisng } = require('./controller');
 
 const authenticateUser = require('../middleware/authentication');
 const { checkIfPetani } = require('../middleware/check-role');
@@ -21,5 +21,7 @@ router.post(
   checkIfPetani,
   untuktestisng
 );
+
+router.post('/cekblanko', authenticateUser, checkIfPetani, checkinBlanko);
 
 module.exports = router;
