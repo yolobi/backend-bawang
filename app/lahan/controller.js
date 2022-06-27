@@ -68,7 +68,7 @@ module.exports = {
       const { luasRusak } = req.body;
 
       const persenRusak =
-        (Number(luasRusak) / await myFunction.luasLahan(id, user)) * 100;
+        (Number(luasRusak) / (await myFunction.luasLahan(id, user))) * 100;
 
       const lahanRusak = await Lahan.findOneAndUpdate(
         { _id: id },
@@ -190,6 +190,34 @@ module.exports = {
       } else {
         res.status(200).json({
           message: 'Berhasil melihat data Lahan',
+          user: userData,
+          data: myLahan,
+        });
+      }
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
+    }
+  },
+
+  seeMyTipeLahan: async (req, res) => {
+    try {
+      const user = req.userData.id;
+      console.log(user);
+
+      const myLahan = await Lahan.distinct('tipeCabai', { user: user });
+      // console.log(myLahan[0]);
+
+      const userData = await User.findById(user).select('_id name role');
+
+      if (myLahan[0] == undefined) {
+        res.status(404).json({
+          message: 'Belum ada Lahan yang diisi',
+        });
+      } else {
+        res.status(200).json({
+          message: 'Berhasil melihat Tipe Cabai Lahan',
           user: userData,
           data: myLahan,
         });
