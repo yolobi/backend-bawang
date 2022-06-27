@@ -102,9 +102,13 @@ module.exports = {
         )
         .reduce((prev, next) => prev + next);
 
-      // console.log(jumlahPenjualan);
-      // console.log(sum1);
       return jumlahPanen;
+
+      // console.log('ini kolom 10 jumlah panen');
+      // console.log(jumlahPanen);
+      // console.log(sum1);
+    } else {
+      return 0;
     }
   },
 
@@ -142,10 +146,11 @@ module.exports = {
           }, 0)
         )
         .reduce((prev, next) => prev + next);
-
+      return jumlahPanen;
       // console.log(jumlahPanen);
       // console.log(sum1);
-      return jumlahPanen;
+    } else{
+      return 0
     }
   },
 

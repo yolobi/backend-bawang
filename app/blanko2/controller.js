@@ -39,7 +39,7 @@ module.exports = {
           tipeCabai
         );
         res.status(201).json({
-          message: 'Berhasil isi blanko yang akan dikirim',
+          message: 'Berhasil isi blanko',
           user: userData,
           id: blanko._id,
           tanggalPencatatan: blanko.tanggalPencatatan,
