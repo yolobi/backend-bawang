@@ -458,14 +458,25 @@ module.exports = {
     // console.log(totalProd);
 
     // console.log(sum);
-    await Blanko2.findOneAndUpdate(
-      {
-        user: idUser,
-        tipeCabai: tipeCabai,
-        tanggalPencatatan: { $gte: start, $lte: end },
-      },
-      { rataHargaJual: sum }
-    );
+    if (sum > 0) {
+      await Blanko2.findOneAndUpdate(
+        {
+          user: idUser,
+          tipeCabai: tipeCabai,
+          tanggalPencatatan: { $gte: start, $lte: end },
+        },
+        { rataHargaJual: sum }
+      );
+    } else{
+      await Blanko2.findOneAndUpdate(
+        {
+          user: idUser,
+          tipeCabai: tipeCabai,
+          tanggalPencatatan: { $gte: start, $lte: end },
+        },
+        { rataHargaJual: 0 }
+      );
+    }
   },
 
   updateKolom4: async (idUser, tanggalPencatatan, tipeCabai) => {
@@ -546,13 +557,13 @@ module.exports = {
       tanggalPencatatan: { $gte: start, $lte: end },
     });
 
-    let sum = 
+    let sum =
       bulanBlanko.luasTanamanAkhirBulanLalu -
       bulanBlanko.luasPanenHabis -
       bulanBlanko.luasRusak +
       bulanBlanko.luasPenanamanBaru;
-    
-    let realsum = (sum < 0.001) ? 0 : sum
+
+    let realsum = sum < 0.001 ? 0 : sum;
 
     await Blanko2.findOneAndUpdate(
       {
