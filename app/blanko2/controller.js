@@ -1,9 +1,210 @@
 const Blanko = require('./model');
 const User = require('../users/model');
 const myFunction = require('../function/function');
+const lihatFunction = require('../function/lihatBlanko');
 const Transaksi = require('../transaksi2/model');
 
 module.exports = {
+  checkinBlanko: async (req, res) => {
+    try {
+      const { tanggalPencatatan, tipeCabai } = req.body;
+
+      const user = req.userData.id;
+
+      const blanko = await myFunction.cekBlanko(
+        user,
+        tanggalPencatatan,
+        tipeCabai
+      );
+
+      const transaksi = await Transaksi.findOne({ penjual: user });
+      console.log(transaksi);
+      const userData = await User.findById(user).select('_id name role');
+
+      if (!transaksi) {
+        console.log('masuk ana');
+        const kolom8 = await lihatFunction.lihatKolom8(
+          user,
+          tanggalPencatatan,
+          tipeCabai
+        );
+        const kolom4 = await lihatFunction.lihatKolom4(
+          user,
+          tanggalPencatatan,
+          tipeCabai
+        );
+        const kolom9 = await lihatFunction.lihatKolom9(
+          user,
+          tanggalPencatatan,
+          tipeCabai
+        );
+        res.status(201).json({
+          message: 'Berhasil isi blanko yang akan dikirim',
+          user: userData,
+          id: blanko._id,
+          tanggalPencatatan: blanko.tanggalPencatatan,
+          tipeCabai: blanko.tipeCabai,
+          luasTanamanAkhirBulanLalu: kolom4,
+          luasPanenHabis: blanko.luasPanenHabis,
+          luasPanenBelumHabis: blanko.luasPanenHabis,
+          luasRusak: blanko.luasRusak,
+          luasPenanamanBaru: kolom8,
+          luasTanamanAkhirBulanLaporan: kolom9,
+          prodPanenHabis: blanko.prodPanenHabis,
+          prodBelumHabis: blanko.prodBelumHabis,
+          rataHargaJual: blanko.rataHargaJual,
+          kecamatan: blanko.kecamatan,
+          kabupaten: blanko.kabupaten,
+          provinsi: blanko.provinsi,
+        });
+      } else if (blanko) {
+        console.log('masuk inituh');
+        const kolom7 = await lihatFunction.lihatKolom7(
+          user,
+          tanggalPencatatan,
+          tipeCabai
+        );
+        const kolom8 = await lihatFunction.lihatKolom8(
+          user,
+          tanggalPencatatan,
+          tipeCabai
+        );
+        const kolom4 = await lihatFunction.lihatKolom4(
+          user,
+          tanggalPencatatan,
+          tipeCabai
+        );
+        const kolom10 = await lihatFunction.lihatKolom10(
+          user,
+          tanggalPencatatan,
+          tipeCabai
+        );
+        const kolom11 = await lihatFunction.lihatKolom11(
+          user,
+          tanggalPencatatan,
+          tipeCabai
+        );
+        const kolom12 = await lihatFunction.lihatKolom12(
+          user,
+          tanggalPencatatan,
+          tipeCabai
+        );
+        const kolom5 = await lihatFunction.lihatKolom5baru(
+          user,
+          tanggalPencatatan,
+          tipeCabai
+        );
+        const kolom6 = await lihatFunction.lihatKolom6(
+          user,
+          tanggalPencatatan,
+          tipeCabai
+        );
+        const kolom9 = await lihatFunction.lihatKolom9(
+          user,
+          tanggalPencatatan,
+          tipeCabai
+        );
+
+        res.status(201).json({
+          message: 'Berhasil melihat isi blanko yang akan dikirim',
+          user: userData,
+          id: blanko._id,
+          tanggalPencatatan: blanko.tanggalPencatatan,
+          tipeCabai: blanko.tipeCabai,
+          luasTanamanAkhirBulanLalu: kolom4,
+          luasPanenHabis: kolom5,
+          luasPanenBelumHabis: kolom6,
+          luasRusak: kolom7,
+          luasPenanamanBaru: kolom8,
+          luasTanamanAkhirBulanLaporan: kolom9,
+          prodPanenHabis: kolom10,
+          prodBelumHabis: kolom11,
+          rataHargaJual: kolom12,
+          kecamatan: blanko.kecamatan,
+          kabupaten: blanko.kabupaten,
+          provinsi: blanko.provinsi,
+        });
+      } else {
+        res.status(400).json({
+          message: 'Gagal menambahkan Blanko, Blanko telah dibuat',
+        });
+      }
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
+    }
+  },
+
+  sinkronBlanko: async (req, res) => {
+    try {
+      const { tanggalPencatatan, tipeCabai } = req.body;
+
+      const user = req.userData.id;
+
+      const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
+      const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
+
+      const start = `${tahun}-${bulan}-01`;
+      const end = `${tahun}-${bulan}-31`;
+
+      const bulanBlanko = await Blanko.findOne({
+        user: user,
+        tipeCabai: tipeCabai,
+        tanggalPencatatan: { $gte: start, $lte: end },
+      });
+
+      const transaksi = await Transaksi.findOne({ penjual: user });
+      console.log(transaksi);
+
+      if (!transaksi) {
+        console.log('masuk ana');
+        await myFunction.updateKolom8(user, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom4(user, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom9(user, tanggalPencatatan, tipeCabai);
+
+        const afterUpdate = await Blanko.findOne({
+          user: user,
+          tipeCabai: tipeCabai,
+          tanggalPencatatan: { $gte: start, $lte: end },
+        });
+        res.status(201).json({
+          message: 'Berhasil menambahkan Blanko 1',
+          data: afterUpdate,
+        });
+      } else if (bulanBlanko) {
+        console.log('masuk inituh');
+        await myFunction.updateKolom7(user, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom8(user, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom4(user, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom10(user, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom11(user, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom12(user, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom5baru(user, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom6(user, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom9(user, tanggalPencatatan, tipeCabai);
+
+        const afterUpdate = await Blanko.findOne({
+          user: user,
+          tipeCabai: tipeCabai,
+          tanggalPencatatan: { $gte: start, $lte: end },
+        });
+        res.status(201).json({
+          message: 'Berhasil menambahkan Blanko',
+          data: afterUpdate,
+        });
+      } else {
+        res.status(400).json({
+          message: 'Gagal menambahkan Blanko, Blanko bulan ini belum dibuat',
+        });
+      }
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
+    }
+  },
+
   createBlanko: async (req, res) => {
     try {
       const { tanggalPencatatan, tipeCabai } = req.body;
@@ -118,7 +319,7 @@ module.exports = {
     }
   },
 
-  untuktestisng: async (req, res) => {
+  untuktesting: async (req, res) => {
     try {
       const { tanggalPencatatan, tipeCabai } = req.body;
 
