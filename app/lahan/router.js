@@ -7,6 +7,7 @@ const {
   seeMyLahan,
   editModal,
   seeALahan,
+  seeMyTipeLahan,
   lahanFinish,
   lahanUnfinish,
   deleteLahan,
@@ -22,6 +23,7 @@ router.put('/modal/:lahanId', authenticateUser, checkIfPetani, editModal);
 router.get('/namalahan', authenticateUser, checkIfPetani, seeNameLahan);
 router.get('/lihatlahan', authenticateUser, checkIfPetani, seeMyLahan);
 router.get('/lihatlahan/:lahanId', authenticateUser, checkIfPetani, seeALahan);
+router.get('/lihattipelahan', authenticateUser, checkIfPetani, seeMyTipeLahan);
 
 
 router.put('/selesai/:lahanId', authenticateUser, checkIfPetani, lahanFinish);
