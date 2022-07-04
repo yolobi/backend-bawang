@@ -105,4 +105,32 @@ module.exports = {
         .json({ message: error.message || `Internal server error` });
     }
   },
+
+  seePedagang: async (req, res) => {
+    try {
+      const tipePedagang = req.params.tipepedagang;
+      console.log(tipePedagang);
+
+      let pedagang = ['pengepul', 'pengecer', 'distributor', 'agen', 'grosir'];
+      let isPedagang = pedagang.includes(tipePedagang);
+
+      if (isPedagang) {
+        const dataPedagang = await User.find({ role: tipePedagang }).select(
+          '_id name'
+        );
+        res.status(200).json({
+          tipePedagang: tipePedagang,
+          pedagang: dataPedagang,
+        });
+      } else {
+        res.status(404).json({
+          message: 'Bukan merupakan tipe akun Pedagang',
+        });
+      }
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
+    }
+  },
 };
