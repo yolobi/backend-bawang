@@ -242,7 +242,7 @@ module.exports = {
       const user = req.userData.id;
       console.log(user);
 
-      const findStok = Stok.findOne({ _id: id });
+      const findStok = await Stok.findOne({ _id: id });
 
       if (findStok && user) {
         const stok = await Stok.findOneAndRemove({ _id: id, user: user });

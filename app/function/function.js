@@ -45,6 +45,7 @@ module.exports = {
   },
 
   updateJumlahPanen: async (idLahan, idUser) => {
+    console.log('this is jumlah panen');
     const penjual = idUser;
     const lahan = idLahan;
 
@@ -73,6 +74,7 @@ module.exports = {
   },
 
   updateJumlahPenjualan: async (idLahan, idUser) => {
+    console.log('this is jumlah penjualan');
     const penjual = idUser;
     const lahan = idLahan;
 
@@ -101,6 +103,7 @@ module.exports = {
   },
 
   updateRJumlahPanen: async (idLahan, idUser) => {
+    console.log('this is rata jumlah panen');
     const findLahan = await Lahan.findOne({
       _id: idLahan,
       user: idUser,
@@ -125,6 +128,7 @@ module.exports = {
   },
 
   updateRJumlahPenjualan: async (idLahan, idUser) => {
+    console.log('this is rata jumlah penjualan');
     const findLahan = await Lahan.findOne({
       _id: idLahan,
       user: idUser,

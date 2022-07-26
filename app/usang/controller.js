@@ -2,6 +2,51 @@ const Usang = require('./model');
 const User = require('../users/model');
 
 module.exports = {
+  index: async (req, res) => {
+    try {
+      const user = req.userData.id;
+      console.log(user);
+
+      const myUsang = await Usang.find({
+        user: user,
+      }).sort({
+        tanggalPencatatan: 'descending',
+        createdAt: 'descending',
+      });
+
+      const usangCMB = myUsang.filter(
+        (obj) => obj.tipeCabai == 'cabaiMerahBesar'
+      );
+
+      const usangCMK = myUsang.filter(
+        (obj) => obj.tipeCabai == 'cabaiMerahKeriting'
+      );
+
+      const usangCRM = myUsang.filter(
+        (obj) => obj.tipeCabai == 'cabaiRawitMerah'
+      );
+
+      const userDetail = await User.findById(user).select('_id name role');
+
+      if (!myUsang) {
+        res.status(404).json({
+          success: false,
+          message: 'Belum ada Cabai Usang yang diisi',
+        });
+      } else {
+        res.status(200).json({
+          success: true,
+          message: 'Berhasil melihat data Cabai Usang',
+          data: { user: userDetail, usangCMB, usangCMK, usangCRM },
+        });
+      }
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
+    }
+  },
+
   createUsang: async (req, res) => {
     try {
       console.log(req.userData.id);
@@ -145,7 +190,7 @@ module.exports = {
       const user = req.userData.id;
       console.log(user);
 
-      const findUsang = Usang.findOne({ _id: id });
+      const findUsang = await Usang.findOne({ _id: id });
 
       if (findUsang && user) {
         const usang = await Usang.findOneAndRemove({ _id: id, user: user });
