@@ -15,6 +15,7 @@ let blanko2Schema = new mongoose.Schema(
       type: String,
       enum: ['cabaiMerahBesar', 'cabaiMerahKeriting', 'cabaiRawitMerah'],
     },
+    // dst untuk tiap atribut pada class Blanko
     luasTanamanAkhirBulanLalu: {
       type: Number,
       default: null,

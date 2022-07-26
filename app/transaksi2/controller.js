@@ -10,6 +10,22 @@ const statusEnum = Object.freeze({
   diterima: '2',
 });
 
+const sinkronToLahan = async (lahan, penjual) => {
+  // UPDATE KE LAHAN
+  const jumlahPanen = await myFunction.updateJumlahPanen(lahan, penjual);
+  const jumlahPenjualan = await myFunction.updateJumlahPenjualan(
+    lahan,
+    penjual
+  );
+  const rjumlahPanen = await myFunction.updateRJumlahPanen(lahan, penjual);
+  const rjumlahPenjualan = await myFunction.updateRJumlahPenjualan(
+    lahan,
+    penjual
+  );
+  const checkMulaiPanen = await myFunction.checkMulaiPanen(lahan, penjual);
+  const updateKeuntungan = await myFunction.updateKeuntungan(lahan, penjual);
+};
+
 module.exports = {
   createTransaksi: async (req, res) => {
     try {
@@ -46,10 +62,7 @@ module.exports = {
           });
           await newTransaksi.save();
 
-          res.status(201).json({
-            message: 'Berhasil membuat Transaksi',
-            data: newTransaksi,
-          });
+          return newTransaksi;
         } // UNTUK PETANI
         else {
           const cekLahan = await Lahan.findOne({
@@ -65,9 +78,11 @@ module.exports = {
           let convjumlahDijual = jumlahDijual / 100;
           const totalProduksi = jumlahDijual * hargaJual;
 
+          // Apabila pembeli tidak memiliki akun
           if (!pembeli) {
             let newTransaksi = new Transaksi2({
               lahan,
+              tipeCabai: cekLahan.tipeCabai,
               tanggalPencatatan,
               penjual,
               jumlahDijual: convjumlahDijual,
@@ -84,13 +99,19 @@ module.exports = {
               { _id: lahan, user: penjual },
               { $addToSet: { transaksi: newTransaksi._id } }
             );
+
+            await sinkronToLahan(lahan, penjual);
+
             return newTransaksi.populate([
               { path: 'lahan', select: '_id tipeCabai namaLahan tanggalTanam' },
               { path: 'penjual', select: 'id name role' },
             ]);
-          } else {
+          }
+          // Apabila pembeli memiliki akun
+          else {
             let newTransaksi = new Transaksi2({
               lahan,
+              tipeCabai: cekLahan.tipeCabai,
               tanggalPencatatan,
               penjual,
               jumlahDijual: convjumlahDijual,
@@ -104,6 +125,9 @@ module.exports = {
               { _id: lahan, user: penjual },
               { $addToSet: { transaksi: newTransaksi._id } }
             );
+
+            await sinkronToLahan(lahan, penjual);
+
             return newTransaksi.populate([
               { path: 'lahan', select: '_id tipeCabai namaLahan tanggalTanam' },
               { path: 'penjual', select: 'id name role' },
@@ -116,22 +140,22 @@ module.exports = {
       const dataTransaksi = await transaksi2();
       console.log(dataTransaksi);
 
-      // UPDATE KE LAHAN
-      const jumlahPanen = await myFunction.updateJumlahPanen(lahan, penjual);
-      const jumlahPenjualan = await myFunction.updateJumlahPenjualan(
-        lahan,
-        penjual
-      );
-      const rjumlahPanen = await myFunction.updateRJumlahPanen(lahan, penjual);
-      const rjumlahPenjualan = await myFunction.updateRJumlahPenjualan(
-        lahan,
-        penjual
-      );
-      const checkMulaiPanen = await myFunction.checkMulaiPanen(lahan, penjual);
-      const updateKeuntungan = await myFunction.updateKeuntungan(
-        lahan,
-        penjual
-      );
+      // // UPDATE KE LAHAN
+      // const jumlahPanen = await myFunction.updateJumlahPanen(lahan, penjual);
+      // const jumlahPenjualan = await myFunction.updateJumlahPenjualan(
+      //   lahan,
+      //   penjual
+      // );
+      // const rjumlahPanen = await myFunction.updateRJumlahPanen(lahan, penjual);
+      // const rjumlahPenjualan = await myFunction.updateRJumlahPenjualan(
+      //   lahan,
+      //   penjual
+      // );
+      // const checkMulaiPanen = await myFunction.checkMulaiPanen(lahan, penjual);
+      // const updateKeuntungan = await myFunction.updateKeuntungan(
+      //   lahan,
+      //   penjual
+      // );
 
       res.status(201).json({
         message: 'Berhasil membuat Transaksi',
