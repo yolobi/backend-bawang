@@ -1,5 +1,5 @@
 const Tanam = require('./model');
-const User = require('../users/model');
+const User = require('../../users/model');
 
 const statusEnum = Object.freeze({
   active: '0',

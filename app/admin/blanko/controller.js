@@ -1,4 +1,4 @@
-const Blanko = require('../../blanko/model');
+const Blanko = require('../../archive/blanko/model');
 
 module.exports = {
   // ---------------------- ADMIN ----------------------

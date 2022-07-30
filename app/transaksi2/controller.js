@@ -1,4 +1,4 @@
-const Transaksi2 = require('./model');
+const Transaksi = require('./model');
 const User = require('../users/model');
 const Lahan = require('../lahan/model');
 const myFunction = require('../function/function');
@@ -29,7 +29,6 @@ const sinkronToLahan = async (lahan, penjual) => {
 module.exports = {
   createTransaksi: async (req, res) => {
     try {
-      console.log(req.userData.id);
       const {
         lahan,
         tipeCabai,
@@ -44,29 +43,47 @@ module.exports = {
 
       const penjual = req.userData.id;
       const role = req.userData.role;
-      
+
       const convjumlahDijual = jumlahDijual / 100;
       const totalProduksi = jumlahDijual * hargaJual;
 
-      let transaksi2 = async () => {
+      let transaksiCond = async () => {
         if (penjual == pembeli) {
           res.status(400).json({
+            success: false,
             message: 'Tidak dapat melakukan penjualan terhadap diri sendiri',
           });
         } // UNTUK PEDAGANG
         else if (role !== 'petani') {
-          let newTransaksi = new Transaksi2({
-            tanggalPencatatan,
-            tipeCabai,
-            penjual,
-            jumlahDijual: convjumlahDijual,
-            hargaJual,
-            totalProduksi,
-            pembeli,
-          });
-          await newTransaksi.save();
+          // TIDAK PUNYA AKUN
+          if (!pembeli) {
+            let newTransaksi = new Transaksi({
+              tanggalPencatatan,
+              tipeCabai,
+              penjual,
+              jumlahDijual: convjumlahDijual,
+              hargaJual,
+              totalProduksi,
+              statusTransaksi: 2,
+              namaPedagang,
+              tipePedagang,
+            });
+            await newTransaksi.save();
+            return newTransaksi;
+          } else {
+            let newTransaksi = new Transaksi({
+              tanggalPencatatan,
+              tipeCabai,
+              penjual,
+              jumlahDijual: convjumlahDijual,
+              hargaJual,
+              totalProduksi,
+              pembeli,
+            });
+            await newTransaksi.save();
 
-          return newTransaksi;
+            return newTransaksi;
+          }
         } // UNTUK PETANI
         else {
           const cekLahan = await Lahan.findOne({
@@ -79,10 +96,9 @@ module.exports = {
             });
           }
 
-          
           // Apabila pembeli tidak memiliki akun
           if (!pembeli) {
-            let newTransaksi = new Transaksi2({
+            let newTransaksi = new Transaksi({
               lahan,
               tipeCabai: cekLahan.tipeCabai,
               tanggalPencatatan,
@@ -111,7 +127,7 @@ module.exports = {
           }
           // Apabila pembeli memiliki akun
           else {
-            let newTransaksi = new Transaksi2({
+            let newTransaksi = new Transaksi({
               lahan,
               tipeCabai: cekLahan.tipeCabai,
               tanggalPencatatan,
@@ -139,17 +155,21 @@ module.exports = {
         }
       };
 
-      const dataTransaksi = await transaksi2();
+      const dataTransaksi = await transaksiCond();
       console.log(dataTransaksi);
 
       res.status(201).json({
+        success: true,
         message: 'Berhasil membuat Transaksi',
         data: dataTransaksi,
       });
     } catch (error) {
       res
         .status(500)
-        .json({ message: error.message || `Internal server error` });
+        .json({
+          success: true,
+          message: error.message || `Internal server error`,
+        });
     }
   },
 
@@ -187,7 +207,7 @@ module.exports = {
       const role = req.userData.role;
 
       if (role !== 'petani') {
-        const myTransaksi = await Transaksi2.find({ penjual: user })
+        const myTransaksi = await Transaksi.find({ penjual: user })
           .sort({
             tanggalPencatatan: 'descending',
             createdAt: 'descending',
@@ -195,11 +215,11 @@ module.exports = {
           .populate('pembeli', '_id name role')
           .populate('penjual', '_id name role');
 
-        const countAllTransaksi = await Transaksi2.find({
+        const countAllTransaksi = await Transaksi.find({
           penjual: user,
         }).countDocuments();
 
-        const myBeliTransaksi = await Transaksi2.find({ pembeli: user })
+        const myBeliTransaksi = await Transaksi.find({ pembeli: user })
           .sort({
             tanggalPencatatan: 'descending',
             createdAt: 'descending',
@@ -207,7 +227,7 @@ module.exports = {
           .populate('pembeli', '_id name role')
           .populate('penjual', '_id name role');
 
-        const countAllBeliTransaksi = await Transaksi2.find({
+        const countAllBeliTransaksi = await Transaksi.find({
           pembeli: user,
         }).countDocuments();
 
@@ -228,7 +248,7 @@ module.exports = {
           });
         }
       } else {
-        const myTransaksi = await Transaksi2.find({ penjual: user })
+        const myTransaksi = await Transaksi.find({ penjual: user })
           .sort({
             tanggalPencatatan: 'descending',
             createdAt: 'descending',
@@ -238,11 +258,11 @@ module.exports = {
           .populate('lahan', '_id namaLahan tipeCabai tanggalTanam');
         console.log(myTransaksi[0]);
 
-        const countAllTransaksi = await Transaksi2.find({
+        const countAllTransaksi = await Transaksi.find({
           penjual: user,
         }).countDocuments();
 
-        const myBeliTransaksi = await Transaksi2.find({ pembeli: user })
+        const myBeliTransaksi = await Transaksi.find({ pembeli: user })
           .sort({
             tanggalPencatatan: 'descending',
             createdAt: 'descending',
@@ -251,7 +271,7 @@ module.exports = {
           .populate('penjual', '_id name role')
           .populate('lahan', '_id namaLahan tipeCabai tanggalTanam');
 
-        const countAllBeliTransaksi = await Transaksi2.find({
+        const countAllBeliTransaksi = await Transaksi.find({
           pembeli: user,
         }).countDocuments();
 
@@ -288,7 +308,7 @@ module.exports = {
       const role = req.userData.role;
 
       if (role !== 'petani') {
-        const aTransaksi = await Transaksi2.findOne({
+        const aTransaksi = await Transaksi.findOne({
           _id: id,
         })
           .populate('pembeli', '_id name role')
@@ -308,7 +328,7 @@ module.exports = {
           });
         }
       } else {
-        const aTransaksi = await Transaksi2.findOne({
+        const aTransaksi = await Transaksi.findOne({
           penjual: user,
           _id: id,
         })
@@ -345,11 +365,11 @@ module.exports = {
 
       const role = req.userData.role;
 
-      const findTransaksi = await Transaksi2.findOne({ _id: id });
+      const findTransaksi = await Transaksi.findOne({ _id: id });
 
       if (role !== 'petani') {
         if (findTransaksi && user) {
-          const transaksi = await Transaksi2.findOneAndRemove({
+          const transaksi = await Transaksi.findOneAndRemove({
             _id: id,
             penjual: user,
           })
@@ -367,7 +387,7 @@ module.exports = {
         }
       } else {
         if (findTransaksi && user) {
-          const transaksi = await Transaksi2.findOneAndRemove({
+          const transaksi = await Transaksi.findOneAndRemove({
             _id: id,
             penjual: user,
           })
@@ -434,11 +454,11 @@ module.exports = {
         });
       }
 
-      const checkStatus = await Transaksi2.findById(id);
+      const checkStatus = await Transaksi.findById(id);
       console.log(checkStatus.statusTransaksi);
 
       if (checkStatus.statusTransaksi == statusEnum.diajukan) {
-        await Transaksi2.findOneAndUpdate(
+        await Transaksi.findOneAndUpdate(
           { _id: id },
           { statusTransaksi: statusEnum.diterima, $unset: { alasanDitolak: 1 } }
         );
@@ -471,14 +491,14 @@ module.exports = {
       }
       const { alasanDitolak } = req.body;
 
-      const checkStatus = await Transaksi2.findById(id);
+      const checkStatus = await Transaksi.findById(id);
       if (checkStatus.statusTransaksi == statusEnum.diterima) {
         res.status(400).json({
           message: 'Transaksi sudah diterima pembeli',
         });
       }
       if (checkStatus.statusTransaksi !== statusEnum.diterima) {
-        await Transaksi2.findOneAndUpdate(
+        await Transaksi.findOneAndUpdate(
           { _id: id },
           {
             statusTransaksi: statusEnum.ditolak,
@@ -517,11 +537,11 @@ module.exports = {
 
       let convjumlahDijual = jumlahDijual / 100;
 
-      const checkStatus = await Transaksi2.findById(id);
+      const checkStatus = await Transaksi.findById(id);
       console.log(checkStatus.statusTransaksi);
 
       if (checkStatus.statusTransaksi !== statusEnum.diterima) {
-        const transaksi = await Transaksi2.findOneAndUpdate(
+        const transaksi = await Transaksi.findOneAndUpdate(
           { _id: id },
           {
             tipeCabai,

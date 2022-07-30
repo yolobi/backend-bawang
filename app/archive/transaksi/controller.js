@@ -1,5 +1,5 @@
 const Transaksi = require('./model');
-const User = require('../users/model');
+const User = require('../../users/model');
 
 const statusEnum = Object.freeze({
   diajukan: '0',

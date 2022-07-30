@@ -11,8 +11,8 @@ const {
   deleteTransaksi,
   seeTipeTransaksi,
 } = require('./controller');
-const authenticateUser = require('../middleware/authentication');
-const { checkIfPetaniPedagang } = require('../middleware/check-role');
+const authenticateUser = require('../../middleware/authentication');
+const { checkIfPetaniPedagang } = require('../../middleware/check-role');
 
 /* GET home page. */
 router.post(

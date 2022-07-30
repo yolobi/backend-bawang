@@ -126,7 +126,7 @@ module.exports = {
       const id = req.params.usangId;
       console.log(user);
 
-      const aUsang = await Usang.find({ user: user, _id: id });
+      const aUsang = await Usang.findOne({ user: user, _id: id });
       console.log(aUsang[0]);
 
       const userData = await User.findById(user).select('_id name role');

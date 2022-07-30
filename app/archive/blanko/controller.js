@@ -1,5 +1,5 @@
 const Blanko = require('./model');
-const User = require('../users/model');
+const User = require('../../users/model');
 
 module.exports = {
   createBlanko: async (req, res) => {

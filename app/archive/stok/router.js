@@ -8,8 +8,8 @@ const {
   index,
   seeTipeStok,
 } = require('./controller');
-const authenticateUser = require('../middleware/authentication');
-const { checkIfPetani } = require('../middleware/check-role');
+const authenticateUser = require('../../middleware/authentication');
+const { checkIfPetani } = require('../../middleware/check-role');
 
 /* GET home page. */
 router.post('/tambahstok', authenticateUser, checkIfPetani, createStok);
