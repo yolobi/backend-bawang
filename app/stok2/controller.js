@@ -7,9 +7,7 @@ module.exports = {
     try {
       const lihatTransaksi = await Transaksi.find({
         $or: [{ pembeli: req.userData.id }, { penjual: req.userData.id }],
-        statusTransaksi: 2,
       }).populate('lahan', '_id tipeCabai');
-      console.log(lihatTransaksi);
 
       if (lihatTransaksi[0] == undefined) {
         res.status(404).json({
@@ -18,45 +16,64 @@ module.exports = {
             'Belum ada transaksi yang dilakukan atau belum ada transaksi yang disetujui',
         });
       } else {
-        const stokCMB = lihatTransaksi
-          .filter((obj) => obj.tipeCabai == 'cabaiMerahBesar')
+        const stokCabai = (value) => {
+          const sum = lihatTransaksi
+            .filter((obj) => obj.tipeCabai == value && obj.statusTransaksi == 2)
+            .reduce((accumulator, object) => {
+              if (object.pembeli == req.userData.id) {
+                accumulator += object.jumlahDijual;
+              } else {
+                accumulator -= object.jumlahDijual;
+              }
+              return accumulator < 0 ? 0 : accumulator;
+            }, 0);
+          return sum ? sum.toFixed(3) : 0;
+        };
+
+        const penjualanCabai = (value) => {
+          const sum = lihatTransaksi
+            .filter(
+              (obj) =>
+                obj.tipeCabai == value &&
+                obj.penjual == req.userData.id &&
+                obj.totalProduksi &&
+                obj.statusTransaksi == 2
+            )
+            .reduce((accumulator, object) => {
+              console.log(accumulator);
+              return accumulator + object.totalProduksi;
+            }, 0);
+            console.log(sum);
+          return sum;
+        };
+
+        const pembelianCabai = lihatTransaksi
+          .filter(
+            (obj) =>
+              obj.pembeli == req.userData.id &&
+              obj.totalProduksi &&
+              obj.statusTransaksi == 2
+          )
           .reduce((accumulator, object) => {
-            if (object.pembeli == req.userData.id) {
-              accumulator += object.jumlahDijual;
-            } else {
-              accumulator -= object.jumlahDijual;
-            }
-            return accumulator < 0 ? 0 : accumulator;
+            return accumulator + object.totalProduksi;
           }, 0);
 
-        const stokCMK = lihatTransaksi
-          .filter((obj) => obj.tipeCabai == 'cabaiMerahKeriting')
-          .reduce((accumulator, object) => {
-            if (object.pembeli == req.userData.id) {
-              accumulator += object.jumlahDijual;
-            } else {
-              accumulator -= object.jumlahDijual;
-            }
-            return accumulator < 0 ? 0 : accumulator;
-          }, 0);
+        const stokCMB = stokCabai('cabaiMerahBesar');
+        const stokCMK = stokCabai('cabaiMerahKeriting');
+        const stokCRM = stokCabai('cabaiRawitMerah');
 
-        const stokCRM = lihatTransaksi
-          .filter((obj) => obj.tipeCabai == 'cabaiRawitMerah')
-          .reduce((accumulator, object) => {
-            if (object.pembeli == req.userData.id) {
-              accumulator += object.jumlahDijual;
-            } else {
-              accumulator -= object.jumlahDijual;
-            }
-            return accumulator < 0 ? 0 : accumulator;
-          }, 0);
+        const pendapatanCMB = penjualanCabai('cabaiMerahBesar');
+        const pendapatanCMK = penjualanCabai('cabaiMerahKeriting');
+        const pendapatanCRM = penjualanCabai('cabaiRawitMerah');
+        const totalPendapatan =
+          Number(pendapatanCMB) + Number(pendapatanCMK) + Number(pendapatanCRM);
 
         const stok = await Stok.findOneAndUpdate(
           { user: req.userData.id },
           {
-            stokCMB: stokCMB.toFixed(3),
-            stokCMK: stokCMK.toFixed(3),
-            stokCRM: stokCRM.toFixed(3),
+            stokCMB: stokCMB,
+            stokCMK: stokCMK,
+            stokCRM: stokCRM,
           },
           { new: true, upsert: true }
         ).populate('user', '_id name role');
@@ -69,6 +86,15 @@ module.exports = {
             stokCMB: stok.stokCMB,
             stokCMK: stok.stokCMK,
             stokCRM: stok.stokCRM,
+            totalTransaksi: lihatTransaksi.length,
+            transaksiSukses: lihatTransaksi.filter(
+              (obj) => obj.statusTransaksi == 2
+            ).length,
+            totalPengeluaran: Number(pembelianCabai.toFixed(3)),
+            pendapatanCMB: pendapatanCMB,
+            pendapatanCMK: pendapatanCMK,
+            pendapatanCRM: pendapatanCRM,
+            totalPendapatan: totalPendapatan,
           },
         });
       }

@@ -44,6 +44,9 @@ module.exports = {
 
       const penjual = req.userData.id;
       const role = req.userData.role;
+      
+      const convjumlahDijual = jumlahDijual / 100;
+      const totalProduksi = jumlahDijual * hargaJual;
 
       let transaksi2 = async () => {
         if (penjual == pembeli) {
@@ -56,8 +59,9 @@ module.exports = {
             tanggalPencatatan,
             tipeCabai,
             penjual,
-            jumlahDijual,
+            jumlahDijual: convjumlahDijual,
             hargaJual,
+            totalProduksi,
             pembeli,
           });
           await newTransaksi.save();
@@ -75,9 +79,7 @@ module.exports = {
             });
           }
 
-          let convjumlahDijual = jumlahDijual / 100;
-          const totalProduksi = jumlahDijual * hargaJual;
-
+          
           // Apabila pembeli tidak memiliki akun
           if (!pembeli) {
             let newTransaksi = new Transaksi2({
@@ -139,23 +141,6 @@ module.exports = {
 
       const dataTransaksi = await transaksi2();
       console.log(dataTransaksi);
-
-      // // UPDATE KE LAHAN
-      // const jumlahPanen = await myFunction.updateJumlahPanen(lahan, penjual);
-      // const jumlahPenjualan = await myFunction.updateJumlahPenjualan(
-      //   lahan,
-      //   penjual
-      // );
-      // const rjumlahPanen = await myFunction.updateRJumlahPanen(lahan, penjual);
-      // const rjumlahPenjualan = await myFunction.updateRJumlahPenjualan(
-      //   lahan,
-      //   penjual
-      // );
-      // const checkMulaiPanen = await myFunction.checkMulaiPanen(lahan, penjual);
-      // const updateKeuntungan = await myFunction.updateKeuntungan(
-      //   lahan,
-      //   penjual
-      // );
 
       res.status(201).json({
         message: 'Berhasil membuat Transaksi',
