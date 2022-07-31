@@ -64,6 +64,7 @@ module.exports = {
               jumlahDijual: convjumlahDijual,
               hargaJual,
               totalProduksi,
+              grade,
               statusTransaksi: 2,
               namaPedagang,
               tipePedagang,
@@ -78,6 +79,7 @@ module.exports = {
               jumlahDijual: convjumlahDijual,
               hargaJual,
               totalProduksi,
+              grade,
               pembeli,
             });
             await newTransaksi.save();
