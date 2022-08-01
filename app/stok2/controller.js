@@ -115,8 +115,8 @@ module.exports = {
       }).populate('lahan', '_id tipeCabai');
 
       if (lihatTransaksi[0] == undefined) {
-        res.status(404).json({
-          success: false,
+        res.status(200).json({
+          success: true,
           message:
             'Belum ada transaksi yang dilakukan atau belum ada transaksi yang disetujui',
           data: {
