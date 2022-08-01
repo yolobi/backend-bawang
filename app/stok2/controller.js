@@ -106,8 +106,6 @@ module.exports = {
   stokByBulan: async (req, res) => {
     try {
       const date = req.params.bulan.split('-');
-      console.log(date);
-
       const start = `${date[0]}-${date[1]}-01`;
       const end = `${date[0]}-${date[1]}-31`;
 
@@ -118,9 +116,26 @@ module.exports = {
 
       if (lihatTransaksi[0] == undefined) {
         res.status(404).json({
-          sucess: false,
+          success: false,
           message:
             'Belum ada transaksi yang dilakukan atau belum ada transaksi yang disetujui',
+          data: {
+            user: {
+              _id: req.userData.id,
+              name: req.userData.name,
+              role: req.userData.role,
+            },
+            stokCMB: 0,
+            stokCMK: 0,
+            stokCRM: 0,
+            totalTransaksi: 0,
+            transaksiSukses: 0,
+            totalPengeluaran: 0,
+            pendapatanCMB: 0,
+            pendapatanCMK: 0,
+            pendapatanCRM: 0,
+            totalPendapatan: 0,
+          },
         });
       } else {
         const stokCabai = (value) => {
