@@ -37,8 +37,8 @@ module.exports = {
         hargaJual,
         grade,
         pembeli,
-        namaPedagang,
-        tipePedagang,
+        namaPembeli,
+        tipePembeli,
       } = req.body;
 
       const penjual = req.userData.id;
@@ -66,8 +66,8 @@ module.exports = {
               totalProduksi,
               grade,
               statusTransaksi: 2,
-              namaPedagang,
-              tipePedagang,
+              namaPembeli,
+              tipePembeli,
             });
             await newTransaksi.save();
             return newTransaksi;
@@ -110,8 +110,8 @@ module.exports = {
               grade,
               totalProduksi,
               statusTransaksi: 2,
-              namaPedagang,
-              tipePedagang,
+              namaPembeli,
+              tipePembeli,
             });
             await newTransaksi.save();
 
@@ -166,12 +166,10 @@ module.exports = {
         data: dataTransaksi,
       });
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          success: true,
-          message: error.message || `Internal server error`,
-        });
+      res.status(500).json({
+        success: true,
+        message: error.message || `Internal server error`,
+      });
     }
   },
 
@@ -303,59 +301,28 @@ module.exports = {
 
   seeATransaksi: async (req, res) => {
     try {
-      const user = req.userData.id;
-      const id = req.params.transaksiId;
-      console.log(user);
+      const findTransaksi = await Transaksi.findById(req.params.transaksiId)
+        .populate('pembeli', '_id name role')
+        .populate('penjual', '_id name role')
+        .populate('lahan', '_id namaLahan tipeCabai tanggalTanam');
 
-      const role = req.userData.role;
-
-      if (role !== 'petani') {
-        const aTransaksi = await Transaksi.findOne({
-          _id: id,
-        })
-          .populate('pembeli', '_id name role')
-          .populate('penjual', '_id name role');
-
-        const userData = await User.findById(user).select('_id name');
-
-        if (!aTransaksi) {
-          res.status(404).json({
-            message: 'Transaksi tidak ditemukan',
-          });
-        } else {
-          res.status(200).json({
-            message: `Berhasil melihat Transaksi dengan id ${aTransaksi._id} `,
-            user: userData,
-            data: aTransaksi,
-          });
-        }
+      if (!findTransaksi) {
+        res.status(404).json({
+          success: false,
+          message: 'Transaksi tidak ditemukan',
+        });
       } else {
-        const aTransaksi = await Transaksi.findOne({
-          penjual: user,
-          _id: id,
-        })
-          .populate('pembeli', '_id name role')
-          .populate('penjual', '_id name role')
-          .populate('lahan', '_id namaLahan tipeCabai tanggalTanam');
-
-        const userData = await User.findById(user).select('_id name');
-
-        if (!aTransaksi) {
-          res.status(404).json({
-            message: 'Transaksi tidak ditemukan',
-          });
-        } else {
-          res.status(200).json({
-            message: `Berhasil melihat Transaksi dengan id ${aTransaksi._id} `,
-            user: userData,
-            data: aTransaksi,
-          });
-        }
+        res.status(200).json({
+          success: true,
+          message: `Berhasil melihat Transaksi dengan id ${findTransaksi._id}`,
+          data: findTransaksi,
+        });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: error.message || `Internal server error` });
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
     }
   },
 

@@ -49,7 +49,6 @@ module.exports = {
 
   createUsang: async (req, res) => {
     try {
-      console.log(req.userData.id);
       const {
         tipeCabai,
         jumlahUsang,
@@ -58,13 +57,10 @@ module.exports = {
         pemanfaatan,
       } = req.body;
 
-      const user = req.userData.id;
-      console.log(user);
-
-      let usang = new Usang({
-        user,
+      const usang = new Usang({
+        user: req.userData.id,
         tipeCabai,
-        jumlahUsang,
+        jumlahUsang: jumlahUsang / 100,
         hargaJual,
         tanggalPencatatan,
         pemanfaatan,
@@ -72,13 +68,17 @@ module.exports = {
       await usang.save();
 
       res.status(201).json({
+        success: true,
         message: 'Berhasil menambahkan Cabai Usang',
         data: usang,
       });
     } catch (error) {
       res
         .status(500)
-        .json({ message: error.message || `Internal server error` });
+        .json({
+          success: false,
+          message: error.message || `Internal server error`,
+        });
     }
   },
 

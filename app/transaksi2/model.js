@@ -55,11 +55,11 @@ let transaksi2Schema = new mongoose.Schema(
       type: String,
       minlength: [6, 'alasan ditolak minimal 6 karakter'],
     },
-    tipePedagang: {
+    tipePembeli: {
       type: String,
-      enum: ['petani', 'agen', 'distributor', 'pengecer', 'pengepul', 'grosir'],
+      enum: ['agen', 'distributor', 'pengecer', 'pengepul', 'grosir'],
     },
-    namaPedagang: {
+    namaPembeli: {
       type: String,
     },
   },
