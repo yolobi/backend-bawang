@@ -14,7 +14,6 @@ let usangSchema = new mongoose.Schema(
     },
     jumlahUsang: {
       type: Number,
-      required: [true, 'jumlahUsang harus diisi'],
     },
     hargaJual: {
       type: Number,
