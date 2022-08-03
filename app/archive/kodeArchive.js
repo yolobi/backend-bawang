@@ -736,4 +736,67 @@ module.exports = {
     }
   },
 
+  // changeStatusAjukan: async (req, res) => {
+  //   try {
+  //     const id = req.params.transaksiId;
+  //     if (!id) {
+  //       res.status(404).json({
+  //         message: 'Transaksi tidak ditemukan',
+  //       });
+  //     }
+
+  //     const { tipeCabai, jumlahDijual, hargaJual } = req.body;
+
+  //     let convjumlahDijual = jumlahDijual / 100;
+
+  //     const checkStatus = await Transaksi.findById(id);
+  //     console.log(checkStatus.statusTransaksi);
+
+  //     if (checkStatus.statusTransaksi !== statusEnum.diterima) {
+  //       const transaksi = await Transaksi.findOneAndUpdate(
+  //         { _id: id },
+  //         {
+  //           tipeCabai,
+  //           jumlahDijual: convjumlahDijual,
+  //           hargaJual,
+  //           statusTransaksi: statusEnum.diajukan,
+  //         }
+  //       );
+  //       res.status(200).json({
+  //         message: 'Status Transaksi berhasil dirubah',
+  //         status: 'Transaksi diajukan kembali ke Pembeli',
+  //         statusTransaksi: statusEnum.diajukan,
+  //         alasanDitolak: transaksi.alasanDitolak,
+  //         data: transaksi,
+  //       });
+  //     } else {
+  //       res.status(400).json({
+  //         message: 'Transaksi sudah diterima pembeli',
+  //       });
+  //     }
+  //   } catch (error) {
+  //     res
+  //       .status(500)
+  //       .json({ message: error.message || `Internal server error` });
+  //     console.log(error);
+  //   }
+  // },
+
+  // teritoryInfo: async (id) => {
+  //   if (id.toString().length === 2) {
+  //     let dataProvinsi = await indonesia.getProvinceById(id.toString());
+  //     let { latitude, longitude, ...newdataProvinsi } = dataProvinsi;
+  //     return newdataProvinsi;
+  //   } else if (id.toString().length === 4) {
+  //     let dataKabupaten = await indonesia.getRegencyById(id.toString());
+  //     let { latitude, longitude, ...newdataKabupaten } = dataKabupaten;
+  //     return newdataKabupaten;
+  //   } else if (id.toString().length === 7) {
+  //     let dataKecamatan = await indonesia.getDistrictById(id.toString());
+  //     let { latitude, longitude, ...newdataKecamatan } = dataKecamatan;
+  //     return newdataKecamatan;
+  //   } else {
+  //     return 'data tidak valid';
+  //   }
+  // },
 };

@@ -96,7 +96,6 @@ module.exports = {
   signin: async (req, res) => {
     try {
       const { account, password } = req.body;
-  
 
       const user = await User.findOne({
         $or: [{ email: account }, { phone: account }],

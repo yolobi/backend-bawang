@@ -3,9 +3,9 @@ var router = express.Router();
 const {
   seeMyProfile,
   editProfile,
-  seeProfile,
-  seePetani,
-  seePedagang,
+  getProfilebyID,
+  getPetani,
+  getPedagangbyTipe,
 } = require('./controller');
 const authenticateUser = require('../middleware/authentication');
 const {
@@ -15,15 +15,28 @@ const {
 
 /* GET home page. */
 router.get('/myprofile', authenticateUser, seeMyProfile);
-router.get('/profile/:userId', authenticateUser, seeProfile);
+
 router.put('/profile', authenticateUser, editProfile);
-router.get('/petani', authenticateUser, seePetani);
 
 router.get(
   '/lihatpedagang/:tipepedagang',
   authenticateUser,
   checkIfPetaniPedagang,
-  seePedagang
+  getPedagangbyTipe
+);
+
+// ENDPOINT BARU
+router.get('/profile/:idUser', authenticateUser, getProfilebyID);
+
+router.put('/profile/edit', authenticateUser, editProfile);
+
+router.get('/petani', authenticateUser, getPetani);
+
+router.get(
+  '/pedagang/:tipepedagang',
+  authenticateUser,
+  checkIfPetaniPedagang,
+  getPedagangbyTipe
 );
 
 module.exports = router;

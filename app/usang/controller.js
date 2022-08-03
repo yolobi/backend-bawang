@@ -2,33 +2,50 @@ const Usang = require('./model');
 const User = require('../users/model');
 
 module.exports = {
-  index: async (req, res) => {
+  addUsang: async (req, res) => {
     try {
-      const user = req.userData.id;
-      console.log(user);
+      const { tipeCabai, jumlahUsang, tanggalPencatatan, pemanfaatan } =
+        req.body;
 
-      const myUsang = await Usang.find({
-        user: user,
-      }).sort({
-        tanggalPencatatan: 'descending',
-        createdAt: 'descending',
+      let idUser = req.userData.id;
+      let jumlahUsangtoKg = jumlahUsang / 100;
+
+      const newUsang = new Usang({
+        user: idUser,
+        tipeCabai,
+        jumlahUsang: jumlahUsangtoKg.toFixed(3),
+        tanggalPencatatan,
+        pemanfaatan,
       });
+      await newUsang.save();
 
-      const usangCMB = myUsang.filter(
-        (obj) => obj.tipeCabai == 'cabaiMerahBesar'
-      );
+      res.status(201).json({
+        success: true,
+        message: 'Berhasil menambahkan Cabai Usang',
+        data: newUsang,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
+    }
+  },
 
-      const usangCMK = myUsang.filter(
-        (obj) => obj.tipeCabai == 'cabaiMerahKeriting'
-      );
+  getUsangAll: async (req, res) => {
+    try {
+      const idUser = req.userData.id;
 
-      const usangCRM = myUsang.filter(
-        (obj) => obj.tipeCabai == 'cabaiRawitMerah'
-      );
+      const findUsang = await Usang.find({ user: idUser })
+        .sort({
+          tanggalPencatatan: 'descending',
+          createdAt: 'descending',
+        })
+        .populate('user', '_id name role');
 
-      const userDetail = await User.findById(user).select('_id name role');
+      const countAllUsang = findUsang.length;
 
-      if (!myUsang) {
+      if (findUsang.length == 0 || !findUsang) {
         res.status(404).json({
           success: false,
           message: 'Belum ada Cabai Usang yang diisi',
@@ -37,176 +54,110 @@ module.exports = {
         res.status(200).json({
           success: true,
           message: 'Berhasil melihat data Cabai Usang',
-          data: { user: userDetail, usangCMB, usangCMK, usangCRM },
+          data: findUsang,
         });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: error.message || `Internal server error` });
-    }
-  },
-
-  createUsang: async (req, res) => {
-    try {
-      const {
-        tipeCabai,
-        jumlahUsang,
-        hargaJual,
-        tanggalPencatatan,
-        pemanfaatan,
-      } = req.body;
-
-      const usang = new Usang({
-        user: req.userData.id,
-        tipeCabai,
-        jumlahUsang: jumlahUsang / 100,
-        hargaJual,
-        tanggalPencatatan,
-        pemanfaatan,
-      });
-      await usang.save();
-
-      res.status(201).json({
+      res.status(500).json({
         success: true,
-        message: 'Berhasil menambahkan Cabai Usang',
-        data: usang,
+        message: error.message || `Internal server error`,
       });
-    } catch (error) {
-      res
-        .status(500)
-        .json({
-          success: false,
-          message: error.message || `Internal server error`,
-        });
     }
   },
 
-  seeMyUsang: async (req, res) => {
+  getUsangbyID: async (req, res) => {
     try {
-      const user = req.userData.id;
-      console.log(user);
+      const idUser = req.userData.id;
+      const idUsang = req.params.idUsang;
 
-      const myUsang = await Usang.find({ user: user })
-        .select(
-          '_id tipeCabai jumlahUsang hargaJual tanggalPencatatan pemanfaatan createdAt'
-        )
+      const findUsang = await Usang.findOne({
+        user: idUser,
+        _id: idUsang,
+      }).populate('user', '_id name role');
+
+      if (!findUsang) {
+        res.status(404).json({
+          success: false,
+          message: 'Data Cabai Usang tidak ditemukan',
+        });
+      } else {
+        res.status(200).json({
+          success: true,
+          message: 'Berhasil melihat data Cabai Usang',
+          data: findUsang,
+        });
+      }
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
+    }
+  },
+
+  getUsangbyTipe: async (req, res) => {
+    try {
+      const idUser = req.userData.id;
+      const tipeCabai = req.params.tipecabai;
+
+      const findUsang = await Usang.find({
+        user: idUser,
+        tipeCabai: tipeCabai,
+      })
         .sort({
           tanggalPencatatan: 'descending',
           createdAt: 'descending',
-        });
-      console.log(myUsang[0]);
+        })
+        .populate('user', '_id name role');
+      console.log(findUsang);
 
-      const countAllUsang = await Usang.find({ user: user }).countDocuments();
-
-      const userData = await User.findById(user).select('_id name role');
-
-      if (myUsang[0] == undefined) {
+      if (findUsang.length == 0 || !findUsang) {
         res.status(404).json({
-          message: 'Belum ada Cabai Usang yang diisi',
+          success: false,
+          message: `Belum ada tipe ${tipeCabai} yang diisi`,
         });
       } else {
         res.status(200).json({
-          message: 'Berhasil melihat data Cabai Usang',
-          petani: userData,
-          data: myUsang,
-          countAllUsang: countAllUsang,
-        });
-      }
-    } catch (error) {
-      res
-        .status(500)
-        .json({ message: error.message || `Internal server error` });
-    }
-  },
-
-  seeAUsang: async (req, res) => {
-    try {
-      const user = req.userData.id;
-      const id = req.params.usangId;
-      console.log(user);
-
-      const aUsang = await Usang.findOne({ user: user, _id: id });
-      console.log(aUsang[0]);
-
-      const userData = await User.findById(user).select('_id name role');
-
-      if (aUsang[0] == undefined) {
-        res.status(404).json({
-          message: 'Data Cabai Usang tidak ditemukan',
-        });
-      } else {
-        res.status(200).json({
-          message: 'Berhasil melihat data Cabai Usang',
-          petani: userData,
-          data: aUsang,
-        });
-      }
-    } catch (error) {
-      res
-        .status(500)
-        .json({ message: error.message || `Internal server error` });
-    }
-  },
-
-  seeTipeUsang: async (req, res) => {
-    try {
-      const user = req.userData.id;
-      const tipeCabai = req.params.tipecabai;
-      console.log(user);
-
-      const tipeUsang = await Usang.find({
-        user: user,
-        tipeCabai: tipeCabai,
-      }).sort({
-        tanggalPencatatan: 'descending',
-        createdAt: 'descending',
-      });
-      console.log(tipeUsang[0]);
-
-      const userData = await User.findById(user).select('_id name');
-
-      if (tipeUsang[0] == undefined) {
-        res.status(404).json({
-          message: 'Data Cabai Usang tidak ditemukan',
-        });
-      } else {
-        res.status(200).json({
+          success: true,
           message: `Berhasil melihat data Cabai Usang untuk tipe ${tipeCabai}`,
-          user: userData,
-          data: tipeUsang,
+          data: findUsang,
         });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: error.message || `Internal server error` });
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
     }
   },
 
   deleteUsang: async (req, res) => {
     try {
-      const id = req.params.usangId;
-      const user = req.userData.id;
-      console.log(user);
+      const idUser = req.userData.id;
+      const idUsang = req.params.idUsang;
 
-      const findUsang = await Usang.findOne({ _id: id });
+      const findUsang = await Usang.findOneAndRemove({
+        user: idUser,
+        _id: idUsang,
+      }).populate('user', '_id name role');
 
-      if (findUsang && user) {
-        const usang = await Usang.findOneAndRemove({ _id: id, user: user });
-        res.status(201).json({
-          message: 'Berhasil menghapus data Cabai Usang',
-          data: usang,
+      if (!findUsang) {
+        res.status(404).json({
+          success: false,
+          message: 'Data Cabai Usang tidak ditemukan',
         });
       } else {
-        res.status(404).json({
-          message: 'Data Cabai Usang tidak ditemukan',
+        res.status(200).json({
+          success: true,
+          message: 'Berhasil menghapus data Cabai Usang',
+          data: findUsang,
         });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: error.message || `Internal server error` });
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
     }
   },
 };

@@ -5,22 +5,37 @@ const Lahan = require('../lahan/model');
 const Blanko2 = require('../blanko2/model');
 
 module.exports = {
-  teritoryInfo: async (id) => {
-    if (id.toString().length === 2) {
-      let dataProvinsi = await indonesia.getProvinceById(id.toString());
-      let { latitude, longitude, ...newdataProvinsi } = dataProvinsi;
-      return newdataProvinsi;
-    } else if (id.toString().length === 4) {
-      let dataKabupaten = await indonesia.getRegencyById(id.toString());
-      let { latitude, longitude, ...newdataKabupaten } = dataKabupaten;
-      return newdataKabupaten;
-    } else if (id.toString().length === 7) {
-      let dataKecamatan = await indonesia.getDistrictById(id.toString());
-      let { latitude, longitude, ...newdataKecamatan } = dataKecamatan;
-      return newdataKecamatan;
-    } else {
-      return 'data tidak valid';
-    }
+  teritoryInfo: async (idProvinsi, idKabupaten, idKecamatan) => {
+    console.log('masuk sini');
+    let detailProvinsi =
+      await indonesia.getProvinceById(idProvinsi.toString()) ||
+      'idProvinsi tidak valid';
+    console.log(detailProvinsi);
+
+    let detailKabupaten =
+      await indonesia.getRegencyById(idKabupaten.toString()) ||
+      'idKabupaten tidak valid';
+    console.log(detailKabupaten);
+
+    let detailKecamatan =
+      await indonesia.getDistrictById(idKecamatan.toString()) ||
+      'idKecamatan tidak valid';
+    console.log(detailKecamatan);
+
+    const removeLatLong = (detail) => {
+      if (typeof detail === 'string') {
+        return detail;
+      } else {
+        let { latitude, longitude, ...newDataDetail } = detail;
+        return newDataDetail;
+      }
+    };
+
+    return {
+      detailProvinsi: removeLatLong(detailProvinsi),
+      detailKabupaten: removeLatLong(detailKabupaten),
+      detailKecamatan: removeLatLong(detailKecamatan),
+    };
   },
 
   luasLahan: async (idLahan, idUser) => {
@@ -61,7 +76,7 @@ module.exports = {
     let countTransaksi = findLahan.transaksi.length;
     let transaksiPertama = findLahan.transaksi[0].tanggalPencatatan;
 
-    if (countTransaksi == 0 || undefined) {
+    if (countTransaksi == 0 || !countTransaksi) {
       await Lahan.findOneAndUpdate(
         { _id: lahan, user: penjual },
         {

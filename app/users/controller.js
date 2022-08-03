@@ -30,107 +30,140 @@ module.exports = {
     }
   },
 
-  seeProfile: async (req, res) => {
+  getProfilebyID: async (req, res) => {
     try {
-      const user = req.params.userId;
-      console.log(user);
+      const idUser = req.params.idUser;
 
-      const myProfile = await User.findById(user).select(
+      const findUser = await User.findById(idUser).select(
         '_id name email kecamatan kabupaten provinsi alamat role'
       );
-      console.log(myProfile[0]);
+      console.log('aman');
 
-      res.status(200).json({
-        message: 'Berhasil melihat Profil',
-        id: myProfile._id,
-        name: myProfile.name,
-        email: myProfile.email,
-        kecamatan: await myFunction.teritoryInfo(myProfile.kecamatan),
-        kabupaten: await myFunction.teritoryInfo(myProfile.kabupaten),
-        provinsi: await myFunction.teritoryInfo(myProfile.provinsi),
-        alamat: myProfile.alamat,
-        role: myProfile.role,
-      });
+      if (!findUser) {
+        res.status(404).json({
+          success: false,
+          message: 'User tidak ditemukan',
+        });
+      } else {
+        let teritory = await myFunction.teritoryInfo(
+          findUser.provinsi,
+          findUser.kabupaten,
+          findUser.kecamatan
+        );
+
+        res.status(200).json({
+          success: true,
+          message: 'Berhasil melihat Profil',
+          data: {
+            id: findUser._id,
+            name: findUser.name,
+            email: findUser.email,
+            kecamatan: teritory.detailKecamatan,
+            kabupaten: teritory.detailKabupaten,
+            provinsi: teritory.detailProvinsi,
+            alamat: findUser.alamat,
+            role: findUser.role,
+          },
+        });
+      }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: error.message || `Internal server error` });
+      res.status(500).json({
+        succes: false,
+        message: error.message || `Internal server error`,
+      });
     }
   },
 
   editProfile: async (req, res) => {
     try {
-      const user = req.userData.id;
-      console.log(user);
+      const idUser = req.userData.id;
 
-      const { name, email, kecamatan, kabupaten, provinsi, alamat, role } =
-        req.body;
+      const { name, kecamatan, kabupaten, provinsi, alamat } = req.body;
 
-      const myProfile = await User.findOneAndUpdate(
-        { _id: user },
-        { name, email, kecamatan, kabupaten, provinsi, alamat, role }
+      const findUser = await User.findOneAndUpdate(
+        { _id: idUser },
+        { name, kecamatan, kabupaten, provinsi, alamat },
+        { new: true }
+      );
+
+      let teritory = await myFunction.teritoryInfo(
+        findUser.provinsi,
+        findUser.kabupaten,
+        findUser.kecamatan
       );
 
       res.status(201).json({
-        message: 'Berhasil mengupdate Profil',
-        name: name,
-        email: email,
-        kecamatan: await myFunction.teritoryInfo(kecamatan),
-        kabupaten: await myFunction.teritoryInfo(kabupaten),
-        provinsi: await myFunction.teritoryInfo(provinsi),
-        alamat: alamat,
-        role: role,
+        success: true,
+        message: 'Berhasil mengedit Profil',
+        data: {
+          id: findUser._id,
+          name: findUser.name,
+          email: findUser.email,
+          kecamatan: teritory.detailKecamatan,
+          kabupaten: teritory.detailKabupaten,
+          provinsi: teritory.detailProvinsi,
+          alamat: findUser.alamat,
+          role: findUser.role,
+        },
       });
     } catch (error) {
       console.log(error);
-      res
-        .status(500)
-        .json({ message: error.message || `Internal server error` });
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
     }
   },
 
-  seePetani: async (req, res) => {
+  getPetani: async (req, res) => {
     try {
-      const petani = await User.find({ role: 'petani' }).select(
+      const findPetani = await User.find({ role: 'petani' }).select(
         '_id name email kecamatan kabupaten provinsi alamat role'
       );
 
       res.status(200).json({
+        success: true,
         message: 'Berhasil melihat akun Petani',
-        data: petani,
+        data: findPetani,
       });
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: error.message || `Internal server error` });
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
     }
   },
 
-  seePedagang: async (req, res) => {
+  getPedagangbyTipe: async (req, res) => {
     try {
       const tipePedagang = req.params.tipepedagang;
-      console.log(tipePedagang);
 
       let pedagang = ['pengepul', 'pengecer', 'distributor', 'agen', 'grosir'];
       let isPedagang = pedagang.includes(tipePedagang);
 
-      if (isPedagang) {
-        const dataPedagang = await User.find({ role: tipePedagang }).select(
-          '_id name'
-        );
-        res.status(200).json({
-          tipePedagang: tipePedagang,
-          pedagang: dataPedagang,
+      if (!isPedagang) {
+        res.status(404).json({
+          success: false,
+          message: 'Bukan merupakan tipe akun Pedagang',
         });
       } else {
-        res.status(404).json({
-          message: 'Bukan merupakan tipe akun Pedagang',
+        const findPedagang = await User.find({
+          role: tipePedagang,
+        }).select('_id name');
+
+        res.status(200).json({
+          success: true,
+          message: `Berhasil melihat daftar pedagang dengan tipe ${tipePedagang}`,
+          data: findPedagang,
         });
       }
     } catch (error) {
       res
         .status(500)
-        .json({ message: error.message || `Internal server error` });
+        .json({
+          success: false,
+          message: error.message || `Internal server error`,
+        });
     }
   },
 };

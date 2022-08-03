@@ -1,24 +1,50 @@
 var express = require('express');
 var router = express.Router();
 const {
-  index, createUsang, seeMyUsang, seeAUsang, seeTipeUsang, deleteUsang
+  addUsang, getUsangAll, getUsangbyID, getUsangbyTipe, deleteUsang
 } = require('./controller');
 const authenticateUser = require('../middleware/authentication');
 const { checkIfPedagang } = require('../middleware/check-role');
 
 /* GET home page. */
-router.get('/', authenticateUser, checkIfPedagang, index);
-router.post('/tambahusang', authenticateUser, checkIfPedagang, createUsang);
+router.post('/tambahusang', authenticateUser, checkIfPedagang, addUsang);
 
-router.get('/lihatusang', authenticateUser, checkIfPedagang, seeMyUsang);
-router.get('/lihatusang/:usangId', authenticateUser, checkIfPedagang, seeAUsang);
+router.get('/lihatusang', authenticateUser, checkIfPedagang, getUsangAll);
+router.get('/lihatusang/:idUsang', authenticateUser, checkIfPedagang, getUsangbyID);
+
 router.get(
   '/lihatusangbytype/:tipecabai',
   authenticateUser,
   checkIfPedagang,
-  seeTipeUsang
+  getUsangbyTipe
 );
-router.delete('/hapususang/:usangId', authenticateUser, checkIfPedagang, deleteUsang);
+router.delete('/hapususang/:idUsang', authenticateUser, checkIfPedagang, deleteUsang);
 
+
+// ENDPOINT BARU
+router.post('/tambah', authenticateUser, checkIfPedagang, addUsang);
+
+router.get('/', authenticateUser, checkIfPedagang, getUsangAll);
+
+router.get(
+  '/:idUsang',
+  authenticateUser,
+  checkIfPedagang,
+  getUsangbyID
+);
+
+router.get(
+  '/tipe/:tipecabai',
+  authenticateUser,
+  checkIfPedagang,
+  getUsangbyTipe
+);
+
+router.delete(
+  '/hapus/:idUsang',
+  authenticateUser,
+  checkIfPedagang,
+  deleteUsang
+);
 
 module.exports = router;

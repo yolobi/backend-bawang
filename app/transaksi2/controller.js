@@ -214,7 +214,7 @@ module.exports = {
           tipeCabai: lahanDetail.tipeCabai,
           tanggalPencatatan,
           penjual,
-          jumlahDijual: jumlahDijualtoKg,
+          jumlahDijual: jumlahDijualtoKg.toFixed(3),
           hargaJual,
           grade,
           totalProduksi,
@@ -241,7 +241,7 @@ module.exports = {
           tipeCabai: lahanDetail.tipeCabai,
           tanggalPencatatan,
           penjual,
-          jumlahDijual: jumlahDijualtoKg,
+          jumlahDijual: jumlahDijualtoKg.toFixed(3),
           hargaJual,
           grade,
           totalProduksi,
@@ -317,7 +317,7 @@ module.exports = {
           tanggalPencatatan,
           tipeCabai,
           penjual,
-          jumlahDijual: jumlahDijualtoKg,
+          jumlahDijual: jumlahDijualtoKg.toFixed(3),
           hargaJual,
           totalProduksi,
           grade,
@@ -335,7 +335,7 @@ module.exports = {
           tanggalPencatatan,
           tipeCabai,
           penjual,
-          jumlahDijual: jumlahDijualtoKg,
+          jumlahDijual: jumlahDijualtoKg.toFixed(3),
           hargaJual,
           totalProduksi,
           grade,
@@ -389,7 +389,7 @@ module.exports = {
         .populate('penjual', '_id name role')
         .populate('lahan', '_id namaLahan tipeCabai tanggalTanam');
 
-      if (!findTransaksi) {
+      if (findTransaksi.length == 0 || !findTransaksi) {
         res.status(404).json({
           success: false,
           message: 'Belum ada Transaksi yang diisi',
@@ -430,6 +430,7 @@ module.exports = {
 
   getTransaksibyID: async (req, res) => {
     try {
+      const isUser = req.userData.id;
       const idTransaksi = req.params.idTransaksi;
 
       const findTransaksi = await Transaksi.findById(idTransaksi)
@@ -504,7 +505,8 @@ module.exports = {
 
       const findTransaksi = await Transaksi.findOneAndUpdate(
         { _id: idTransaksi, statusTransaksi: statusEnum.diajukan },
-        { statusTransaksi: statusEnum.diterima, $unset: { alasanDitolak: 1 } }
+        { statusTransaksi: statusEnum.diterima, $unset: { alasanDitolak: 1 } },
+        { new: true }
       );
 
       if (!findTransaksi) {
@@ -576,7 +578,7 @@ module.exports = {
     }
   },
 
-  changeStatusAjukanB: async (req, res) => {
+  changeStatusAjukan: async (req, res) => {
     try {
       const idTransaksi = req.params.idTransaksi;
       const { tipeCabai, jumlahDijual, hargaJual } = req.body;
@@ -593,7 +595,7 @@ module.exports = {
         },
         {
           tipeCabai,
-          jumlahDijual: jumlahDijualtoKg,
+          jumlahDijual: jumlahDijualtoKg.toFixed(3),
           hargaJual,
           statusTransaksi: statusEnum.diajukan,
         }
@@ -617,52 +619,6 @@ module.exports = {
         success: false,
         message: error.message || `Internal server error`,
       });
-      console.log(error);
-    }
-  },
-
-  changeStatusAjukan: async (req, res) => {
-    try {
-      const id = req.params.transaksiId;
-      if (!id) {
-        res.status(404).json({
-          message: 'Transaksi tidak ditemukan',
-        });
-      }
-
-      const { tipeCabai, jumlahDijual, hargaJual } = req.body;
-
-      let convjumlahDijual = jumlahDijual / 100;
-
-      const checkStatus = await Transaksi.findById(id);
-      console.log(checkStatus.statusTransaksi);
-
-      if (checkStatus.statusTransaksi !== statusEnum.diterima) {
-        const transaksi = await Transaksi.findOneAndUpdate(
-          { _id: id },
-          {
-            tipeCabai,
-            jumlahDijual: convjumlahDijual,
-            hargaJual,
-            statusTransaksi: statusEnum.diajukan,
-          }
-        );
-        res.status(200).json({
-          message: 'Status Transaksi berhasil dirubah',
-          status: 'Transaksi diajukan kembali ke Pembeli',
-          statusTransaksi: statusEnum.diajukan,
-          alasanDitolak: transaksi.alasanDitolak,
-          data: transaksi,
-        });
-      } else {
-        res.status(400).json({
-          message: 'Transaksi sudah diterima pembeli',
-        });
-      }
-    } catch (error) {
-      res
-        .status(500)
-        .json({ message: error.message || `Internal server error` });
       console.log(error);
     }
   },
