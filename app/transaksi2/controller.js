@@ -10,24 +10,8 @@ const statusEnum = Object.freeze({
   diterima: '2',
 });
 
-const sinkronToLahan = async (lahan, penjual) => {
-  // UPDATE KE LAHAN
-  const jumlahPanen = await myFunction.updateJumlahPanen(lahan, penjual);
-  const jumlahPenjualan = await myFunction.updateJumlahPenjualan(
-    lahan,
-    penjual
-  );
-  const rjumlahPanen = await myFunction.updateRJumlahPanen(lahan, penjual);
-  const rjumlahPenjualan = await myFunction.updateRJumlahPenjualan(
-    lahan,
-    penjual
-  );
-  const checkMulaiPanen = await myFunction.checkMulaiPanen(lahan, penjual);
-  const updateKeuntungan = await myFunction.updateKeuntungan(lahan, penjual);
-};
-
 module.exports = {
-  createTransaksi: async (req, res) => {
+  addTransaksi: async (req, res) => {
     try {
       const {
         lahan,
@@ -120,7 +104,7 @@ module.exports = {
               { $addToSet: { transaksi: newTransaksi._id } }
             );
 
-            await sinkronToLahan(lahan, penjual);
+            await myFunction.updateDataLahan(lahan, penjual);
 
             return newTransaksi.populate([
               { path: 'lahan', select: '_id tipeCabai namaLahan tanggalTanam' },
@@ -146,7 +130,7 @@ module.exports = {
               { $addToSet: { transaksi: newTransaksi._id } }
             );
 
-            await sinkronToLahan(lahan, penjual);
+            await myFunction.updateDataLahan(lahan, penjual);
 
             return newTransaksi.populate([
               { path: 'lahan', select: '_id tipeCabai namaLahan tanggalTanam' },
@@ -173,135 +157,282 @@ module.exports = {
     }
   },
 
-  seePedagang: async (req, res) => {
+  addTransaksiforPetani: async (req, res) => {
     try {
-      const tipePedagang = req.params.tipepedagang;
-      console.log(tipePedagang);
+      const {
+        lahan,
+        tanggalPencatatan,
+        jumlahDijual,
+        hargaJual,
+        grade,
+        pembeli,
+        namaPembeli,
+        tipePembeli,
+      } = req.body;
 
-      let pedagang = ['pengepul', 'pengecer', 'distributor', 'agen', 'grosir'];
-      let isPedagang = pedagang.includes(tipePedagang);
+      let penjual = req.userData.id;
 
-      if (isPedagang) {
-        const dataPedagang = await User.find({ role: tipePedagang }).select(
-          '_id name'
+      let jumlahDijualtoKg = jumlahDijual / 100;
+      let totalProduksi = jumlahDijual * hargaJual;
+
+      const validateTransaksiOnSelf = async () => {
+        if (penjual == pembeli) {
+          res.status(400).json({
+            success: false,
+            message: 'Tidak dapat melakukan penjualan terhadap diri sendiri',
+          });
+        }
+      };
+
+      const validateLahan = async () => {
+        const findLahan = await Lahan.findOne({
+          _id: lahan,
+          user: penjual,
+        });
+        if (!findLahan) {
+          res.status(400).json({
+            success: false,
+            message: 'Bukan lahan milikmu',
+          });
+        } else {
+          return findLahan;
+        }
+      };
+
+      const addTransaksitoLahan = async (idTransaksi) => {
+        await Lahan.findOneAndUpdate(
+          { _id: lahan, user: penjual },
+          { $addToSet: { transaksi: idTransaksi } }
         );
-        res.status(200).json({
-          tipePedagang: tipePedagang,
-          pedagang: dataPedagang,
+      };
+
+      const transaksiWithoutAkun = async () => {
+        let lahanDetail = await validateLahan();
+
+        let newTransaksi = new Transaksi({
+          lahan,
+          tipeCabai: lahanDetail.tipeCabai,
+          tanggalPencatatan,
+          penjual,
+          jumlahDijual: jumlahDijualtoKg,
+          hargaJual,
+          grade,
+          totalProduksi,
+          statusTransaksi: 2,
+          namaPembeli,
+          tipePembeli,
+        });
+        await newTransaksi.save();
+
+        await addTransaksitoLahan(newTransaksi._id);
+
+        return newTransaksi.populate([
+          { path: 'lahan', select: '_id tipeCabai namaLahan tanggalTanam' },
+          { path: 'penjual', select: 'id name role' },
+        ]);
+      };
+
+      const transaksiWithAkun = async () => {
+        console.log('masuk with acun');
+        let lahanDetail = await validateLahan();
+
+        let newTransaksi = new Transaksi({
+          lahan,
+          tipeCabai: lahanDetail.tipeCabai,
+          tanggalPencatatan,
+          penjual,
+          jumlahDijual: jumlahDijualtoKg,
+          hargaJual,
+          grade,
+          totalProduksi,
+          pembeli,
+        });
+        await newTransaksi.save();
+
+        await addTransaksitoLahan(newTransaksi._id);
+
+        return newTransaksi.populate([
+          { path: 'lahan', select: '_id tipeCabai namaLahan tanggalTanam' },
+          { path: 'penjual', select: 'id name role' },
+          { path: 'pembeli', select: 'id name role' },
+        ]);
+      };
+
+      // START POINT
+      await validateTransaksiOnSelf();
+      if (!pembeli) {
+        let detailTransaksi = await transaksiWithoutAkun();
+        await myFunction.updateDataLahan(lahan, penjual);
+        res.status(201).json({
+          success: true,
+          message: 'Berhasil membuat Transaksi',
+          data: detailTransaksi,
         });
       } else {
+        let detailTransaksi = await transaksiWithAkun();
+        await myFunction.updateDataLahan(lahan, penjual);
+        res.status(201).json({
+          success: true,
+          message: 'Berhasil membuat Transaksi',
+          data: detailTransaksi,
+        });
+      }
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
+    }
+  },
+
+  addTransaksiforPedagang: async (req, res) => {
+    try {
+      const {
+        tanggalPencatatan,
+        tipeCabai,
+        jumlahDijual,
+        hargaJual,
+        grade,
+        pembeli,
+        namaPembeli,
+        tipePembeli,
+      } = req.body;
+
+      let penjual = req.userData.id;
+
+      let jumlahDijualtoKg = jumlahDijual / 100;
+      let totalProduksi = jumlahDijual * hargaJual;
+
+      const validateTransaksiOnSelf = async () => {
+        if (penjual == pembeli) {
+          res.status(400).json({
+            success: false,
+            message: 'Tidak dapat melakukan penjualan terhadap diri sendiri',
+          });
+        }
+      };
+
+      const transaksiWithoutAkun = async () => {
+        let newTransaksi = new Transaksi({
+          tanggalPencatatan,
+          tipeCabai,
+          penjual,
+          jumlahDijual: jumlahDijualtoKg,
+          hargaJual,
+          totalProduksi,
+          grade,
+          statusTransaksi: 2,
+          namaPembeli,
+          tipePembeli,
+        });
+        await newTransaksi.save();
+
+        return newTransaksi.populate('penjual', 'id name role');
+      };
+
+      const transaksiWithAkun = async () => {
+        let newTransaksi = new Transaksi({
+          tanggalPencatatan,
+          tipeCabai,
+          penjual,
+          jumlahDijual: jumlahDijualtoKg,
+          hargaJual,
+          totalProduksi,
+          grade,
+          pembeli,
+        });
+        await newTransaksi.save();
+
+        return newTransaksi.populate([
+          { path: 'penjual', select: 'id name role' },
+          { path: 'pembeli', select: 'id name role' },
+        ]);
+      };
+
+      // START POINT
+      await validateTransaksiOnSelf();
+      if (!pembeli) {
+        let detailTransaksi = await transaksiWithoutAkun();
+        res.status(201).json({
+          success: true,
+          message: 'Berhasil membuat Transaksi',
+          data: detailTransaksi,
+        });
+      } else {
+        let detailTransaksi = await transaksiWithAkun();
+        res.status(201).json({
+          success: true,
+          message: 'Berhasil membuat Transaksi',
+          data: detailTransaksi,
+        });
+      }
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
+    }
+  },
+
+  getTransaksiAll: async (req, res) => {
+    try {
+      const idUser = req.userData.id;
+
+      const findTransaksi = await Transaksi.find({
+        $or: [{ pembeli: idUser }, { penjual: idUser }],
+      })
+        .sort({
+          tanggalPencatatan: 'descending',
+          createdAt: 'descending',
+        })
+        .populate('pembeli', '_id name role')
+        .populate('penjual', '_id name role')
+        .populate('lahan', '_id namaLahan tipeCabai tanggalTanam');
+
+      if (!findTransaksi) {
         res.status(404).json({
-          message: 'Bukan merupakan tipe akun Pedagang',
+          success: false,
+          message: 'Belum ada Transaksi yang diisi',
+        });
+      } else {
+        let transaksiBeli = findTransaksi.filter(
+          (obj) => Boolean(obj.pembeli) && obj.pembeli._id == idUser
+        );
+
+        let transaksiJual = findTransaksi.filter(
+          (obj) => obj.penjual._id == idUser
+        );
+
+        res.status(200).json({
+          success: true,
+          message: 'Berhasil melihat Transaksi yang telah dibuat user',
+          data: {
+            user: {
+              _id: idUser,
+              name: req.userData.name,
+              role: req.userData.role,
+            },
+            countAllTransaksi: findTransaksi.length,
+            countTransaksiJual: transaksiJual.length,
+            countTransaksiBeli: transaksiBeli.length,
+            transaksiJual: transaksiJual,
+            transaksiBeli: transaksiBeli,
+          },
         });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: error.message || `Internal server error` });
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
     }
   },
 
-  seeMyTransaksi: async (req, res) => {
+  getTransaksibyID: async (req, res) => {
     try {
-      const user = req.userData.id;
-      const role = req.userData.role;
+      const idTransaksi = req.params.idTransaksi;
 
-      if (role !== 'petani') {
-        const myTransaksi = await Transaksi.find({ penjual: user })
-          .sort({
-            tanggalPencatatan: 'descending',
-            createdAt: 'descending',
-          })
-          .populate('pembeli', '_id name role')
-          .populate('penjual', '_id name role');
-
-        const countAllTransaksi = await Transaksi.find({
-          penjual: user,
-        }).countDocuments();
-
-        const myBeliTransaksi = await Transaksi.find({ pembeli: user })
-          .sort({
-            tanggalPencatatan: 'descending',
-            createdAt: 'descending',
-          })
-          .populate('pembeli', '_id name role')
-          .populate('penjual', '_id name role');
-
-        const countAllBeliTransaksi = await Transaksi.find({
-          pembeli: user,
-        }).countDocuments();
-
-        const userData = await User.findById(user).select('_id name');
-
-        if (myTransaksi[0] == undefined && myBeliTransaksi[0] == undefined) {
-          res.status(404).json({
-            message: 'Belum ada Transaksi yang diisi',
-          });
-        } else {
-          res.status(200).json({
-            message: 'Berhasil melihat Transaksi Saya',
-            user: userData,
-            dijual: myTransaksi,
-            countAllJualTransaksi: countAllTransaksi,
-            dibeli: myBeliTransaksi,
-            countAllBeliTransaksi: countAllBeliTransaksi,
-          });
-        }
-      } else {
-        const myTransaksi = await Transaksi.find({ penjual: user })
-          .sort({
-            tanggalPencatatan: 'descending',
-            createdAt: 'descending',
-          })
-          .populate('pembeli', '_id name role')
-          .populate('penjual', '_id name role')
-          .populate('lahan', '_id namaLahan tipeCabai tanggalTanam');
-        console.log(myTransaksi[0]);
-
-        const countAllTransaksi = await Transaksi.find({
-          penjual: user,
-        }).countDocuments();
-
-        const myBeliTransaksi = await Transaksi.find({ pembeli: user })
-          .sort({
-            tanggalPencatatan: 'descending',
-            createdAt: 'descending',
-          })
-          .populate('pembeli', '_id name role')
-          .populate('penjual', '_id name role')
-          .populate('lahan', '_id namaLahan tipeCabai tanggalTanam');
-
-        const countAllBeliTransaksi = await Transaksi.find({
-          pembeli: user,
-        }).countDocuments();
-
-        const userData = await User.findById(user).select('_id name');
-
-        if (myTransaksi[0] == undefined && myBeliTransaksi[0] == undefined) {
-          res.status(404).json({
-            message: 'Belum ada Transaksi yang diisi',
-          });
-        } else {
-          res.status(200).json({
-            message: 'Berhasil melihat Transaksi Saya',
-            user: userData,
-            dijual: myTransaksi,
-            countAllJualTransaksi: countAllTransaksi,
-            dibeli: myBeliTransaksi,
-            countAllBeliTransaksi: countAllBeliTransaksi,
-          });
-        }
-      }
-    } catch (error) {
-      res
-        .status(500)
-        .json({ message: error.message || `Internal server error` });
-    }
-  },
-
-  seeATransaksi: async (req, res) => {
-    try {
-      const findTransaksi = await Transaksi.findById(req.params.transaksiId)
+      const findTransaksi = await Transaksi.findById(idTransaksi)
         .populate('pembeli', '_id name role')
         .populate('penjual', '_id name role')
         .populate('lahan', '_id namaLahan tipeCabai tanggalTanam');
@@ -328,167 +459,164 @@ module.exports = {
 
   deleteTransaksi: async (req, res) => {
     try {
-      const id = req.params.transaksiId;
-      const user = req.userData.id;
-      console.log(user);
+      const idTransaksi = req.params.idTransaksi;
+      const idUser = req.userData.id;
 
-      const role = req.userData.role;
+      const findTransaksi = await Transaksi.findOneAndRemove({
+        _id: idTransaksi,
+        penjual: idUser,
+      })
+        .populate('pembeli', '_id name role')
+        .populate('penjual', '_id name role')
+        .populate('lahan', '_id namaLahan tipeCabai tanggalTanam');
 
-      const findTransaksi = await Transaksi.findOne({ _id: id });
-
-      if (role !== 'petani') {
-        if (findTransaksi && user) {
-          const transaksi = await Transaksi.findOneAndRemove({
-            _id: id,
-            penjual: user,
-          })
-            .populate('pembeli', '_id name role')
-            .populate('penjual', '_id name role');
-
-          res.status(201).json({
-            message: 'Berhasil menghapus Transaksi',
-            data: transaksi,
-          });
-        } else {
-          res.status(404).json({
-            message: 'Transaksi tidak ditemukan',
-          });
-        }
+      if (!findTransaksi) {
+        res.status(404).json({
+          success: false,
+          message: 'Transaksi tidak ditemukan',
+        });
       } else {
-        if (findTransaksi && user) {
-          const transaksi = await Transaksi.findOneAndRemove({
-            _id: id,
-            penjual: user,
-          })
-            .populate('pembeli', '_id name role')
-            .populate('penjual', '_id name role')
-            .populate('lahan', '_id namaLahan tipeCabai tanggalTanam');
-          console.log(transaksi.lahan);
-
+        const isLahan = Boolean(findTransaksi.lahan);
+        if (isLahan) {
           await Lahan.findOneAndUpdate(
-            { _id: transaksi.lahan },
-            { $pull: { transaksi: id } }
+            { _id: findTransaksi.lahan },
+            { $pull: { transaksi: idTransaksi } }
           );
-
-          // UPDATE KE LAHAN
-
-          const jumlahPanen = await myFunction.updateJumlahPanen(
-            transaksi.lahan,
-            user
-          );
-          const jumlahPenjualan = await myFunction.updateJumlahPenjualan(
-            transaksi.lahan,
-            user
-          );
-          const rjumlahPanen = await myFunction.updateRJumlahPanen(
-            transaksi.lahan,
-            user
-          );
-          const rjumlahPenjualan = await myFunction.updateRJumlahPenjualan(
-            transaksi.lahan,
-            user
-          );
-          const checkMulaiPanen = await myFunction.checkMulaiPanen(
-            transaksi.lahan,
-            user
-          );
-          const updateKeuntungan = await myFunction.updateKeuntungan(
-            transaksi.lahan,
-            user
-          );
-
-          res.status(201).json({
-            message: 'Berhasil menghapus Transaksi',
-            data: transaksi,
-          });
-        } else {
-          res.status(404).json({
-            message: 'Transaksi tidak ditemukan',
-          });
+          await myFunction.updateDataLahan(findTransaksi.lahan, idUser);
         }
+        res.status(200).json({
+          success: true,
+          message: 'Berhasil menghapus Transaksi',
+          data: findTransaksi,
+        });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: error.message || `Internal server error` });
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
     }
   },
 
   changeStatusTerima: async (req, res) => {
     try {
-      const id = req.params.transaksiId;
-      if (!id) {
+      const idTransaksi = req.params.idTransaksi;
+
+      const findTransaksi = await Transaksi.findOneAndUpdate(
+        { _id: idTransaksi, statusTransaksi: statusEnum.diajukan },
+        { statusTransaksi: statusEnum.diterima, $unset: { alasanDitolak: 1 } }
+      );
+
+      if (!findTransaksi) {
         res.status(404).json({
-          message: 'Transaksi tidak ditemukan',
-        });
-      }
-
-      const checkStatus = await Transaksi.findById(id);
-      console.log(checkStatus.statusTransaksi);
-
-      if (checkStatus.statusTransaksi == statusEnum.diajukan) {
-        await Transaksi.findOneAndUpdate(
-          { _id: id },
-          { statusTransaksi: statusEnum.diterima, $unset: { alasanDitolak: 1 } }
-        );
-
-        res.status(200).json({
-          message: 'Status Transaksi berhasil diubah',
-          status: 'Transaksi diterima Pembeli',
-          statusTransaksi: statusEnum.diterima,
+          success: false,
+          message:
+            'Transaksi tidak ditemukan atau Harus mengajukan kembali Transaksi terlebih dahulu',
         });
       } else {
-        res.status(400).json({
-          message: 'Harus mengajukan kembali Transaksi terlebih dahulu',
+        const isLahan = Boolean(findTransaksi.lahan);
+        const idPemilikLahan = findTransaksi.penjual;
+
+        if (isLahan) {
+          await myFunction.updateDataLahan(findTransaksi.lahan, idPemilikLahan);
+        }
+        res.status(200).json({
+          success: true,
+          message: 'Status Transaksi berhasil diubah menjadi Diterima',
+          data: { statusTransaksi: statusEnum.diterima },
         });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: error.message || `Internal server error` });
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
       console.log(error);
     }
   },
 
   changeStatusTolak: async (req, res) => {
     try {
-      const id = req.params.transaksiId;
-      if (!id) {
-        res.status(404).json({
-          message: 'Transaksi tidak ditemukan',
-        });
-      }
+      const idTransaksi = req.params.idTransaksi;
       const { alasanDitolak } = req.body;
 
-      const checkStatus = await Transaksi.findById(id);
-      if (checkStatus.statusTransaksi == statusEnum.diterima) {
-        res.status(400).json({
-          message: 'Transaksi sudah diterima pembeli',
-        });
-      }
-      if (checkStatus.statusTransaksi !== statusEnum.diterima) {
-        await Transaksi.findOneAndUpdate(
-          { _id: id },
-          {
-            statusTransaksi: statusEnum.ditolak,
-            alasanDitolak: alasanDitolak,
-          }
-        );
-        res.status(200).json({
-          message: 'Status Transaksi berhasil diubah',
-          status: 'Transaksi ditolak Pembeli',
-          statusTransaksi: statusEnum.ditolak,
-          alasanDitolak: alasanDitolak,
+      const findTransaksi = await Transaksi.findOneAndUpdate(
+        {
+          _id: idTransaksi,
+          $or: [
+            { statusTransaksi: statusEnum.diajukan },
+            { statusTransaksi: statusEnum.ditolak },
+          ],
+        },
+        { statusTransaksi: statusEnum.ditolak, alasanDitolak: alasanDitolak }
+      );
+
+      if (!findTransaksi) {
+        res.status(404).json({
+          success: false,
+          message:
+            'Transaksi sudah diterima pembeli atau statusTransaksi tidak valid',
         });
       } else {
-        res.status(404).json({
-          message: 'Transaksi sudah diterima pembeli',
+        res.status(200).json({
+          success: true,
+          message: 'Status Transaksi berhasil diubah menjadi Ditolak',
+          data: {
+            statusTransaksi: statusEnum.ditolak,
+            alasanDitolak: alasanDitolak,
+          },
         });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: error.message || `Internal server error` });
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
+      console.log(error);
+    }
+  },
+
+  changeStatusAjukanB: async (req, res) => {
+    try {
+      const idTransaksi = req.params.idTransaksi;
+      const { tipeCabai, jumlahDijual, hargaJual } = req.body;
+
+      let jumlahDijualtoKg = jumlahDijual / 100;
+
+      const findTransaksi = await Transaksi.findOneAndUpdate(
+        {
+          _id: idTransaksi,
+          $or: [
+            { statusTransaksi: statusEnum.diajukan },
+            { statusTransaksi: statusEnum.ditolak },
+          ],
+        },
+        {
+          tipeCabai,
+          jumlahDijual: jumlahDijualtoKg,
+          hargaJual,
+          statusTransaksi: statusEnum.diajukan,
+        }
+      );
+
+      if (!findTransaksi) {
+        res.status(404).json({
+          success: false,
+          message:
+            'Transaksi sudah diterima pembeli atau statusTransaksi tidak valid',
+        });
+      } else {
+        res.status(200).json({
+          success: true,
+          message: 'Status Transaksi berhasil diubah menjadi Diajukan',
+          data: findTransaksi,
+        });
+      }
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
       console.log(error);
     }
   },

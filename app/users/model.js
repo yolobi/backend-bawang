@@ -17,9 +17,11 @@ let userSchema = new mongoose.Schema(
         validator: function (v) {
           return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
         },
-        message: 'maukkan email yang valid',
+        message: 'masukkan email yang valid',
       },
-      required: [true, 'Email wajib diisi'],
+    },
+    phone:{
+      type: String
     },
     password: {
       type: String,

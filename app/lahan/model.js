@@ -71,21 +71,27 @@ let lahanSchema = new mongoose.Schema(
     },
     modalBenih: {
       type: Number,
+      default: 0,
     },
     modalPupuk: {
       type: Number,
+      default: 0,
     },
     modalPestisida: {
       type: Number,
+      default: 0,
     },
     modalPekerja: {
       type: Number,
+      default: 0,
     },
     totalModal: {
       type: Number,
+      default: 0,
     },
     keuntungan: {
       type: Number,
+      default: 0,
     },
   },
   { timestamps: true }

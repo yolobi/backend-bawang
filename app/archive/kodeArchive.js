@@ -44,19 +44,17 @@ module.exports = {
     return count;
   },
 
-  updateDataLahan: async (idLahan, idUser) => {
+  updateDataLahan: async (idLahan, idUser, next) => {
     let penjual = idUser;
     let lahan = idLahan;
 
     const findLahan = await Lahan.findOne({
       _id: lahan,
       user: penjual,
-    }).populate({
-      path: 'transaksi',
-      select:
-        '_id jumlahDijual totalProduksi tanggalPencatatan statusTransaksi',
-      match: { statusTransaksi: 2 },
-    });
+    }).populate(
+      'transaksi',
+      '_id jumlahDijual totalProduksi tanggalPencatatan'
+    );
 
     let countTransaksi = findLahan.transaksi.length;
     let transaksiPertama = findLahan.transaksi[0].tanggalPencatatan;
@@ -100,8 +98,156 @@ module.exports = {
         },
         { new: true }
       );
+      console.log(hasilUpdate);
+
       return hasilUpdate;
     }
+  },
+
+  updateJumlahPanen: async (idLahan, idUser) => {
+    console.log('this is jumlah panen');
+    const penjual = idUser;
+    const lahan = idLahan;
+
+    const findLahan = await Lahan.findOne({ _id: lahan, user: penjual })
+      .select('_id transaksi')
+      .populate('transaksi', '_id jumlahDijual');
+
+    if (findLahan.transaksi[0] == undefined) {
+      await Lahan.findOneAndUpdate(
+        { _id: lahan, user: penjual },
+        { jumlahPanen: 0 }
+      );
+      return 0;
+    } else {
+      const jumlahPanen = findLahan.transaksi
+        .map((item) => item.jumlahDijual)
+        .reduce((prev, next) => prev + next);
+
+      await Lahan.findOneAndUpdate(
+        { _id: lahan, user: penjual },
+        { jumlahPanen: jumlahPanen }
+      );
+
+      return jumlahPanen;
+    }
+  },
+
+  updateJumlahPenjualan: async (idLahan, idUser) => {
+    console.log('this is jumlah penjualan');
+    const penjual = idUser;
+    const lahan = idLahan;
+
+    const findLahan = await Lahan.findOne({ _id: lahan, user: penjual })
+      .select('_id transaksi')
+      .populate('transaksi', '_id totalProduksi');
+
+    if (findLahan.transaksi[0] == undefined) {
+      await Lahan.findOneAndUpdate(
+        { _id: lahan, user: penjual },
+        { jumlahPenjualan: 0 }
+      );
+      return 0;
+    } else {
+      const jumlahPenjualan = findLahan.transaksi
+        .map((item) => item.totalProduksi)
+        .reduce((prev, next) => prev + next);
+
+      await Lahan.findOneAndUpdate(
+        { _id: lahan, user: penjual },
+        { jumlahPenjualan: jumlahPenjualan }
+      );
+
+      return jumlahPenjualan;
+    }
+  },
+
+  updateRJumlahPanen: async (idLahan, idUser) => {
+    console.log('this is rata jumlah panen');
+    const findLahan = await Lahan.findOne({
+      _id: idLahan,
+      user: idUser,
+    }).select('_id transaksi jumlahPanen');
+
+    const rjumlahPanen = findLahan.jumlahPanen / findLahan.transaksi.length;
+
+    if (findLahan.transaksi[0] == undefined) {
+      await Lahan.findOneAndUpdate(
+        { _id: idLahan, user: idUser },
+        { rataanJumlahPanen: 0 }
+      );
+      return 0;
+    } else {
+      await Lahan.findOneAndUpdate(
+        { _id: idLahan, user: idUser },
+        { rataanJumlahPanen: rjumlahPanen }
+      );
+
+      return rjumlahPanen;
+    }
+  },
+
+  updateRJumlahPenjualan: async (idLahan, idUser) => {
+    console.log('this is rata jumlah penjualan');
+    const findLahan = await Lahan.findOne({
+      _id: idLahan,
+      user: idUser,
+    }).select('_id transaksi jumlahPenjualan');
+
+    const rjumlahPenjualan =
+      findLahan.jumlahPenjualan / findLahan.transaksi.length;
+
+    if (findLahan.transaksi[0] == undefined) {
+      await Lahan.findOneAndUpdate(
+        { _id: idLahan, user: idUser },
+        { rataanHargaJual: 0 }
+      );
+      return 0;
+    } else {
+      await Lahan.findOneAndUpdate(
+        { _id: idLahan, user: idUser },
+        { rataanHargaJual: rjumlahPenjualan }
+      );
+
+      return rjumlahPenjualan;
+    }
+  },
+
+  checkMulaiPanen: async (idLahan, idUser) => {
+    const findLahan = await Lahan.findOne({
+      _id: idLahan,
+      user: idUser,
+    })
+      .select('_id transaksi tanggalMulaiPanen')
+      .populate('transaksi', '_id tanggalPencatatan');
+
+    if (!findLahan.transaksi[0]) {
+      await Lahan.findOneAndUpdate(
+        { _id: idLahan, user: idUser },
+        { tanggalMulaiPanen: null }
+      );
+    } else if (
+      findLahan.transaksi[0].tanggalPencatatan !== findLahan.tanggalMulaiPanen
+    ) {
+      await Lahan.findOneAndUpdate(
+        { _id: idLahan, user: idUser },
+        { tanggalMulaiPanen: findLahan.transaksi[0].tanggalPencatatan }
+      );
+    }
+  },
+
+  updateKeuntungan: async (idLahan, idUser) => {
+    const findLahan = await Lahan.findOne({
+      _id: idLahan,
+      user: idUser,
+    });
+
+    const keuntungan = findLahan.jumlahPenjualan - findLahan.totalModal;
+
+    await Lahan.findOneAndUpdate(
+      { _id: idLahan, user: idUser },
+      { keuntungan: keuntungan }
+    );
   },
 
   cekBlanko: async (idUser, tanggalPencatatan, tipeCabai) => {
@@ -589,4 +735,5 @@ module.exports = {
       );
     }
   },
+
 };

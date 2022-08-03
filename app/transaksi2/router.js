@@ -1,19 +1,21 @@
 var express = require('express');
 var router = express.Router();
 const {
-  createTransaksi,
-  seePedagang,
-  seeMyTransaksi,
-  seeATransaksi,
+  addTransaksi,
   deleteTransaksi,
   changeStatusAjukan,
   changeStatusTerima,
   changeStatusTolak,
+  addTransaksiforPetani,
+  addTransaksiforPedagang,
+  getTransaksiAll,
+  getTransaksibyID,
 } = require('./controller');
 const authenticateUser = require('../middleware/authentication');
 const {
   checkIfPetani,
   checkIfPetaniPedagang,
+  checkIfPedagang,
 } = require('../middleware/check-role');
 
 /* GET home page. */
@@ -21,52 +23,88 @@ router.post(
   '/tambahtransaksi',
   authenticateUser,
   checkIfPetaniPedagang,
-  createTransaksi
-);
-router.get(
-  '/lihatpedagang/:tipepedagang',
-  authenticateUser,
-  checkIfPetaniPedagang,
-  seePedagang
+  addTransaksi
 );
 
 router.get(
   '/lihattransaksi',
   authenticateUser,
   checkIfPetaniPedagang,
-  seeMyTransaksi
+  getTransaksiAll
 );
 
 router.get(
-  '/lihattransaksi/:transaksiId',
+  '/lihattransaksi/:idTransaksi',
   authenticateUser,
   checkIfPetaniPedagang,
-  seeATransaksi
+  getTransaksibyID
+);
+
+
+router.delete(
+  '/hapustransaksi/:idTransaksi',
+  authenticateUser,
+  checkIfPetaniPedagang,
+  deleteTransaksi
+);
+
+
+// ROUTER YANG BARU
+router.post(
+  '/petani/tambah',
+  authenticateUser,
+  checkIfPetani,
+  addTransaksiforPetani
+);
+
+router.post(
+  '/pedagang/tambah',
+  authenticateUser,
+  checkIfPedagang,
+  addTransaksiforPedagang
+);
+
+router.get(
+  '/',
+  authenticateUser,
+  checkIfPetaniPedagang,
+  getTransaksiAll
+);
+
+router.get(
+  '/:idTransaksi',
+  authenticateUser,
+  checkIfPetaniPedagang,
+  getTransaksibyID
 );
 
 router.delete(
-  '/hapustransaksi/:transaksiId',
+  '/hapus/:idTransaksi',
   authenticateUser,
   checkIfPetaniPedagang,
   deleteTransaksi
 );
 
 router.put(
-  '/ubahstatus/terima/:transaksiId',
+  '/ubahstatus/terima/:idTransaksi',
   authenticateUser,
   checkIfPetaniPedagang,
   changeStatusTerima
 );
 router.put(
-  '/ubahstatus/tolak/:transaksiId',
+  '/ubahstatus/tolak/:idTransaksi',
   authenticateUser,
   checkIfPetaniPedagang,
   changeStatusTolak
 );
 router.put(
-  '/ubahstatus/ajukankembali/:transaksiId',
+  '/ubahstatus/ajukankembali/:idTransaksi',
   authenticateUser,
   checkIfPetaniPedagang,
   changeStatusAjukan
 );
+
+
+
+
 module.exports = router;

@@ -5,8 +5,6 @@ const config = require('../../config');
 const myFunction = require('../function/function');
 const Supervisi = require('../supervisi/model');
 
-
-
 const RoleEnum = Object.freeze({
   petani: 'petani',
   agen: 'pedagang',
@@ -25,6 +23,7 @@ module.exports = {
       const {
         name,
         email,
+        phone,
         password,
         kecamatan,
         kabupaten,
@@ -34,10 +33,12 @@ module.exports = {
       } = req.body;
 
       // check if email is exist
-      let emailUser = await User.findOne({ email: email });
-      if (emailUser) {
+      let isUserExist = await User.findOne({
+        $or: [{ email: email }, { phone: phone }],
+      });
+      if (isUserExist) {
         return res.status(404).json({
-          message: 'Email sudah terdaftar',
+          message: 'Akun sudah terdaftar',
         });
       }
 
@@ -45,34 +46,37 @@ module.exports = {
       const hashPassword = await bcrypt.hashSync(password, 10);
 
       const user = new User({
-        name: name,
-        email: email,
+        name,
+        email,
+        phone,
         password: hashPassword,
-        kecamatan: kecamatan,
-        kabupaten: kabupaten,
-        provinsi: provinsi,
-        alamat: alamat,
-        role: role,
+        kecamatan,
+        kabupaten,
+        provinsi,
+        alamat,
+        role,
       });
       await user.save();
-      console.log(user);
 
       const token = jwt.sign(
         {
           id: user._id,
           name: user.name,
           email: user.email,
+          phone: user.phone,
           role: user.role,
         },
         config.jwtKey
       );
 
       res.status(201).json({
+        success: true,
         message: 'Berhasil membuat akun baru',
         user: {
           id: user._id,
           name: user.name,
           email: user.email,
+          phone: user.phone,
           role: user.role,
           access: RoleEnum[user.role],
         },
@@ -89,34 +93,39 @@ module.exports = {
     }
   },
 
-  signin: async(req, res, next) => {
+  signin: async (req, res) => {
     try {
-      const { email, password } = req.body;
+      const { account, password } = req.body;
+  
 
-      const user = await User.findOne({ email: email });
-      console.log(user);
+      const user = await User.findOne({
+        $or: [{ email: account }, { phone: account }],
+      });
 
       if (!user) {
         res.status(403).json({ message: 'Email belum terdaftar' });
-      } else {  
+      } else {
         const checkPassword = bcrypt.compareSync(password, user.password);
-        
+
         if (checkPassword) {
           const token = jwt.sign(
             {
               id: user.id,
               name: user.name,
               email: user.email,
+              phone: user.phone,
               role: user.role,
             },
             config.jwtKey
           );
           res.status(200).json({
+            success: true,
             message: 'Sign-in Berhasil',
             user: {
               id: user.id,
               name: user.name,
               email: user.email,
+              phone: user.phone,
               role: user.role,
               access: RoleEnum[user.role],
             },
@@ -133,7 +142,6 @@ module.exports = {
       res
         .status(500)
         .json({ message: error.message || `Internal server error` });
-    
     }
   },
 };
