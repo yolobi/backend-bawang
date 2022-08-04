@@ -10,6 +10,8 @@ const {
   addTransaksiforPedagang,
   getTransaksiAll,
   getTransaksibyID,
+  summaryTransaksibyBulan,
+  summaryTransaksiAll,
 } = require('./controller');
 const authenticateUser = require('../middleware/authentication');
 const {
@@ -40,7 +42,6 @@ router.get(
   getTransaksibyID
 );
 
-
 router.delete(
   '/hapustransaksi/:idTransaksi',
   authenticateUser,
@@ -48,8 +49,7 @@ router.delete(
   deleteTransaksi
 );
 
-
-// ROUTER YANG BARU
+// ENDPOINT YANG BARU
 router.post(
   '/petani/tambah',
   authenticateUser,
@@ -64,12 +64,7 @@ router.post(
   addTransaksiforPedagang
 );
 
-router.get(
-  '/',
-  authenticateUser,
-  checkIfPetaniPedagang,
-  getTransaksiAll
-);
+router.get('/', authenticateUser, checkIfPetaniPedagang, getTransaksiAll);
 
 router.get(
   '/:idTransaksi',
@@ -104,7 +99,17 @@ router.put(
   changeStatusAjukan
 );
 
-
-
+router.get(
+  '/pedagang/summary',
+  authenticateUser,
+  checkIfPedagang,
+  summaryTransaksiAll
+);
+router.get(
+  '/pedagang/summary/:bulan',
+  authenticateUser,
+  checkIfPedagang,
+  summaryTransaksibyBulan
+);
 
 module.exports = router;

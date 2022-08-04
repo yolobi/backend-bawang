@@ -622,4 +622,245 @@ module.exports = {
       console.log(error);
     }
   },
+
+  summaryTransaksiAll: async (req, res) => {
+    try {
+      const findTransaksi = await Transaksi.find({
+        $or: [{ pembeli: req.userData.id }, { penjual: req.userData.id }],
+      }).populate('lahan', '_id tipeCabai');
+
+      if (findTransaksi[0] == undefined) {
+        res.status(200).json({
+          success: true,
+          message:
+            'Belum ada transaksi yang dilakukan atau belum ada transaksi yang disetujui',
+          data: {
+            user: {
+              _id: req.userData.id,
+              name: req.userData.name,
+              role: req.userData.role,
+            },
+            countTransaksiAll: 0,
+            countTransaksiSuksesBeli: 0,
+            countTransaksiSuksesJual: 0,
+            stokCMB: 0,
+            stokCMK: 0,
+            stokCRM: 0,
+            pendapatanCMB: 0,
+            pendapatanCMK: 0,
+            pendapatanCRM: 0,
+            totalPengeluaran: 0,
+            totalPendapatan: 0,
+          },
+        });
+      } else {
+        const stokCabai = (value) => {
+          const sum = findTransaksi
+            .filter((obj) => obj.tipeCabai == value && obj.statusTransaksi == 2)
+            .reduce((accumulator, object) => {
+              if (object.pembeli == req.userData.id) {
+                accumulator += object.jumlahDijual;
+              } else {
+                accumulator -= object.jumlahDijual;
+              }
+              return accumulator < 0 ? 0 : accumulator;
+            }, 0);
+          return sum ? sum.toFixed(3) : 0;
+        };
+
+        const penjualanCabai = (value) => {
+          const sum = findTransaksi
+            .filter(
+              (obj) =>
+                obj.tipeCabai == value &&
+                obj.penjual == req.userData.id &&
+                obj.totalProduksi &&
+                obj.statusTransaksi == 2
+            )
+            .reduce((accumulator, object) => {
+              return accumulator + object.totalProduksi;
+            }, 0);
+          return sum ? sum.toFixed(3) : 0;
+        };
+
+        const pembelianCabai = findTransaksi
+          .filter(
+            (obj) =>
+              obj.pembeli == req.userData.id &&
+              obj.totalProduksi &&
+              obj.statusTransaksi == 2
+          )
+          .reduce((accumulator, object) => {
+            return accumulator + object.totalProduksi;
+          }, 0);
+
+        const countTransaksiSuksesBeli = findTransaksi.filter(
+          (obj) => obj.statusTransaksi == 2 && obj.pembeli == req.userData.id
+        ).length;
+        const countTransaksiSuksesJual = findTransaksi.filter(
+          (obj) => obj.statusTransaksi == 2 && obj.penjual == req.userData.id
+        ).length;
+
+        const stokCMB = stokCabai('cabaiMerahBesar');
+        const stokCMK = stokCabai('cabaiMerahKeriting');
+        const stokCRM = stokCabai('cabaiRawitMerah');
+
+        const pendapatanCMB = penjualanCabai('cabaiMerahBesar');
+        const pendapatanCMK = penjualanCabai('cabaiMerahKeriting');
+        const pendapatanCRM = penjualanCabai('cabaiRawitMerah');
+        const totalPendapatan =
+          Number(pendapatanCMB) + Number(pendapatanCMK) + Number(pendapatanCRM);
+
+        res.status(200).json({
+          success: true,
+          message: 'Berhasil melihat Summary',
+          data: {
+            user: {
+              _id: req.userData.id,
+              name: req.userData.name,
+              role: req.userData.role,
+            },
+            countTransaksiAll: findTransaksi.length,
+            countTransaksiSuksesBeli: countTransaksiSuksesBeli,
+            countTransaksiSuksesJual: countTransaksiSuksesJual,
+            stokCMB: Number(stokCMB),
+            stokCMK: Number(stokCMK),
+            stokCRM: Number(stokCRM),
+            pendapatanCMB: Number(pendapatanCMB),
+            pendapatanCMK: Number(pendapatanCMK),
+            pendapatanCRM: Number(pendapatanCRM),
+            totalPengeluaran: Number(pembelianCabai.toFixed(3)),
+            totalPendapatan: totalPendapatan,
+          },
+        });
+      }
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
+    }
+  },
+
+  summaryTransaksibyBulan: async (req, res) => {
+    try {
+      const date = req.params.bulan.split('-');
+      const start = `${date[0]}-${date[1]}-01`;
+      const end = `${date[0]}-${date[1]}-31`;
+
+      const findTransaksi = await Transaksi.find({
+        $or: [{ pembeli: req.userData.id }, { penjual: req.userData.id }],
+        tanggalPencatatan: { $gte: start, $lte: end },
+      }).populate('lahan', '_id tipeCabai');
+
+      if (findTransaksi[0] == undefined) {
+        res.status(200).json({
+          success: true,
+          message:
+            'Belum ada transaksi yang dilakukan atau belum ada transaksi yang disetujui',
+          data: {
+            user: {
+              _id: req.userData.id,
+              name: req.userData.name,
+              role: req.userData.role,
+            },
+            countTransaksiAll: 0,
+            countTransaksiSuksesBeli: 0,
+            countTransaksiSuksesJual: 0,
+            stokCMB: 0,
+            stokCMK: 0,
+            stokCRM: 0,
+            pendapatanCMB: 0,
+            pendapatanCMK: 0,
+            pendapatanCRM: 0,
+            totalPengeluaran: 0,
+            totalPendapatan: 0,
+          },
+        });
+      } else {
+        const stokCabai = (value) => {
+          const sum = findTransaksi
+            .filter((obj) => obj.tipeCabai == value && obj.statusTransaksi == 2)
+            .reduce((accumulator, object) => {
+              if (object.pembeli == req.userData.id) {
+                accumulator += object.jumlahDijual;
+              } else {
+                accumulator -= object.jumlahDijual;
+              }
+              return accumulator < 0 ? 0 : accumulator;
+            }, 0);
+          return sum ? sum.toFixed(3) : 0;
+        };
+
+        const penjualanCabai = (value) => {
+          const sum = findTransaksi
+            .filter(
+              (obj) =>
+                obj.tipeCabai == value &&
+                obj.penjual == req.userData.id &&
+                obj.totalProduksi &&
+                obj.statusTransaksi == 2
+            )
+            .reduce((accumulator, object) => {
+              return accumulator + object.totalProduksi;
+            }, 0);
+          return sum ? sum.toFixed(3) : 0;
+        };
+
+        const pembelianCabai = findTransaksi
+          .filter(
+            (obj) =>
+              obj.pembeli == req.userData.id &&
+              obj.totalProduksi &&
+              obj.statusTransaksi == 2
+          )
+          .reduce((accumulator, object) => {
+            return accumulator + object.totalProduksi;
+          }, 0);
+
+        const countTransaksiSuksesBeli = findTransaksi.filter(
+          (obj) => obj.statusTransaksi == 2 && obj.pembeli == req.userData.id
+        ).length;
+        const countTransaksiSuksesJual = findTransaksi.filter(
+          (obj) => obj.statusTransaksi == 2 && obj.penjual == req.userData.id
+        ).length;
+
+        const stokCMB = stokCabai('cabaiMerahBesar');
+        const stokCMK = stokCabai('cabaiMerahKeriting');
+        const stokCRM = stokCabai('cabaiRawitMerah');
+
+        const pendapatanCMB = penjualanCabai('cabaiMerahBesar');
+        const pendapatanCMK = penjualanCabai('cabaiMerahKeriting');
+        const pendapatanCRM = penjualanCabai('cabaiRawitMerah');
+        const totalPendapatan =
+          Number(pendapatanCMB) + Number(pendapatanCMK) + Number(pendapatanCRM);
+
+        res.status(200).json({
+          success: true,
+          message: `Berhasil melihat Summary untuk ${req.params.bulan}`,
+          data: {
+            user: {
+              _id: req.userData.id,
+              name: req.userData.name,
+              role: req.userData.role,
+            },
+            countTransaksiAll: findTransaksi.length,
+            countTransaksiSuksesBeli: countTransaksiSuksesBeli,
+            countTransaksiSuksesJual: countTransaksiSuksesJual,
+            stokCMB: Number(stokCMB),
+            stokCMK: Number(stokCMK),
+            stokCRM: Number(stokCRM),
+            pendapatanCMB: Number(pendapatanCMB),
+            pendapatanCMK: Number(pendapatanCMK),
+            pendapatanCRM: Number(pendapatanCRM),
+            totalPengeluaran: Number(pembelianCabai.toFixed(3)),
+            totalPendapatan: totalPendapatan,
+          },
+        });
+      }
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
+    }
+  },
 };
