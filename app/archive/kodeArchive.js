@@ -799,4 +799,79 @@ module.exports = {
   //     return 'data tidak valid';
   //   }
   // },
+
+  // signin: async (req, res) => {
+  //   try {
+  //     const { account, password } = req.body;
+
+  //     const validateAccount = async () => {
+  //       if (!account || !password) {
+  //         res.status(404).json({
+  //           success: false,
+  //           message: 'Semua field wajib diisi',
+  //         });
+  //       } else {
+  //         const findUser = await User.findOne({
+  //           $or: [{ email: account }, { phone: account }],
+  //         });
+  //         if (!findUser) {
+  //           res.status(403).json({
+  //             success: false,
+  //             message: 'Email belum terdaftar',
+  //           });
+  //         }
+  //         return findUser;
+  //       }
+  //     };
+
+  //     let findAccount = await validateAccount();
+
+  //     const user = await User.findOne({
+  //       $or: [{ email: account }, { phone: account }],
+  //     });
+
+  //     if (!user) {
+  //       res
+  //         .status(403)
+  //         .json({ success: false, message: 'Email belum terdaftar' });
+  //     } else {
+  //       const checkPassword = bcrypt.compareSync(password, user.password);
+
+  //       if (checkPassword) {
+  //         const token = jwt.sign(
+  //           {
+  //             id: user.id,
+  //             name: user.name,
+  //             email: user.email,
+  //             phone: user.phone,
+  //             role: user.role,
+  //           },
+  //           config.jwtKey
+  //         );
+  //         res.status(200).json({
+  //           success: true,
+  //           message: 'Sign-in Berhasil',
+  //           user: {
+  //             id: user.id,
+  //             name: user.name,
+  //             email: user.email,
+  //             phone: user.phone,
+  //             role: user.role,
+  //             access: RoleEnum[user.role],
+  //           },
+  //           token: token,
+  //         });
+  //       } else {
+  //         res.status(403).json({
+  //           message: 'Password yang dimasukkan Salah',
+  //         });
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     res
+  //       .status(500)
+  //       .json({ message: error.message || `Internal server error` });
+  //   }
+  // },
 };

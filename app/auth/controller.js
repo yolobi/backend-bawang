@@ -2,8 +2,6 @@ const User = require('../users/model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const config = require('../../config');
-const myFunction = require('../function/function');
-const Supervisi = require('../supervisi/model');
 
 const RoleEnum = Object.freeze({
   petani: 'petani',
@@ -36,11 +34,11 @@ module.exports = {
       let isUserExist = await User.findOne({
         $or: [{ email: email }, { phone: phone }],
       });
-      if (isUserExist) {
+      if (isUserExist)
         return res.status(404).json({
+          status: false,
           message: 'Akun sudah terdaftar',
         });
-      }
 
       // password hashing
       const hashPassword = await bcrypt.hashSync(password, 10);
@@ -93,49 +91,55 @@ module.exports = {
     }
   },
 
-  signin: async (req, res) => {
+  login: async (req, res) => {
     try {
       const { account, password } = req.body;
+      if (!account || !password)
+        return res.status(404).json({
+          success: false,
+          message: 'Semua field wajib diisi',
+        });
 
-      const user = await User.findOne({
+      const findUser = await User.findOne({
         $or: [{ email: account }, { phone: account }],
       });
+      if (!findUser)
+        return res.status(403).json({
+          success: false,
+          message: 'Email belum terdaftar',
+        });
 
-      if (!user) {
-        res.status(403).json({ message: 'Email belum terdaftar' });
-      } else {
-        const checkPassword = bcrypt.compareSync(password, user.password);
+      const checkPassword = await bcrypt.compare(password, findUser.password);
+      if (!checkPassword)
+        return res.status(403).json({
+          success: false,
+          message: 'Password yang dimasukkan Salah',
+        });
 
-        if (checkPassword) {
-          const token = jwt.sign(
-            {
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              phone: user.phone,
-              role: user.role,
-            },
-            config.jwtKey
-          );
-          res.status(200).json({
-            success: true,
-            message: 'Sign-in Berhasil',
-            user: {
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              phone: user.phone,
-              role: user.role,
-              access: RoleEnum[user.role],
-            },
-            token: token,
-          });
-        } else {
-          res.status(403).json({
-            message: 'Password yang dimasukkan Salah',
-          });
-        }
-      }
+      const token = jwt.sign(
+        {
+          id: findUser.id,
+          name: findUser.name,
+          email: findUser.email,
+          phone: findUser.phone,
+          role: findUser.role,
+        },
+        config.jwtKey
+      );
+
+      res.status(200).json({
+        success: true,
+        message: 'Sign-in Berhasil',
+        user: {
+          id: findUser.id,
+          name: findUser.name,
+          email: findUser.email,
+          phone: findUser.phone,
+          role: findUser.role,
+          access: RoleEnum[findUser.role],
+        },
+        token: token,
+      });
     } catch (error) {
       console.log(error);
       res
