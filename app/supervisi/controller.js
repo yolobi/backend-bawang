@@ -18,6 +18,99 @@ const RoleEnum = Object.freeze({
 });
 
 module.exports = {
+  addSupervisi: async (req, res) => {
+    try {
+      const idPetugas = req.userData.id;
+
+      const { account, password } = req.body;
+      if (!account || !password)
+        return res.status(404).json({
+          success: false,
+          message: 'Semua field wajib diisi',
+        });
+
+      const findUser = await User.findOne({
+        $or: [{ email: account }, { phone: account }],
+        role: 'petani',
+      });
+      if (!findUser)
+        return res.status(403).json({
+          success: false,
+          message:
+            'Email belum terdaftar atau bukan merupakan akun dengan role Petani',
+        });
+
+      const checkPassword = await bcrypt.compare(password, findUser.password);
+      if (!checkPassword)
+        return res.status(403).json({
+          success: false,
+          message: 'Password yang dimasukkan Salah',
+        });
+
+      const token = jwt.sign(
+        {
+          id: findUser.id,
+          name: findUser.name,
+          email: findUser.email,
+          role: findUser.role,
+        },
+        config.jwtKey
+      );
+
+      let addPetanitoSupervisi = await Supervisi.findOneAndUpdate(
+        { petugas: idPetugas },
+        { $addToSet: { petani: findUser._id } },
+        { upsert: true, new: true, setDefaultsOnInsert: true }
+      ).populate('petugas', '_id name role');
+
+      res.status(201).json({
+        success: true,
+        message: 'Berhasil menambahkan akun Petani untuk di Supervisi',
+        data: {
+          _id: addPetanitoSupervisi._id,
+          petugas: addPetanitoSupervisi.petugas,
+          petani: {
+            id: findUser.id,
+            name: findUser.name,
+            email: findUser.email,
+            role: findUser.role,
+            access: RoleEnum[findUser.role],
+          },
+        },
+        token: token,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
+    }
+  },
+
+  getSupervisiAll: async (req, res) => {
+    try {
+      const idPetugas = req.userData.id;
+
+      const findSupervisi = await Supervisi.find({
+        petugas: idPetugas,
+      })
+        .populate('petugas', '_id name role')
+        .populate('petani', '_id name email password');
+
+      res.status(200).json({
+        success: true,
+        message: 'Berhasil melihat daftar akun Petani yang di Supervisi',
+        data: findSupervisi,
+      });
+    } catch (error) {
+      console.log(error);
+      res
+        .status(500)
+        .json({ message: error.message || `Internal server error` });
+    }
+  },
+
   signinSupervise: async (req, res) => {
     try {
       const petugas = req.userData.id;
@@ -85,7 +178,7 @@ module.exports = {
   signinSuperviseId: async (req, res) => {
     try {
       const petugas = req.userData.id;
-      const petani = req.params.userId
+      const petani = req.params.userId;
 
       const user = await User.findById(petani);
       console.log(user);
@@ -141,130 +234,44 @@ module.exports = {
     }
   },
 
-  createSupervisi: async (req, res) => {
-    try {
-      console.log(req.userData.id);
-      const petugas = req.userData.id;
-
-      const { email, password } = req.body;
-
-      const user = await User.findOne({ email: email, role: 'petani' });
-      console.log(user);
-      if (!user) {
-        res.status(403).json({ message: 'Email belum terdaftar atau bukan merupakan akun Petani' });
-      } else {
-        const checkPassword = bcrypt.compareSync(password, user.password);
-        if (checkPassword) {
-          const token = jwt.sign(
-            {
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              role: user.role,
-            },
-            config.jwtKey
-          );
-
-          const petani = user._id;
-
-          let supervisi = await Supervisi.findOneAndUpdate(
-            { petugas: petugas },
-            { $addToSet: { petani: petani } },
-            { upsert: true, new: true, setDefaultsOnInsert: true }
-          ).populate('petugas', '_id name role');
-
-          res.status(201).json({
-            message: 'Berhasil menambahkan akun Petani untuk di Supervisi',
-            supervisiId: supervisi._id,
-            petugas: supervisi.petugas,
-            petani: {
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              role: user.role,
-              access: RoleEnum[user.role],
-            },
-            token: token,
-          });
-        } else {
-          res.status(403).json({
-            message: 'Password yang dimasukkan salah',
-          });
-        }
-      }
-    } catch (error) {
-      console.log(error);
-      res
-        .status(500)
-        .json({ message: error.message || `Internal server error` });
-    }
-  },
-
-  seeMySupervisi: async (req, res) => {
-    try {
-      const petugas = req.userData.id;
-
-      const checkPetugas = await Supervisi.findOne({
-        petugas: petugas,
-      });
-      console.log(checkPetugas);
-
-      if (!checkPetugas) {
-        res.status(201).json({ message: 'Belum ada akun Petani yang di Supervisi' });
-      } else {
-        let supervisi = await Supervisi.findOne({ petugas: petugas })
-          .populate('petugas', '_id name role')
-          .populate('petani', '_id name email password');
-
-        res.status(201).json({
-          message: 'Berhasil melihat daftar akun Petani yang di Supervisi',
-          id: supervisi._id,
-          petugas: supervisi.petugas,
-          petani: supervisi.petani,
-        });
-      }
-    } catch (error) {
-      console.log(error);
-      res
-        .status(500)
-        .json({ message: error.message || `Internal server error` });
-    }
-  },
-
   deleteSupervisi: async (req, res) => {
     try {
-      console.log(req.userData.id);
-      const petani = req.params.petaniId;
-      const petugas = req.userData.id;
+      const idPetani = req.params.idPetani;
+      const idPetugas = req.userData.id;
 
-      const checkPetani = await Supervisi.findOne({
-        petugas: petugas,
-        petani: petani,
+      let findSupervisi = await Supervisi.findOneAndUpdate(
+        { petugas: idPetugas },
+        { $pull: { petani: idPetani } }
+      ).populate('petugas', '_id name role');
+
+      if (!findSupervisi)
+        return res.status(404).json({
+          success: false,
+          message:
+            'Akun Petani tidak ditemukan pada list akun yang di Supervisi',
+        });
+
+      let petaniDetail = await User.findOne({ _id: idPetani }).select(
+        '_id name email phone role'
+      );
+
+      res.status(200).json({
+        success: true,
+        message: 'Berhasil menghapus akun Petani untuk di Supervisi',
+        data: {
+          _id: findSupervisi._id,
+          petugas: findSupervisi.petugas,
+          petani: petaniDetail,
+        },
       });
-      console.log(checkPetani);
-
-      if (checkPetani) {
-        let supervisi = await Supervisi.findOneAndUpdate(
-          { petugas: petugas },
-          { $pull: { petani: petani } }
-        ).populate('petugas', '_id name role');
-
-        res.status(200).json({
-          message: 'Berhasil menghapus akun Petani untuk di Supervisi',
-          id: supervisi._id,
-          petugas: supervisi.petugas,
-          petani: await User.findOne({ _id: petani }, '_id name role'),
-        });
-      } else {
-        res.status(404).json({
-          message: 'Akun Petani tidak ditemukan pada list akun yang di Supervisi',
-        });
-      }
     } catch (error) {
       console.log(error);
       res
         .status(500)
-        .json({ message: error.message || `Internal server error` });
+        .json({
+          success: false,
+          message: error.message || `Internal server error`,
+        });
     }
   },
 };
