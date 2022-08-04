@@ -1,39 +1,74 @@
 var express = require('express');
 var router = express.Router();
 const {
-  createLahan,
-  seeNameLahan,
-  addLuasRusak,
-  seeMyLahan,
   editModal,
-  seeALahan,
-  seeMyTipeLahan,
-  lahanFinish,
-  lahanUnfinish,
   deleteLahan,
+  addLahan,
+  editLuasRusak,
+  getLahanAll,
+  getLahanbyID,
+  getTipefromLahan,
+  getNamafromLahan,
+  editFinishLahan,
+  editActivateLahan,
 } = require('./controller');
 const authenticateUser = require('../middleware/authentication');
 const { checkIfPetani } = require('../middleware/check-role');
 
 /* GET home page. */
-router.post('/tambahlahan', authenticateUser, checkIfPetani, createLahan);
-router.put('/rusak/:lahanId', authenticateUser, checkIfPetani, addLuasRusak);
-router.put('/modal/:lahanId', authenticateUser, checkIfPetani, editModal);
+router.post('/tambahlahan', authenticateUser, checkIfPetani, addLahan);
 
-router.get('/namalahan', authenticateUser, checkIfPetani, seeNameLahan);
-router.get('/lihatlahan', authenticateUser, checkIfPetani, seeMyLahan);
-router.get('/lihatlahan/:lahanId', authenticateUser, checkIfPetani, seeALahan);
-router.get('/lihattipelahan', authenticateUser, checkIfPetani, seeMyTipeLahan);
-
-
-router.put('/selesai/:lahanId', authenticateUser, checkIfPetani, lahanFinish);
-router.put('/batalselesai/:lahanId', authenticateUser, checkIfPetani, lahanUnfinish);
-
-router.delete(
-  '/hapus/:lahanId',
+router.get('/namalahan', authenticateUser, checkIfPetani, getNamafromLahan);
+router.get('/lihatlahan', authenticateUser, checkIfPetani, getLahanAll);
+router.get(
+  '/lihatlahan/:idLahan',
   authenticateUser,
   checkIfPetani,
-  deleteLahan
+  getLahanbyID
 );
+router.get(
+  '/lihattipelahan',
+  authenticateUser,
+  checkIfPetani,
+  getTipefromLahan
+);
+
+router.put(
+  '/batalselesai/:lahanId',
+  authenticateUser,
+  checkIfPetani,
+  editActivateLahan
+);
+
+// ENDPOINT BARU
+router.post('/tambah', authenticateUser, checkIfPetani, addLahan);
+
+router.put('/rusak/:idLahan', authenticateUser, checkIfPetani, editLuasRusak);
+
+router.put('/modal/:idLahan', authenticateUser, checkIfPetani, editModal);
+
+router.get('/', authenticateUser, checkIfPetani, getLahanAll);
+
+router.get('/tipe', authenticateUser, checkIfPetani, getTipefromLahan);
+
+router.get('/nama', authenticateUser, checkIfPetani, getNamafromLahan);
+
+router.get('/:idLahan', authenticateUser, checkIfPetani, getLahanbyID);
+
+router.put(
+  '/selesai/:idLahan',
+  authenticateUser,
+  checkIfPetani,
+  editFinishLahan
+);
+
+router.put(
+  '/aktifkan/:idLahan',
+  authenticateUser,
+  checkIfPetani,
+  editActivateLahan
+);
+
+router.delete('/hapus/:idLahan', authenticateUser, checkIfPetani, deleteLahan);
 
 module.exports = router;

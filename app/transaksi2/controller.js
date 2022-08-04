@@ -430,7 +430,6 @@ module.exports = {
 
   getTransaksibyID: async (req, res) => {
     try {
-      const isUser = req.userData.id;
       const idTransaksi = req.params.idTransaksi;
 
       const findTransaksi = await Transaksi.findById(idTransaksi)

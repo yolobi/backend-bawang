@@ -9,10 +9,9 @@ const statusEnum = Object.freeze({
 });
 
 module.exports = {
-  createLahan: async (req, res) => {
+  addLahan: async (req, res) => {
     try {
-      const user = req.userData.id;
-      console.log(user);
+      const idUser = req.userData.id;
 
       let {
         tipeCabai,
@@ -33,7 +32,7 @@ module.exports = {
         Number(modalPekerja);
 
       let lahan = new Lahan({
-        user,
+        user: idUser,
         tipeCabai,
         namaLahan,
         tanggalTanam,
@@ -43,11 +42,12 @@ module.exports = {
         modalPupuk,
         modalPestisida,
         modalPekerja,
-        totalModal,
+        totalModal: totalModal.toFixed(3),
       });
       await lahan.save();
 
       res.status(201).json({
+        success: true,
         message: 'Berhasil menambahkan Lahan',
         data: lahan,
       });
@@ -59,26 +59,35 @@ module.exports = {
     }
   },
 
-  addLuasRusak: async (req, res) => {
+  editLuasRusak: async (req, res) => {
     try {
-      const id = req.params.lahanId;
-      const user = req.userData.id;
-      console.log(user);
-      console.log(id);
+      const idLahan = req.params.idLahan;
+      const idUser = req.userData.id;
 
       const { luasRusak } = req.body;
 
+      const findLahan = await Lahan.findOne({
+        _id: idLahan,
+        user: idUser,
+      }).select('_id luasLahan');
+
+      if (!findLahan)
+        return res.status(404).json({
+          success: false,
+          message: 'Lahan tidak ditemukan',
+        });
+
       const persenRusak =
-        (Number(luasRusak) / (await myFunction.luasLahan(id, user))) * 100;
+        (Number(luasRusak) / Number(findLahan.luasLahan)) * 100;
 
       const lahanRusak = await Lahan.findOneAndUpdate(
-        { _id: id },
-        { $set: { luasRusak: luasRusak, persenRusak: persenRusak } },
+        { _id: idLahan },
+        { luasRusak: luasRusak, persenRusak: persenRusak.toFixed(3) },
         { new: true }
       );
-      console.log(lahanRusak);
 
       res.status(201).json({
+        success: true,
         message: 'Berhasil menambahkan Luas Lahan Rusak dalam hektar',
         data: lahanRusak,
       });
@@ -92,38 +101,43 @@ module.exports = {
 
   editModal: async (req, res) => {
     try {
+      const idUser = req.userData.id;
+      const idLahan = req.params.idLahan;
+
       const { modalBenih, modalPupuk, modalPestisida, modalPekerja } = req.body;
-      const totalModal =
+
+      let totalModal =
         Number(modalBenih) +
         Number(modalPupuk) +
         Number(modalPestisida) +
         Number(modalPekerja);
 
-      const hasilUpdate = await Lahan.findOneAndUpdate(
-        { _id: req.params.lahanId, user: req.userData.id },
+      const updateModal = await Lahan.findOneAndUpdate(
+        { _id: idLahan, user: idUser },
         {
-          $set: {
-            modalBenih: modalBenih,
-            modalPupuk: modalPupuk,
-            modalPestisida: modalPestisida,
-            modalPekerja: modalPekerja,
-            totalModal: totalModal,
-          },
+          modalBenih: Number(modalBenih).toFixed(3),
+          modalPupuk: Number(modalPupuk).toFixed(3),
+          modalPestisida: Number(modalPestisida).toFixed(3),
+          modalPekerja: Number(modalPekerja).toFixed(3),
+          totalModal: totalModal.toFixed(3),
         },
         { new: true }
       );
 
-      if (!hasilUpdate) {
+      if (!updateModal) {
         res.status(400).json({
           sucess: false,
-          message: 'ID Lahan tidak ditemukan',
+          message: 'Lahan tidak ditemukan',
         });
       } else {
-        await myFunction.updateKeuntungan(req.params.lahanId, req.userData.id);
+        console.log('sini yu');
+        const updateLahan = await myFunction.updateDataLahan(idLahan, idUser);
+        console.log(updateLahan);
+
         res.status(201).json({
           success: true,
           message: 'Berhasil mengedit modal',
-          data: hasilUpdate,
+          data: updateLahan,
         });
       }
     } catch (error) {
@@ -134,96 +148,28 @@ module.exports = {
     }
   },
 
-  seeNameLahan: async (req, res) => {
+  getLahanAll: async (req, res) => {
     try {
-      const user = req.userData.id;
-      console.log(user);
+      const idUser = req.userData.id;
 
-      const myLahan = await Lahan.find({ user: user })
-        .select('_id namaLahan tanggalTanam')
-        .sort({
-          tanggalTanam: 'descending',
-          createdAt: 'descending',
-        });
-
-      const userData = await User.findById(user).select('_id name role');
-
-      if (myLahan[0] == undefined) {
-        res.status(404).json({
-          message: 'Belum ada Lahan yang diisi',
-        });
-      } else {
-        res.status(200).json({
-          message: 'Berhasil melihat data Lahan',
-          petani: userData,
-          data: myLahan,
-        });
-      }
-    } catch (error) {
-      res.status(500).json({
-        sucess: false,
-        message: error.message || `Internal server error`,
-      });
-    }
-  },
-
-  seeMyLahan: async (req, res) => {
-    try {
-      const user = req.userData.id;
-      console.log(user);
-
-      const myLahan = await Lahan.find({ user: user })
-        .select(
-          '_id namaLahan tipeCabai jumlahPanen rataanJumlahPanen transaksi jumlahPenjualan rataanHargaJual jumlahBatang tanggalTanam tanggalSelesai createdAt'
-        )
+      const findLahan = await Lahan.find({ user: idUser })
         .populate('transaksi', '_id totalProduksi')
+        .populate('user', 'id name role')
         .sort({
           tanggalTanam: 'descending',
           createdAt: 'descending',
         });
-      console.log(myLahan[0]);
 
-      const userData = await User.findById(user).select('_id name role');
-
-      if (myLahan[0] == undefined) {
-        res.status(404).json({
-          message: 'Belum ada Lahan yang diisi',
-        });
-      } else {
-        res.status(200).json({
-          message: 'Berhasil melihat data Lahan',
-          user: userData,
-          data: myLahan,
-        });
-      }
-    } catch (error) {
-      res.status(500).json({
-        sucess: false,
-        message: error.message || `Internal server error`,
-      });
-    }
-  },
-
-  seeMyTipeLahan: async (req, res) => {
-    try {
-      const user = req.userData.id;
-      console.log(user);
-
-      const myLahan = await Lahan.distinct('tipeCabai', { user: user });
-      // console.log(myLahan[0]);
-
-      const userData = await User.findById(user).select('_id name role');
-
-      if (myLahan[0] == undefined) {
+      if (findLahan.length == 0 || !findLahan) {
         res.status(404).json({
           success: false,
-          message: 'Belum ada Lahan yang diisi',
+          message: 'Belum ada Lahan yang dibuat',
         });
       } else {
         res.status(200).json({
-          message: 'Berhasil melihat Tipe Cabai Lahan',
-          user: userData,
-          data: myLahan,
+          success: true,
+          message: 'Berhasil melihat data Lahan',
+          data: findLahan,
         });
       }
     } catch (error) {
@@ -234,11 +180,14 @@ module.exports = {
     }
   },
 
-  seeALahan: async (req, res) => {
+  getLahanbyID: async (req, res) => {
     try {
+      const idUser = req.userData.id;
+      const idLahan = req.params.idLahan;
+
       const findLahan = await Lahan.findOne({
-        user: req.userData.id,
-        _id: req.params.lahanId,
+        user: idUser,
+        _id: idLahan,
       })
         .populate({
           path: 'transaksi',
@@ -247,15 +196,14 @@ module.exports = {
         })
         .populate('user', '_id name role');
 
-      const toRes = findLahan.toObject();
-      toRes.countTransaksi = findLahan.transaksi.length;
-
       if (!findLahan) {
         res.status(404).json({
           success: false,
           message: 'Data Lahan tidak ditemukan',
         });
       } else {
+        const toRes = findLahan.toObject();
+        toRes.countTransaksi = findLahan.transaksi.length;
         res.status(200).json({
           success: true,
           message: `Berhasil melihat data Lahan dengan nama ${findLahan.namaLahan}`,
@@ -270,96 +218,166 @@ module.exports = {
     }
   },
 
-  lahanFinish: async (req, res) => {
+  getTipefromLahan: async (req, res) => {
     try {
-      const user = req.userData.id;
-      const id = req.params.lahanId;
-      console.log(user);
+      const idUser = req.userData.id;
 
-      const { tanggalSelesai } = req.body;
+      const findLahan = await Lahan.distinct('tipeCabai', { user: idUser });
+      console.log(findLahan);
 
-      if (!tanggalSelesai) {
+      if (findLahan[0] == undefined) {
         res.status(404).json({
-          message: 'tanggal selesai harus diisi',
-        });
-      }
-
-      const aLahan = await Lahan.findOneAndUpdate(
-        { user: user, _id: id },
-        { tanggalSelesai: tanggalSelesai }
-      );
-
-      if (!aLahan) {
-        res.status(404).json({
-          message: 'Data Lahan tidak ditemukan',
+          success: false,
+          message: 'Belum ada Lahan yang diisi',
         });
       } else {
+        const userDetail = await User.findById(idUser).select('_id name role');
         res.status(200).json({
-          message: `Lahan dengan nama ${aLahan.namaLahan} telah selesai`,
-          tanggalSelesai: tanggalSelesai,
+          success: true,
+          message: 'Berhasil melihat Tipe Cabai Lahan',
+          user: userDetail,
+          data: findLahan,
         });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: error.message || `Internal server error` });
+      console.log(error);
+      res.status(500).json({
+        sucess: false,
+        message: error.message || `Internal server error`,
+      });
     }
   },
 
-  lahanUnfinish: async (req, res) => {
+  getNamafromLahan: async (req, res) => {
     try {
-      const user = req.userData.id;
-      const id = req.params.lahanId;
-      console.log(user);
+      const idUser = req.userData.id;
 
-      const aLahan = await Lahan.findOneAndUpdate(
-        { user: user, _id: id },
+      const findLahan = await Lahan.find({ user: idUser })
+        .select('_id namaLahan tanggalTanam')
+        .sort({
+          tanggalTanam: 'descending',
+          createdAt: 'descending',
+        })
+        .populate('user', '_id name role');
+
+      if (findLahan.length == 0 || !findLahan) {
+        res.status(404).json({
+          success: false,
+          message: 'Belum ada Lahan yang diisi',
+        });
+      } else {
+        res.status(200).json({
+          success: true,
+          message: 'Berhasil melihat data Lahan',
+          data: findLahan,
+        });
+      }
+    } catch (error) {
+      res.status(500).json({
+        sucess: false,
+        message: error.message || `Internal server error`,
+      });
+    }
+  },
+
+  editFinishLahan: async (req, res) => {
+    try {
+      const idUser = req.userData.id;
+      const idLahan = req.params.idLahan;
+
+      const { tanggalSelesai } = req.body;
+      console.log(Boolean(tanggalSelesai));
+      if (!tanggalSelesai) {
+        res.status(404).json({
+          succes: false,
+          message: 'tanggal selesai harus diisi',
+        });
+      } else {
+        const findLahan = await Lahan.findOneAndUpdate(
+          { user: idUser, _id: idLahan },
+          { tanggalSelesai: tanggalSelesai }
+        );
+
+        if (!findLahan) {
+          res.status(404).json({
+            success: false,
+            message: 'Data Lahan tidak ditemukan',
+          });
+        } else {
+          res.status(200).json({
+            success: true,
+            message: `Lahan dengan nama ${findLahan.namaLahan} telah selesai`,
+            tanggalSelesai: tanggalSelesai,
+          });
+        }
+      }
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
+    }
+  },
+
+  editActivateLahan: async (req, res) => {
+    try {
+      const idUser = req.userData.id;
+      const idLahan = req.params.idLahan;
+
+      const findLahan = await Lahan.findOneAndUpdate(
+        { user: idUser, _id: idLahan },
         { tanggalSelesai: null }
       );
 
-      if (!aLahan) {
+      if (!findLahan) {
         res.status(404).json({
+          success: false,
           message: 'Data Lahan tidak ditemukan',
         });
       } else {
         res.status(200).json({
-          message: `Lahan dengan nama ${aLahan.namaLahan} berhasil diubah menjadi belum selesai`,
+          success: true,
+          message: `Lahan dengan nama ${findLahan.namaLahan} berhasil diaktifkan kembali`,
           tanggalSelesai: null,
         });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: error.message || `Internal server error` });
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
     }
   },
 
   deleteLahan: async (req, res) => {
     try {
-      const user = req.userData.id;
-      const id = req.params.lahanId;
-      console.log(user);
+      const idUser = req.userData.id;
+      const idLahan = req.params.idLahan;
 
-      const userData = await User.findById(user).select('_id name role');
-      const aLahan = await Lahan.findOneAndRemove({ user: user, _id: id });
+      const findLahan = await Lahan.findOneAndRemove({
+        user: idUser,
+        _id: idLahan,
+      }).populate('user', '_id name role');
 
-      if (!aLahan) {
+      if (!findLahan) {
         res.status(404).json({
+          success: 'false',
           message: 'Data Lahan tidak ditemukan',
         });
       } else {
-        await Transaksi2.deleteMany({ lahan: id });
+        await Transaksi2.deleteMany({ lahan: idLahan });
 
         res.status(200).json({
-          message: `Lahan dengan nama ${aLahan.namaLahan} berhasil dihapus`,
-          user: userData,
-          data: aLahan,
+          success: true,
+          message: `Lahan dengan nama ${findLahan.namaLahan} berhasil dihapus`,
+          data: findLahan,
         });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: error.message || `Internal server error` });
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
     }
   },
 };

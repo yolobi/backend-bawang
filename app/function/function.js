@@ -8,17 +8,17 @@ module.exports = {
   teritoryInfo: async (idProvinsi, idKabupaten, idKecamatan) => {
     console.log('masuk sini');
     let detailProvinsi =
-      await indonesia.getProvinceById(idProvinsi.toString()) ||
+      (await indonesia.getProvinceById(idProvinsi.toString())) ||
       'idProvinsi tidak valid';
     console.log(detailProvinsi);
 
     let detailKabupaten =
-      await indonesia.getRegencyById(idKabupaten.toString()) ||
+      (await indonesia.getRegencyById(idKabupaten.toString())) ||
       'idKabupaten tidak valid';
     console.log(detailKabupaten);
 
     let detailKecamatan =
-      await indonesia.getDistrictById(idKecamatan.toString()) ||
+      (await indonesia.getDistrictById(idKecamatan.toString())) ||
       'idKecamatan tidak valid';
     console.log(detailKecamatan);
 
@@ -59,6 +59,44 @@ module.exports = {
     return count;
   },
 
+  updateKeuntungan: async (idLahan, idUser) => {
+    const findLahan = await Lahan.findOne({
+      _id: idLahan,
+      user: idUser,
+    }).populate({
+      path: 'transaksi',
+      select:
+        '_id jumlahDijual totalProduksi tanggalPencatatan statusTransaksi',
+      match: { statusTransaksi: 2 },
+    });
+
+    let countTransaksi = findLahan.transaksi.length;
+
+    if (countTransaksi == 0 || !countTransaksi) {
+      await Lahan.findOneAndUpdate(
+        { _id: idLahan, user: idUser },
+        {
+          keuntungan: 0,
+        }
+      );
+    } else {
+      let jumlahPenjualan = findLahan.transaksi
+        .map((item) => item.totalProduksi)
+        .reduce((prev, next) => prev + next);
+
+      let keuntungan = jumlahPenjualan - findLahan.totalModal;
+
+      const hasilUpdate = await Lahan.findOneAndUpdate(
+        { _id: idLahan, user: idUser },
+        {
+          keuntungan: keuntungan.toFixed(3),
+        },
+        { new: true }
+      );
+      return hasilUpdate;
+    }
+  },
+
   updateDataLahan: async (idLahan, idUser) => {
     let penjual = idUser;
     let lahan = idLahan;
@@ -74,10 +112,9 @@ module.exports = {
     });
 
     let countTransaksi = findLahan.transaksi.length;
-    let transaksiPertama = findLahan.transaksi[0].tanggalPencatatan;
 
     if (countTransaksi == 0 || !countTransaksi) {
-      await Lahan.findOneAndUpdate(
+      const hasilUpdate = await Lahan.findOneAndUpdate(
         { _id: lahan, user: penjual },
         {
           jumlahPanen: 0,
@@ -86,8 +123,10 @@ module.exports = {
           rataanHargaJual: 0,
           tanggalMulaiPanen: null,
           keuntungan: 0,
-        }
+        },
+        { new: true }
       );
+      return hasilUpdate;
     } else {
       let jumlahPanen = findLahan.transaksi
         .map((item) => item.jumlahDijual)
@@ -101,7 +140,12 @@ module.exports = {
 
       let rataanHargaJual = jumlahPenjualan / countTransaksi;
 
-      let keuntungan = jumlahPenjualan - findLahan.totalModal;
+      let keuntungan =
+        jumlahPenjualan - findLahan.totalModal < 0
+          ? 0
+          : jumlahPenjualan - findLahan.totalModal;
+
+      let transaksiPertama = findLahan.transaksi[0].tanggalPencatatan;
 
       const hasilUpdate = await Lahan.findOneAndUpdate(
         { _id: lahan, user: penjual },
