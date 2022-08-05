@@ -1,10 +1,5 @@
 const mongoose = require('mongoose');
 
-// const statusEnum = Object.freeze({
-//   active: '0',
-//   finish: '1',
-// });
-
 let lahanSchema = new mongoose.Schema(
   {
     user: {

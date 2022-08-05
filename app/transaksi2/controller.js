@@ -430,9 +430,13 @@ module.exports = {
 
   getTransaksibyID: async (req, res) => {
     try {
+      const idUser = req.userData.id;
       const idTransaksi = req.params.idTransaksi;
 
-      const findTransaksi = await Transaksi.findById(idTransaksi)
+      const findTransaksi = await Transaksi.findOne({
+        user: idUser,
+        _id: idTransaksi,
+      })
         .populate('pembeli', '_id name role')
         .populate('penjual', '_id name role')
         .populate('lahan', '_id namaLahan tipeCabai tanggalTanam');

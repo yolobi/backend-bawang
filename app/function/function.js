@@ -6,21 +6,17 @@ const Blanko2 = require('../blanko2/model');
 
 module.exports = {
   teritoryInfo: async (idProvinsi, idKabupaten, idKecamatan) => {
-    console.log('masuk sini');
     let detailProvinsi =
       (await indonesia.getProvinceById(idProvinsi.toString())) ||
       'idProvinsi tidak valid';
-    console.log(detailProvinsi);
 
     let detailKabupaten =
       (await indonesia.getRegencyById(idKabupaten.toString())) ||
       'idKabupaten tidak valid';
-    console.log(detailKabupaten);
 
     let detailKecamatan =
       (await indonesia.getDistrictById(idKecamatan.toString())) ||
       'idKecamatan tidak valid';
-    console.log(detailKecamatan);
 
     const removeLatLong = (detail) => {
       if (typeof detail === 'string') {
@@ -170,14 +166,13 @@ module.exports = {
     const start = `${tahun}-${bulan}-01`;
     const end = `${tahun}-${bulan}-31`;
 
-    const bulanBlanko = await Blanko2.findOne({
+    const findBlanko = await Blanko2.findOne({
       user: idUser,
       tipeCabai: tipeCabai,
       tanggalPencatatan: { $gte: start, $lte: end },
     });
 
-    if (!bulanBlanko) {
-      console.log('kesini dulu');
+    if (!findBlanko) {
       const teritory = await User.findById(idUser).select(
         '_id provinsi kabupaten kecamatan'
       );
@@ -193,7 +188,7 @@ module.exports = {
       await blanko.save();
       return blanko;
     } else {
-      return bulanBlanko;
+      return findBlanko;
     }
   },
 
@@ -236,12 +231,10 @@ module.exports = {
       tipeCabai: tipeCabai,
       tanggalSelesai: null || { $gte: start, $lte: end },
     }).select('_id namaLahan tanggalSelesai luasLahan luasRusak tipeCabai');
-    // console.log(findLahan);
 
     const sum = findLahan.reduce((accumulator, object) => {
       return accumulator + object.luasRusak;
     }, 0);
-    // console.log(sum);
 
     await Blanko2.findOneAndUpdate(
       {
@@ -278,7 +271,6 @@ module.exports = {
     const sum = findLahan.reduce((accumulator, object) => {
       return accumulator + object.luasLahan;
     }, 0);
-    // console.log(findLahan);
 
     await Blanko2.findOneAndUpdate(
       {
@@ -291,7 +283,6 @@ module.exports = {
   },
 
   updateKolom10: async (idUser, tanggalPencatatan, tipeCabai) => {
-    console.log('sini masuk kolom 10');
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
 
@@ -313,8 +304,6 @@ module.exports = {
         },
       });
 
-    // const jumlahPenjualan1 = findLahan.map((item) => item.transaksi);
-    // console.log(jumlahPenjualan1);
     if (findLahan.length !== 0) {
       const jumlahPanen = findLahan
         .map((item) =>
@@ -324,8 +313,6 @@ module.exports = {
         )
         .reduce((prev, next) => prev + next);
 
-      // console.log(jumlahPenjualan);
-      // console.log(sum1);
       await Blanko2.findOneAndUpdate(
         {
           user: idUser,
@@ -338,7 +325,6 @@ module.exports = {
   },
 
   updateKolom11: async (idUser, tanggalPencatatan, tipeCabai) => {
-    console.log('sini masuk kolom 11');
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
 
@@ -359,9 +345,6 @@ module.exports = {
           jumlahDijual: { $ne: null || undefined },
         },
       });
-    console.log(findLahan);
-    // const jumlahPenjualan1 = findLahan.map((item) => item.transaksi);
-    // console.log(jumlahPenjualan1);
 
     if (findLahan.length !== 0) {
       const jumlahPanen = findLahan
@@ -372,8 +355,6 @@ module.exports = {
         )
         .reduce((prev, next) => prev + next);
 
-      // console.log(jumlahPanen);
-      // console.log(sum1);
       await Blanko2.findOneAndUpdate(
         {
           user: idUser,
@@ -386,7 +367,6 @@ module.exports = {
   },
 
   updateKolom12: async (idUser, tanggalPencatatan, tipeCabai) => {
-    console.log('sini masuk kolom 12');
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
 
@@ -406,10 +386,6 @@ module.exports = {
           jumlahDijual: { $ne: null || undefined },
         },
       });
-    console.log('sampai sini itu findlahan kolom 12');
-    console.log(findLahan);
-    // const jumlahPenjualan1 = findLahan.map((item) => item.transaksi);
-    // console.log(jumlahPenjualan1);
 
     const jumlahPanen = findLahan
       .map((item) =>
@@ -418,8 +394,6 @@ module.exports = {
         }, 0)
       )
       .reduce((prev, next) => prev + next);
-    console.log('sampai sini itu jumlah panen');
-    console.log(jumlahPanen);
 
     const totalProd = findLahan
       .map((item) =>
@@ -428,14 +402,9 @@ module.exports = {
         }, 0)
       )
       .reduce((prev, next) => prev + next);
-    console.log('sampai sini itu totalprod');
-    console.log(totalProd);
 
     const sum = totalProd / (jumlahPanen * 100);
-    // console.log(jumlahPanen);
-    // console.log(totalProd);
 
-    // console.log(sum);
     if (sum > 0) {
       await Blanko2.findOneAndUpdate(
         {
@@ -458,7 +427,7 @@ module.exports = {
   },
 
   updateKolom4: async (idUser, tanggalPencatatan, tipeCabai) => {
-    console.log('masuk kolom 4');
+
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
 
@@ -483,7 +452,6 @@ module.exports = {
     });
 
     if (prevbulanBlanko) {
-      console.log('masuk sini');
       await Blanko2.findOneAndUpdate(
         {
           user: idUser,
@@ -496,7 +464,6 @@ module.exports = {
         }
       );
     } else {
-      console.log('masuk sana');
 
       const findLahan = await Lahan.find({
         user: idUser,
@@ -522,7 +489,7 @@ module.exports = {
   },
 
   updateKolom9: async (idUser, tanggalPencatatan, tipeCabai) => {
-    console.log('masuk sini 9');
+
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
 
@@ -587,7 +554,6 @@ module.exports = {
         }
       );
     } else {
-      console.log('masuk sana');
 
       await Blanko2.findOneAndUpdate(
         {
@@ -634,7 +600,6 @@ module.exports = {
         }
       );
     } else {
-      console.log('masuk sana');
 
       await Blanko2.findOneAndUpdate(
         {
