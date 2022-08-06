@@ -652,7 +652,8 @@ module.exports = {
             pendapatanCMB: 0,
             pendapatanCMK: 0,
             pendapatanCRM: 0,
-            totalPengeluaran: 0,
+            totalPembelian: 0,
+            totalPenjualan: 0,
             totalPendapatan: 0,
           },
         });
@@ -711,8 +712,13 @@ module.exports = {
         const pendapatanCMB = penjualanCabai('cabaiMerahBesar');
         const pendapatanCMK = penjualanCabai('cabaiMerahKeriting');
         const pendapatanCRM = penjualanCabai('cabaiRawitMerah');
-        const totalPendapatan =
+        const totalPenjualan =
           Number(pendapatanCMB) + Number(pendapatanCMK) + Number(pendapatanCRM);
+
+        const totalPendapatan =
+          totalPenjualan - pembelianCabai < 0
+            ? 0
+            : (totalPenjualan - pembelianCabai).toFixed(3);
 
         res.status(200).json({
           success: true,
@@ -732,8 +738,9 @@ module.exports = {
             pendapatanCMB: Number(pendapatanCMB),
             pendapatanCMK: Number(pendapatanCMK),
             pendapatanCRM: Number(pendapatanCRM),
-            totalPengeluaran: Number(pembelianCabai.toFixed(3)),
-            totalPendapatan: totalPendapatan,
+            totalPembelian: Number(pembelianCabai.toFixed(3)),
+            totalPenjualan: totalPenjualan,
+            totalPendapatan: Number(totalPendapatan),
           },
         });
       }
@@ -775,7 +782,8 @@ module.exports = {
             pendapatanCMB: 0,
             pendapatanCMK: 0,
             pendapatanCRM: 0,
-            totalPengeluaran: 0,
+            totalPembelian: 0,
+            totalPenjualan: 0,
             totalPendapatan: 0,
           },
         });
@@ -834,8 +842,13 @@ module.exports = {
         const pendapatanCMB = penjualanCabai('cabaiMerahBesar');
         const pendapatanCMK = penjualanCabai('cabaiMerahKeriting');
         const pendapatanCRM = penjualanCabai('cabaiRawitMerah');
-        const totalPendapatan =
+        const totalPenjualan =
           Number(pendapatanCMB) + Number(pendapatanCMK) + Number(pendapatanCRM);
+
+        const totalPendapatan =
+          totalPenjualan - pembelianCabai < 0
+            ? 0
+            : (totalPenjualan - pembelianCabai).toFixed(3);
 
         res.status(200).json({
           success: true,
@@ -855,8 +868,9 @@ module.exports = {
             pendapatanCMB: Number(pendapatanCMB),
             pendapatanCMK: Number(pendapatanCMK),
             pendapatanCRM: Number(pendapatanCRM),
-            totalPengeluaran: Number(pembelianCabai.toFixed(3)),
-            totalPendapatan: totalPendapatan,
+            totalPembelian: Number(pembelianCabai.toFixed(3)),
+            totalPenjualan: totalPenjualan,
+            totalPendapatan: Number(totalPendapatan),
           },
         });
       }
