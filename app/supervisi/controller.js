@@ -111,126 +111,146 @@ module.exports = {
     }
   },
 
-  signinSupervise: async (req, res) => {
+  loginSupervisi: async (req, res) => {
     try {
-      const petugas = req.userData.id;
-      const { email, password } = req.body;
+      const idPetugas = req.userData.id;
+      const { account, password } = req.body;
 
-      const user = await User.findOne({ email: email });
-      console.log(user);
-
-      const onSupervise = await Supervisi.findOne({
-        petugas: petugas,
-        petani: user.id,
+      const findUser = await User.findOne({
+        $or: [{ email: account }, { phone: account }],
+        role: 'petani',
       });
-      console.log(onSupervise);
+      console.log(findUser);
 
-      if (!user) {
-        res.status(400).json({ message: 'Email belum terdaftar' });
-      } else if (!onSupervise) {
+      const isOnSupervise = await Supervisi.findOne({
+        petugas: idPetugas,
+        petani: findUser.id,
+      });
+      console.log(isOnSupervise);
+
+      if (!findUser) {
+        return res.status(404).json({
+          success: false,
+          message:
+            'Email belum terdaftar atau bukan merupakan akun dengan role Petani',
+        });
+      } else if (!isOnSupervise) {
         res.status(400).json({
+          success: false,
           message:
             'Bukan merupakan akun Petani yang anda akuisisi, Silahkan akuisisi terlebih dahulu',
         });
       } else {
         const supervisi = await Supervisi.findOne({
-          petani: user._id,
+          petani: findUser._id,
         }).populate('petugas', '_id name');
-        if (user.password === password) {
+        if (findUser.password === password) {
           const token = jwt.sign(
             {
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              role: user.role,
+              id: findUser.id,
+              name: findUser.name,
+              email: findUser.email,
+              role: findUser.role,
             },
             config.jwtKey
           );
           res.status(200).json({
-            message: 'Sign-in Berhasil',
-            user: {
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              role: user.role,
-              access: RoleEnum[user.role],
-            },
-            petugas: {
-              id: supervisi.petugas._id,
-              name: supervisi.petugas.name,
+            success: true,
+            message: 'Login Berhasil',
+            data: {
+              user: {
+                id: findUser.id,
+                name: findUser.name,
+                email: findUser.email,
+                role: findUser.role,
+                access: RoleEnum[findUser.role],
+              },
+              petugas: {
+                id: supervisi.petugas._id,
+                name: supervisi.petugas.name,
+              },
             },
             token: token,
           });
         } else {
           res.status(403).json({
+            success: false,
             message: 'Password yang dimasukkan Salah',
           });
         }
       }
     } catch (error) {
       console.log(error);
-      res
-        .status(500)
-        .json({ message: error.message || `Internal server error` });
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
     }
   },
 
-  signinSuperviseId: async (req, res) => {
+  loginSupervisibyID: async (req, res) => {
     try {
-      const petugas = req.userData.id;
-      const petani = req.params.userId;
+      const idPetugas = req.userData.id;
+      const idPetani = req.params.idUser;
 
-      const user = await User.findById(petani);
-      console.log(user);
+      const findUser = await User.findById(idPetani);
 
-      const onSupervise = await Supervisi.findOne({
-        petugas: petugas,
-        petani: petani,
+      const isOnSupervise = await Supervisi.findOne({
+        petugas: idPetugas,
+        petani: idPetani,
       });
-      console.log(onSupervise);
 
-      if (!user) {
-        res.status(400).json({ message: 'User tidak ditemukan' });
-      } else if (!onSupervise) {
+      if (!findUser) {
+        return res.status(404).json({
+          success: false,
+          message:
+            'Email belum terdaftar atau bukan merupakan akun dengan role Petani',
+        });
+      } else if (!isOnSupervise) {
         res.status(400).json({
+          success: false,
           message:
             'Bukan merupakan akun Petani yang anda akuisisi, Silahkan akuisisi terlebih dahulu',
         });
       } else {
         const supervisi = await Supervisi.findOne({
-          petani: user._id,
+          petani: findUser._id,
         }).populate('petugas', '_id name');
 
         const token = jwt.sign(
           {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
+            id: findUser.id,
+            name: findUser.name,
+            email: findUser.email,
+            role: findUser.role,
           },
           config.jwtKey
         );
         res.status(200).json({
+          success: true,
           message: 'Sign-in Berhasil',
-          user: {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-            access: RoleEnum[user.role],
-          },
-          petugas: {
-            id: supervisi.petugas._id,
-            name: supervisi.petugas.name,
+          data: {
+            user: {
+              id: findUser.id,
+              name: findUser.name,
+              email: findUser.email,
+              role: findUser.role,
+              access: RoleEnum[findUser.role],
+            },
+            petugas: {
+              id: supervisi.petugas._id,
+              name: supervisi.petugas.name,
+            },
           },
           token: token,
         });
       }
     } catch (error) {
       console.log(error);
-      res
-        .status(500)
-        .json({ message: error.message || `Internal server error` });
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
     }
   },
 
@@ -266,12 +286,10 @@ module.exports = {
       });
     } catch (error) {
       console.log(error);
-      res
-        .status(500)
-        .json({
-          success: false,
-          message: error.message || `Internal server error`,
-        });
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
     }
   },
 };
