@@ -22,7 +22,7 @@ module.exports = {
       return accumulator + object.luasLahan;
     }, 0);
 
-    return sum;
+    return Number(sum.toFixed(3));
   },
 
   lihatKolom7: async (idUser, tanggalPencatatan, tipeCabai) => {
@@ -44,7 +44,7 @@ module.exports = {
     }, 0);
     // console.log(sum);
 
-    return sum;
+    return Number(sum.toFixed(3));
   },
 
   lihatKolom8: async (idUser, tanggalPencatatan, tipeCabai) => {
@@ -65,7 +65,7 @@ module.exports = {
     }, 0);
     // console.log(findLahan);
 
-    return sum;
+    return Number(sum.toFixed(3));
   },
 
   lihatKolom10: async (idUser, tanggalPencatatan, tipeCabai) => {
@@ -102,7 +102,7 @@ module.exports = {
         )
         .reduce((prev, next) => prev + next);
 
-      return jumlahPanen;
+      return Number(jumlahPanen.toFixed(3));
 
       // console.log('ini kolom 10 jumlah panen');
       // console.log(jumlahPanen);
@@ -146,7 +146,7 @@ module.exports = {
           }, 0)
         )
         .reduce((prev, next) => prev + next);
-      return jumlahPanen;
+      return Number(jumlahPanen.toFixed(3));
       // console.log(jumlahPanen);
       // console.log(sum1);
     } else{
@@ -205,7 +205,7 @@ module.exports = {
     // console.log(totalProd);
 
     // console.log(sum);
-    return sum;
+    return Number(sum.toFixed(3));
   },
 
   lihatKolom4: async (idUser, tanggalPencatatan, tipeCabai) => {
@@ -249,7 +249,7 @@ module.exports = {
         return accumulator + object.luasLahan;
       }, 0);
 
-      return sum;
+      return Number(sum.toFixed(3));
     }
   },
 
@@ -275,7 +275,7 @@ module.exports = {
 
     let realsum = sum < 0.001 ? 0 : sum;
 
-    return realsum;
+    return Number(realsum.toFixed(3));
   },
 
   lihatKolom5baru: async (idUser, tanggalPencatatan, tipeCabai) => {
@@ -299,7 +299,7 @@ module.exports = {
 
     if (findLahan.length !== 0) {
       const sum = bulanBlanko.luasTanamanAkhirBulanLalu - bulanBlanko.luasRusak;
-      return sum;
+      return Number(sum.toFixed(3));
     } else {
       console.log('masuk sana');
 
@@ -328,7 +328,7 @@ module.exports = {
 
     if (findLahan.length !== 0) {
       const sum = bulanBlanko.luasTanamanAkhirBulanLalu - bulanBlanko.luasRusak;
-      return sum;
+      return Number(sum.toFixed(3));
     } else {
       console.log('masuk sana');
 

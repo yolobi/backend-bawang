@@ -215,7 +215,7 @@ module.exports = {
         tipeCabai: tipeCabai,
         tanggalPencatatan: { $gte: start, $lte: end },
       },
-      { luasPanenHabis: sum }
+      { luasPanenHabis: sum.toFixed(3) }
     );
   },
 
@@ -242,7 +242,7 @@ module.exports = {
         tipeCabai: tipeCabai,
         tanggalPencatatan: { $gte: start, $lte: end },
       },
-      { luasRusak: sum }
+      { luasRusak: sum.toFixed(3) }
     );
 
     await Lahan.updateMany(
@@ -278,7 +278,7 @@ module.exports = {
         tipeCabai: tipeCabai,
         tanggalPencatatan: { $gte: start, $lte: end },
       },
-      { luasPenanamanBaru: sum }
+      { luasPenanamanBaru: sum.toFixed(3) }
     );
   },
 
@@ -319,7 +319,7 @@ module.exports = {
           tipeCabai: tipeCabai,
           tanggalPencatatan: { $gte: start, $lte: end },
         },
-        { prodBelumHabis: jumlahPanen }
+        { prodBelumHabis: jumlahPanen.toFixed(3) }
       );
     }
   },
@@ -361,7 +361,7 @@ module.exports = {
           tipeCabai: tipeCabai,
           tanggalPencatatan: { $gte: start, $lte: end },
         },
-        { prodPanenHabis: jumlahPanen }
+        { prodPanenHabis: jumlahPanen.toFixed(3) }
       );
     }
   },
@@ -412,7 +412,7 @@ module.exports = {
           tipeCabai: tipeCabai,
           tanggalPencatatan: { $gte: start, $lte: end },
         },
-        { rataHargaJual: sum }
+        { rataHargaJual: sum.toFixed(3) }
       );
     } else {
       await Blanko2.findOneAndUpdate(
@@ -514,7 +514,7 @@ module.exports = {
         tanggalPencatatan: { $gte: start, $lte: end },
       },
       {
-        luasTanamanAkhirBulanLaporan: realsum,
+        luasTanamanAkhirBulanLaporan: realsum.toFixed(3),
       }
     );
   },
@@ -547,7 +547,7 @@ module.exports = {
           tanggalPencatatan: { $gte: start, $lte: end },
         },
         {
-          luasPanenHabis: sum,
+          luasPanenHabis: sum.toFixed(3),
         }
       );
     } else {
@@ -592,7 +592,7 @@ module.exports = {
           tanggalPencatatan: { $gte: start, $lte: end },
         },
         {
-          luasPanenBelumHabis: sum,
+          luasPanenBelumHabis: sum.toFixed(3),
         }
       );
     } else {
