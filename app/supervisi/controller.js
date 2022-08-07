@@ -161,7 +161,7 @@ module.exports = {
             success: true,
             message: 'Login Berhasil',
             data: {
-              user: {
+              petani: {
                 id: findUser.id,
                 name: findUser.name,
                 email: findUser.email || false,
@@ -235,7 +235,7 @@ module.exports = {
           success: true,
           message: 'Sign-in Berhasil',
           data: {
-            user: {
+            petani: {
               id: findUser.id,
               name: findUser.name,
               email: findUser.email || false,
