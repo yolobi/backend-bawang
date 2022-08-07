@@ -134,7 +134,7 @@ module.exports = {
 
       let rataanJumlahPanen = jumlahPanen / countTransaksi;
 
-      let rataanHargaJual = jumlahPenjualan / countTransaksi;
+      let rataanHargaJual = jumlahPenjualan / (jumlahPanen * 100);
 
       let keuntungan =
         jumlahPenjualan - findLahan.totalModal < 0
@@ -427,7 +427,6 @@ module.exports = {
   },
 
   updateKolom4: async (idUser, tanggalPencatatan, tipeCabai) => {
-
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
 
@@ -464,7 +463,6 @@ module.exports = {
         }
       );
     } else {
-
       const findLahan = await Lahan.find({
         user: idUser,
         tipeCabai: tipeCabai,
@@ -489,7 +487,6 @@ module.exports = {
   },
 
   updateKolom9: async (idUser, tanggalPencatatan, tipeCabai) => {
-
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
 
@@ -554,7 +551,6 @@ module.exports = {
         }
       );
     } else {
-
       await Blanko2.findOneAndUpdate(
         {
           user: idUser,
@@ -600,7 +596,6 @@ module.exports = {
         }
       );
     } else {
-
       await Blanko2.findOneAndUpdate(
         {
           user: idUser,
