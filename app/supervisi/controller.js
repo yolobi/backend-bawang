@@ -96,7 +96,7 @@ module.exports = {
         petugas: idPetugas,
       })
         .populate('petugas', '_id name role')
-        .populate('petani', '_id name email password');
+        .populate('petani', '_id name email phone password');
 
       res.status(200).json({
         success: true,
