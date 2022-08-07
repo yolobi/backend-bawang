@@ -644,6 +644,7 @@ module.exports = {
               role: req.userData.role,
             },
             countTransaksiAll: 0,
+            countTransaksiSuksesAll: 0,
             countTransaksiSuksesBeli: 0,
             countTransaksiSuksesJual: 0,
             stokCMB: 0,
@@ -730,6 +731,8 @@ module.exports = {
               role: req.userData.role,
             },
             countTransaksiAll: findTransaksi.length,
+            countTransaksiSuksesAll:
+              countTransaksiSuksesBeli + countTransaksiSuksesJual,
             countTransaksiSuksesBeli: countTransaksiSuksesBeli,
             countTransaksiSuksesJual: countTransaksiSuksesJual,
             stokCMB: Number(stokCMB),
@@ -774,6 +777,7 @@ module.exports = {
               role: req.userData.role,
             },
             countTransaksiAll: 0,
+            countTransaksiSuksesAll: 0,
             countTransaksiSuksesBeli: 0,
             countTransaksiSuksesJual: 0,
             stokCMB: 0,
@@ -860,6 +864,8 @@ module.exports = {
               role: req.userData.role,
             },
             countTransaksiAll: findTransaksi.length,
+            countTransaksiSuksesAll:
+              countTransaksiSuksesBeli + countTransaksiSuksesJual,
             countTransaksiSuksesBeli: countTransaksiSuksesBeli,
             countTransaksiSuksesJual: countTransaksiSuksesJual,
             stokCMB: Number(stokCMB),
