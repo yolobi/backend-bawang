@@ -37,7 +37,7 @@ module.exports = {
         return res.status(403).json({
           success: false,
           message:
-            'Email belum terdaftar atau bukan merupakan akun dengan role Petani',
+            'Email/Nomor telepon belum terdaftar atau bukan merupakan akun dengan role Petani',
         });
 
       const checkPassword = await bcrypt.compare(password, findUser.password);
@@ -51,7 +51,8 @@ module.exports = {
         {
           id: findUser.id,
           name: findUser.name,
-          email: findUser.email,
+          email: findUser.email || false,
+          phone: findUser.phone || false,
           role: findUser.role,
         },
         config.jwtKey
@@ -72,7 +73,8 @@ module.exports = {
           petani: {
             id: findUser.id,
             name: findUser.name,
-            email: findUser.email,
+            email: findUser.email || false,
+            phone: findUser.phone || false,
             role: findUser.role,
             access: RoleEnum[findUser.role],
           },
@@ -149,7 +151,8 @@ module.exports = {
             {
               id: findUser.id,
               name: findUser.name,
-              email: findUser.email,
+              email: findUser.email || false,
+              phone: findUser.phone || false,
               role: findUser.role,
             },
             config.jwtKey
@@ -161,7 +164,8 @@ module.exports = {
               user: {
                 id: findUser.id,
                 name: findUser.name,
-                email: findUser.email,
+                email: findUser.email || false,
+                phone: findUser.phone || false,
                 role: findUser.role,
                 access: RoleEnum[findUser.role],
               },
@@ -221,7 +225,8 @@ module.exports = {
           {
             id: findUser.id,
             name: findUser.name,
-            email: findUser.email,
+            email: findUser.email || false,
+            phone: findUser.phone || false,
             role: findUser.role,
           },
           config.jwtKey
@@ -233,7 +238,8 @@ module.exports = {
             user: {
               id: findUser.id,
               name: findUser.name,
-              email: findUser.email,
+              email: findUser.email || false,
+              phone: findUser.phone || false,
               role: findUser.role,
               access: RoleEnum[findUser.role],
             },
