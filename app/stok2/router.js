@@ -8,5 +8,6 @@ const { checkIfPetani, checkIfPedagang } = require('../middleware/check-role');
 router.put('/sinkron', authenticateUser, checkIfPedagang, sinkronStok);
 
 router.get('/:bulan', authenticateUser, checkIfPedagang, stokByBulan);
+router.get('/:bulanbaru', authenticateUser, checkIfPedagang, stokByBulan);
 
 module.exports = router;
