@@ -14,14 +14,17 @@ let userSchema = new mongoose.Schema(
       lowercase: true,
       unique: true,
       validate: {
-        validator: function (v) {
-          return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
+        validator: function (email) {
+          if (email === '') {
+            return true;
+          }
+          return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
         },
         message: 'masukkan email yang valid',
       },
     },
-    phone:{
-      type: String
+    phone: {
+      type: String,
     },
     password: {
       type: String,
