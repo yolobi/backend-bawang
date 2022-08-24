@@ -601,7 +601,8 @@ module.exports = {
           jumlahDijual: jumlahDijualtoKg.toFixed(3),
           hargaJual,
           statusTransaksi: statusEnum.diajukan,
-        }
+        },
+        { new: true }
       );
 
       if (!findTransaksi) {
@@ -887,5 +888,3 @@ module.exports = {
     }
   },
 };
-
-
