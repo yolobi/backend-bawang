@@ -68,7 +68,6 @@ let userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: [
-        'admin',
         'petani',
         'agen',
         'distributor',
@@ -76,8 +75,6 @@ let userSchema = new mongoose.Schema(
         'pengepul',
         'grosir',
         'pdh',
-        'dinasPertanianKota',
-        'dinasPertanianProvinsi',
       ],
       required: [true, 'role harus diisi'],
     },
