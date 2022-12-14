@@ -24,6 +24,7 @@
     "method-override": "^3.0.0",
     "mongoose": "^6.2.9",
     "morgan": "~1.9.1",
+    "popper.js": "^1.16.1",
     "territory-indonesia": "^0.1.3"
   }
 }
