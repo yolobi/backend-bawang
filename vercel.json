@@ -1,3 +1,15 @@
 {
-  "rewrites": [{ "source": "/bin/www(.*)", "destination": "/bin/www" }]
+  "version": 2,
+  "builds": [
+    {
+      "src": "node ./bin/www",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "node /bin/www"
+    }
+  ]
 }
