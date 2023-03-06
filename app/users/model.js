@@ -75,6 +75,7 @@ let userSchema = new mongoose.Schema(
         'pengepul',
         'grosir',
         'pdh',
+        'dinas',
       ],
       required: [true, 'role harus diisi'],
     },

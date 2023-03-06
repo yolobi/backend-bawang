@@ -1,0 +1,42 @@
+Standar API
+
+{root.api}/v1/{grouping}/{endpoint}
+
+SAMPLE:
+backend-skripsi.com/v1/auth/login
+
+Standar Status Response
+200 -> OK                       -> Call API Success
+201 -> CREATED                  -> Post Success
+400 -> BAD REQUEST              -> Error on Clinent Side (Input yang salah dll)
+401 -> UNAUTHORIZED             -> User not authorized to the request
+403 -> FORBIDDEN                -> User not allowed to access
+404 -> NOT FOUND                -> Request endpoint not found
+500 -> INTERNAL SERVER ERROR    -> Error on server Side
+502 -> BAD GATEWAY              -> Invalid Response from another request
+
+Group: Authentication
+
+[1] - Register
+req:
+{
+    name,
+    email,
+    phone,
+    password,
+    kecamatan,
+    kabupaten,
+    provinsi,
+    alamat,
+    role,
+}
+
+res:
+{
+
+}
+
+err-response:
+
+
+[2] - Login

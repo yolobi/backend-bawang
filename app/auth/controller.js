@@ -11,8 +11,10 @@ const RoleEnum = Object.freeze({
   pengecer: 'pedagang',
   grosir: 'pedagang',
   pdh: 'pdh',
-  dinasPetanianKota: 'dinas',
+  dinas: 'dinas',
+  dinasPertanianKota: 'dinas',
   dinasPertanianKabupaten: 'dinas',
+  dinasPertanianProvinsi: 'dinas',
 });
 
 module.exports = {
@@ -30,18 +32,24 @@ module.exports = {
         role,
       } = req.body;
 
+      console.log('done reading req.body');
+
       // check if email is exist
       let isUserExist = await User.findOne({
         $or: [{ email: email }, { phone: phone }],
       });
+      console.log('done checking if user exist');
       if (isUserExist)
         return res.status(404).json({
           status: false,
           message: 'Akun sudah terdaftar',
         });
 
+      console.log('this user doesnt exist yet');
+
       // password hashing
       const hashPassword = await bcrypt.hashSync(password, 10);
+      console.log('going to create new user', hashPassword);
 
       const user = new User({
         name,
@@ -55,6 +63,8 @@ module.exports = {
         role,
       });
       await user.save();
+
+      console.log('done creating new user');
 
       const token = jwt.sign(
         {
