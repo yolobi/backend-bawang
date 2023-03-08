@@ -18,6 +18,8 @@ Standar Status Response
 Group: Authentication
 
 [1] - Register
+/auth/daftar
+
 req:
 {
     name,
@@ -31,12 +33,76 @@ req:
     role,
 }
 
-res:
+res(404):
 {
-
+    status: false,
+    message: 'Akun sudah terdaftar',
+},
+res(201):
+{
+    success: true,
+    message: 'Berhasil membuat akun baru',
+    user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+        access: RoleEnum[user.role],
+    },
+    token: token,
+},
+res(422): -->handle eror lain lain
+{
+    error: 1,
+    message: err.message,
+    fields: err.errors,
 }
 
-err-response:
-
-
 [2] - Login
+/auth/masuk
+
+res(404):
+{
+    success: false,
+    message: 'Semua field wajib diisi',
+},
+res(403):
+{
+    success: false,
+    message: 'Email belum terdaftar',
+},
+res(403):
+{
+    success: false,
+    message: 'Password yang dimasukkan Salah',
+},
+res(200):
+{
+    success: true,
+    message: 'Sign-in Berhasil',
+    user: {
+        id: findUser.id,
+        name: findUser.name,
+        email: findUser.email,
+        phone: findUser.phone,
+        role: findUser.role,
+        access: RoleEnum[findUser.role],
+    },
+    token: token,
+},
+res(500):
+{
+    message: error.message || `Internal server error` 
+}
+
+Group: Lahan
+
+[3] - Tambah lahan (tambahan jenis pupuk)
+
+Group: Blangko
+
+[4] - Tambah Blangko (tambahan cuaca)
+[5] - Tambah modal
+[6] - Get Rekap bulanan
+[7] - Export rekap bulanan

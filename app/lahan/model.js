@@ -55,10 +55,16 @@ let lahanSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    tipeCabai: {
+    komoditas: {
       type: String,
-      enum: ['cabaiMerahBesar', 'cabaiMerahKeriting', 'cabaiRawitMerah'],
-      required: [true, 'tipeCabai harus diisi'],
+      enum: [
+        'cabaiMerahBesar',
+        'cabaiMerahKeriting',
+        'cabaiRawitMerah',
+        'bawangMerah',
+        'bawangPutih',
+      ],
+      required: [true, 'komoditas harus diisi'],
     },
     namaLahan: {
       type: String,
@@ -87,6 +93,10 @@ let lahanSchema = new mongoose.Schema(
     keuntungan: {
       type: Number,
       default: 0,
+    },
+    jenisPupuk: {
+      type: String,
+      enum: ['urea', 'tsp', 'za', 'npk', 'npkKhusus', 'organik', 'organikCair'],
     },
   },
   { timestamps: true }

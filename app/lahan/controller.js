@@ -14,7 +14,7 @@ module.exports = {
       const idUser = req.userData.id;
 
       let {
-        tipeCabai,
+        komoditas,
         namaLahan,
         tanggalTanam,
         jumlahBatang,
@@ -23,6 +23,7 @@ module.exports = {
         modalPupuk,
         modalPestisida,
         modalPekerja,
+        jenisPupuk,
       } = req.body;
 
       const totalModal =
@@ -33,7 +34,7 @@ module.exports = {
 
       let lahan = new Lahan({
         user: idUser,
-        tipeCabai,
+        komoditas,
         namaLahan,
         tanggalTanam,
         jumlahBatang,
@@ -42,6 +43,7 @@ module.exports = {
         modalPupuk,
         modalPestisida,
         modalPekerja,
+        jenisPupuk,
         totalModal: totalModal.toFixed(3),
       });
       await lahan.save();
@@ -218,11 +220,11 @@ module.exports = {
     }
   },
 
-  getTipefromLahan: async (req, res) => {
+  getKomoditasfromLahan: async (req, res) => {
     try {
       const idUser = req.userData.id;
 
-      const findLahan = await Lahan.distinct('tipeCabai', { user: idUser });
+      const findLahan = await Lahan.distinct('komoditas', { user: idUser });
       console.log(findLahan);
 
       if (findLahan[0] == undefined) {
@@ -235,6 +237,36 @@ module.exports = {
         res.status(200).json({
           success: true,
           message: 'Berhasil melihat Tipe Cabai Lahan',
+          user: userDetail,
+          data: findLahan,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        sucess: false,
+        message: error.message || `Internal server error`,
+      });
+    }
+  },
+
+  getPupukfromLahan: async (req, res) => {
+    try {
+      const idUser = req.userData.id;
+
+      const findLahan = await Lahan.distinct('jenisPupuk', { user: idUser });
+      console.log(findLahan);
+
+      if (findLahan[0] == undefined) {
+        res.status(404).json({
+          success: false,
+          message: 'Belum ada Lahan yang diisi',
+        });
+      } else {
+        const userDetail = await User.findById(idUser).select('_id name role');
+        res.status(200).json({
+          success: true,
+          message: 'Berhasil melihat Jenis Pupuk Lahan',
           user: userDetail,
           data: findLahan,
         });
