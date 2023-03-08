@@ -16,93 +16,194 @@ Standar Status Response
 502 -> BAD GATEWAY              -> Invalid Response from another request
 
 Group: Authentication
+{
+    [1] - Register
+    POST /auth/daftar
+    {
+        req:
+        {
+            name,
+            email,
+            phone,
+            password,
+            kecamatan,
+            kabupaten,
+            provinsi,
+            alamat,
+            role,
+        }
 
-[1] - Register
-/auth/daftar
+        {
+            res(404):
+            {
+                status: false,
+                message: 'Akun sudah terdaftar',
+            },
+            res(201):
+            {
+                success: true,
+                message: 'Berhasil membuat akun baru',
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    phone: user.phone,
+                    role: user.role,
+                    access: RoleEnum[user.role],
+                },
+                token: token,
+            },
+            res(422): -->handle eror lain lain
+            {
+                error: 1,
+                message: err.message,
+                fields: err.errors,
+            }
+        }
+    }
 
-req:
-{
-    name,
-    email,
-    phone,
-    password,
-    kecamatan,
-    kabupaten,
-    provinsi,
-    alamat,
-    role,
-}
+    [2] - Login
+    POST /auth/masuk
+    {
+        req:
+        {
+            account,
+            password,
+        }
 
-res(404):
-{
-    status: false,
-    message: 'Akun sudah terdaftar',
-},
-res(201):
-{
-    success: true,
-    message: 'Berhasil membuat akun baru',
-    user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        role: user.role,
-        access: RoleEnum[user.role],
-    },
-    token: token,
-},
-res(422): -->handle eror lain lain
-{
-    error: 1,
-    message: err.message,
-    fields: err.errors,
-}
-
-[2] - Login
-/auth/masuk
-
-res(404):
-{
-    success: false,
-    message: 'Semua field wajib diisi',
-},
-res(403):
-{
-    success: false,
-    message: 'Email belum terdaftar',
-},
-res(403):
-{
-    success: false,
-    message: 'Password yang dimasukkan Salah',
-},
-res(200):
-{
-    success: true,
-    message: 'Sign-in Berhasil',
-    user: {
-        id: findUser.id,
-        name: findUser.name,
-        email: findUser.email,
-        phone: findUser.phone,
-        role: findUser.role,
-        access: RoleEnum[findUser.role],
-    },
-    token: token,
-},
-res(500):
-{
-    message: error.message || `Internal server error` 
+        {
+            res(404):
+            {
+                success: false,
+                message: 'Semua field wajib diisi',
+            },
+            res(403):
+            {
+                success: false,
+                message: 'Email belum terdaftar',
+            },
+            res(403):
+            {
+                success: false,
+                message: 'Password yang dimasukkan Salah',
+            },
+            res(200):
+            {
+                success: true,
+                message: 'Sign-in Berhasil',
+                user: {
+                    id: findUser.id,
+                    name: findUser.name,
+                    email: findUser.email,
+                    phone: findUser.phone,
+                    role: findUser.role,
+                    access: RoleEnum[findUser.role],
+                },
+                token: token,
+            },
+            res(500):
+            {
+                message: error.message || `Internal server error` 
+            }
+        }
+    }
 }
 
 Group: Lahan
+{
+    [1] - Tambah lahan (tambahan jenis pupuk)
+    POST /lahan/tambah
 
-[3] - Tambah lahan (tambahan jenis pupuk)
+    req:
+    {
+        komoditas,
+        namaLahan,
+        tanggalTanam,
+        jumlahBatang,
+        luasLahan,
+        modalBenih,
+        modalPupuk,
+        modalPestisida,
+        modalPekerja,
+        jenisPupuk,
+    }
+
+    [2] - Get Lahan [All]
+    GET /lahan
+
+    req:
+    {
+        -
+    }
+
+    [3] - Get Lahan [By Id]
+    GET /lahan/view/:idLahan
+
+    req:
+    {
+        -
+    }
+
+    [4] - Get Lahan [Nama Lahan]
+    GET /lahan/nama
+
+    req:
+    {
+        -
+    }
+
+    [5] - Get Lahan [Nama Komoditas]
+    GET /lahan/komoditas
+
+    req:
+    {
+        -
+    }
+
+    [6] - Get Lahan [Jenis Pupuk]
+    GET /lahan/pupuk
+
+    req:
+    {
+        -
+    }
+
+    [7] - Edit Luas Lahan Rusak
+    PUT /lahan/rusak/:idLahan
+
+    req:
+    {
+        luasRusak
+    }
+
+    [8] - Lahan Selesai
+    PUT /lahan/selesai/:idLahan
+
+    req:
+    {}
+
+    [9] - Aktifkan Lahan
+    PUT /lahan/aktifkan/:idLahan
+    
+    req:
+    {}
+
+    [10] - Hapus Lahan
+    DELETE /lahan/hapus/:idLahan
+
+    req:
+    {}
+}
+
+Gourp: Modal [NEWWW!!!]
+{
+
+}
 
 Group: Blangko
-
-[4] - Tambah Blangko (tambahan cuaca)
-[5] - Tambah modal
-[6] - Get Rekap bulanan
-[7] - Export rekap bulanan
+{
+    [] - Tambah Blangko (tambahan cuaca)
+    [] - Tambah modal
+    [] - Get Rekap bulanan
+    [] - Export rekap bulanan
+}

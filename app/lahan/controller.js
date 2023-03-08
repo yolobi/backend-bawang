@@ -1,6 +1,7 @@
 const Lahan = require('./model');
 const User = require('../users/model');
 const Transaksi2 = require('../transaksi2/model');
+const Modal = require('../modal/model');
 const myFunction = require('../function/function');
 
 const statusEnum = Object.freeze({
@@ -398,6 +399,7 @@ module.exports = {
         });
       } else {
         await Transaksi2.deleteMany({ lahan: idLahan });
+        await Modal.deleteMany({ lahan: idLahan });
 
         res.status(200).json({
           success: true,

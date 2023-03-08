@@ -23,6 +23,7 @@ const usangRouter = require('./app/usang/router');
 const userRouter = require('./app/users/router');
 const supervisiRouter = require('./app/supervisi/router');
 const lahanRouter = require('./app/lahan/router');
+const modalRouter = require('./app/modal/router');
 // const transaksi2Router = require('./app/transaksi2/router');
 
 const app = express();
@@ -72,6 +73,7 @@ app.use(`${URL}/usang`, usangRouter);
 app.use(`${URL}/user`, userRouter);
 app.use(`${URL}/supervisi`, supervisiRouter);
 app.use(`${URL}/lahan`, lahanRouter);
+app.use(`${URL}/modal`, modalRouter);
 // app.use(`${URL}/transaksi2`, transaksi2Router);
 
 // catch 404 and forward to error handler
