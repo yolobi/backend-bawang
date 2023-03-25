@@ -16,6 +16,7 @@ const admBlankoRouter = require('./app/admin/blanko/router');
 const blankoRouter = require('./app/blanko2/router');
 const authRouter = require('./app/auth/router');
 const petaniRouter = require('./app/petani/router');
+const dinasRouter = require('./app/dinas/router');
 // const testingRouter = require('./app/testing/router');
 const stokRouter = require('./app/stok2/router');
 const transaksiRouter = require('./app/transaksi2/router');
@@ -65,6 +66,7 @@ app.use(`${adminURL}/blanko`, admBlankoRouter);
 // API ----------------------------------
 app.use(`${URL}/auth`, authRouter);
 app.use(`${URL}/petani`, petaniRouter);
+app.use(`${URL}/dinas`, dinasRouter);
 app.use(`${URL}/blanko`, blankoRouter);
 // app.use(`${URL}/testing`, testingRouter);
 app.use(`${URL}/stok`, stokRouter);

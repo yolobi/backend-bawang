@@ -11,9 +11,15 @@ let blanko2Schema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-    tipeCabai: {
+    komoditas: {
       type: String,
-      enum: ['cabaiMerahBesar', 'cabaiMerahKeriting', 'cabaiRawitMerah'],
+      enum: [
+        'cabaiMerahBesar',
+        'cabaiMerahKeriting',
+        'cabaiRawitMerah',
+        'bawangMerah',
+        'bawangPutih',
+      ],
     },
     // dst untuk tiap atribut pada class Blanko
     luasTanamanAkhirBulanLalu: {

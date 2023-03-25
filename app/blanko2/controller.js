@@ -7,7 +7,7 @@ const Transaksi = require('../transaksi2/model');
 module.exports = {
   addBlanko: async (req, res) => {
     try {
-      const { tanggalPencatatan, tipeCabai } = req.body;
+      const { tanggalPencatatan, komoditas } = req.body;
 
       const idUser = req.userData.id;
 
@@ -15,15 +15,15 @@ module.exports = {
       const blanko = await myFunction.cekBlanko(
         idUser,
         tanggalPencatatan,
-        tipeCabai
+        komoditas
       );
 
       const isTransaksi = await Transaksi.findOne({ penjual: idUser });
 
       if (!isTransaksi) {
-        await myFunction.updateKolom8(idUser, tanggalPencatatan, tipeCabai);
-        await myFunction.updateKolom4(idUser, tanggalPencatatan, tipeCabai);
-        await myFunction.updateKolom9(idUser, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom8(idUser, tanggalPencatatan, komoditas);
+        await myFunction.updateKolom4(idUser, tanggalPencatatan, komoditas);
+        await myFunction.updateKolom9(idUser, tanggalPencatatan, komoditas);
         res.status(201).json({
           success: true,
           message:
@@ -32,15 +32,15 @@ module.exports = {
         });
       } else if (blanko) {
         console.log('masuk inituh');
-        await myFunction.updateKolom7(idUser, tanggalPencatatan, tipeCabai);
-        await myFunction.updateKolom8(idUser, tanggalPencatatan, tipeCabai);
-        await myFunction.updateKolom4(idUser, tanggalPencatatan, tipeCabai);
-        await myFunction.updateKolom10(idUser, tanggalPencatatan, tipeCabai);
-        await myFunction.updateKolom11(idUser, tanggalPencatatan, tipeCabai);
-        await myFunction.updateKolom12(idUser, tanggalPencatatan, tipeCabai);
-        await myFunction.updateKolom5baru(idUser, tanggalPencatatan, tipeCabai);
-        await myFunction.updateKolom6(idUser, tanggalPencatatan, tipeCabai);
-        await myFunction.updateKolom9(idUser, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom7(idUser, tanggalPencatatan, komoditas);
+        await myFunction.updateKolom8(idUser, tanggalPencatatan, komoditas);
+        await myFunction.updateKolom4(idUser, tanggalPencatatan, komoditas);
+        await myFunction.updateKolom10(idUser, tanggalPencatatan, komoditas);
+        await myFunction.updateKolom11(idUser, tanggalPencatatan, komoditas);
+        await myFunction.updateKolom12(idUser, tanggalPencatatan, komoditas);
+        await myFunction.updateKolom5baru(idUser, tanggalPencatatan, komoditas);
+        await myFunction.updateKolom6(idUser, tanggalPencatatan, komoditas);
+        await myFunction.updateKolom9(idUser, tanggalPencatatan, komoditas);
 
         res.status(201).json({
           success: true,
@@ -63,14 +63,14 @@ module.exports = {
 
   checkIsianBlanko: async (req, res) => {
     try {
-      const { tanggalPencatatan, tipeCabai } = req.body;
+      const { tanggalPencatatan, komoditas } = req.body;
 
       const idUser = req.userData.id;
 
       const blanko = await myFunction.cekBlanko(
         idUser,
         tanggalPencatatan,
-        tipeCabai
+        komoditas
       );
 
       const isTransaksi = await Transaksi.findOne({ penjual: idUser });
@@ -81,17 +81,17 @@ module.exports = {
         const kolom8 = await lihatFunction.lihatKolom8(
           idUser,
           tanggalPencatatan,
-          tipeCabai
+          komoditas
         );
         const kolom4 = await lihatFunction.lihatKolom4(
           idUser,
           tanggalPencatatan,
-          tipeCabai
+          komoditas
         );
         const kolom9 = await lihatFunction.lihatKolom9(
           idUser,
           tanggalPencatatan,
-          tipeCabai
+          komoditas
         );
         res.status(200).json({
           success: true,
@@ -100,7 +100,7 @@ module.exports = {
           user: userDetail,
           id: blanko._id,
           tanggalPencatatan: blanko.tanggalPencatatan,
-          tipeCabai: blanko.tipeCabai,
+          komoditas: blanko.komoditas,
           luasTanamanAkhirBulanLalu: kolom4,
           luasPanenHabis: blanko.luasPanenHabis,
           luasPanenBelumHabis: blanko.luasPanenHabis,
@@ -118,47 +118,47 @@ module.exports = {
         const kolom7 = await lihatFunction.lihatKolom7(
           idUser,
           tanggalPencatatan,
-          tipeCabai
+          komoditas
         );
         const kolom8 = await lihatFunction.lihatKolom8(
           idUser,
           tanggalPencatatan,
-          tipeCabai
+          komoditas
         );
         const kolom4 = await lihatFunction.lihatKolom4(
           idUser,
           tanggalPencatatan,
-          tipeCabai
+          komoditas
         );
         const kolom10 = await lihatFunction.lihatKolom10(
           idUser,
           tanggalPencatatan,
-          tipeCabai
+          komoditas
         );
         const kolom11 = await lihatFunction.lihatKolom11(
           idUser,
           tanggalPencatatan,
-          tipeCabai
+          komoditas
         );
         const kolom12 = await lihatFunction.lihatKolom12(
           idUser,
           tanggalPencatatan,
-          tipeCabai
+          komoditas
         );
         const kolom5 = await lihatFunction.lihatKolom5baru(
           idUser,
           tanggalPencatatan,
-          tipeCabai
+          komoditas
         );
         const kolom6 = await lihatFunction.lihatKolom6(
           idUser,
           tanggalPencatatan,
-          tipeCabai
+          komoditas
         );
         const kolom9 = await lihatFunction.lihatKolom9(
           idUser,
           tanggalPencatatan,
-          tipeCabai
+          komoditas
         );
 
         res.status(200).json({
@@ -167,7 +167,7 @@ module.exports = {
           user: userDetail,
           id: blanko._id,
           tanggalPencatatan: blanko.tanggalPencatatan,
-          tipeCabai: blanko.tipeCabai,
+          komoditas: blanko.komoditas,
           luasTanamanAkhirBulanLalu: kolom4,
           luasPanenHabis: kolom5,
           luasPanenBelumHabis: kolom6,
@@ -196,7 +196,7 @@ module.exports = {
 
   sinkronBlanko: async (req, res) => {
     try {
-      const { tanggalPencatatan, tipeCabai } = req.body;
+      const { tanggalPencatatan, komoditas } = req.body;
 
       const idUser = req.userData.id;
 
@@ -208,20 +208,20 @@ module.exports = {
 
       const bulanBlanko = await Blanko.findOne({
         user: idUser,
-        tipeCabai: tipeCabai,
+        komoditas: komoditas,
         tanggalPencatatan: { $gte: start, $lte: end },
       });
 
       const isTransaksi = await Transaksi.findOne({ penjual: idUser });
 
       if (!isTransaksi) {
-        await myFunction.updateKolom8(idUser, tanggalPencatatan, tipeCabai);
-        await myFunction.updateKolom4(idUser, tanggalPencatatan, tipeCabai);
-        await myFunction.updateKolom9(idUser, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom8(idUser, tanggalPencatatan, komoditas);
+        await myFunction.updateKolom4(idUser, tanggalPencatatan, komoditas);
+        await myFunction.updateKolom9(idUser, tanggalPencatatan, komoditas);
 
         const hasilUpdate = await Blanko.findOne({
           user: idUser,
-          tipeCabai: tipeCabai,
+          komoditas: komoditas,
           tanggalPencatatan: { $gte: start, $lte: end },
         });
         res.status(200).json({
@@ -230,19 +230,19 @@ module.exports = {
           data: hasilUpdate,
         });
       } else if (bulanBlanko) {
-        await myFunction.updateKolom7(idUser, tanggalPencatatan, tipeCabai);
-        await myFunction.updateKolom8(idUser, tanggalPencatatan, tipeCabai);
-        await myFunction.updateKolom4(idUser, tanggalPencatatan, tipeCabai);
-        await myFunction.updateKolom10(idUser, tanggalPencatatan, tipeCabai);
-        await myFunction.updateKolom11(idUser, tanggalPencatatan, tipeCabai);
-        await myFunction.updateKolom12(idUser, tanggalPencatatan, tipeCabai);
-        await myFunction.updateKolom5baru(idUser, tanggalPencatatan, tipeCabai);
-        await myFunction.updateKolom6(idUser, tanggalPencatatan, tipeCabai);
-        await myFunction.updateKolom9(idUser, tanggalPencatatan, tipeCabai);
+        await myFunction.updateKolom7(idUser, tanggalPencatatan, komoditas);
+        await myFunction.updateKolom8(idUser, tanggalPencatatan, komoditas);
+        await myFunction.updateKolom4(idUser, tanggalPencatatan, komoditas);
+        await myFunction.updateKolom10(idUser, tanggalPencatatan, komoditas);
+        await myFunction.updateKolom11(idUser, tanggalPencatatan, komoditas);
+        await myFunction.updateKolom12(idUser, tanggalPencatatan, komoditas);
+        await myFunction.updateKolom5baru(idUser, tanggalPencatatan, komoditas);
+        await myFunction.updateKolom6(idUser, tanggalPencatatan, komoditas);
+        await myFunction.updateKolom9(idUser, tanggalPencatatan, komoditas);
 
         const hasilUpdate = await Blanko.findOne({
           user: idUser,
-          tipeCabai: tipeCabai,
+          komoditas: komoditas,
           tanggalPencatatan: { $gte: start, $lte: end },
         });
         res.status(201).json({
@@ -313,17 +313,15 @@ module.exports = {
       } else {
         res.status(200).json({
           success: true,
-          message: 'Berhasil melihat Blanko yang telah',
+          message: 'Berhasil melihat Blanko',
           data: findBlanko,
         });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          success: false,
-          message: error.message || `Internal server error`,
-        });
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
     }
   },
 };

@@ -55,6 +55,7 @@ module.exports = {
       'pdh',
       'dinasPertanianKota',
       'dinasPertanianProvinsi',
+      'dinas',
     ];
     let isDinasPertanian = dinasPertanian.includes(req.userData.role);
     if (isDinasPertanian) {
