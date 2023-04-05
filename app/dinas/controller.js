@@ -7,6 +7,20 @@ module.exports = {
     try {
       const { jenisStatistik, provinsi, kabupaten, kecamatan } = req.body;
       const today = new Date();
+      const monthNames = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+      ];
 
       const fiveMonthAgo = new Date();
       fiveMonthAgo.setMonth(fiveMonthAgo.getMonth() - (totalBulanLahan - 1));
@@ -62,13 +76,18 @@ module.exports = {
       ];
 
       const response = {};
-
       for (let i = 0; i < komoditas.length; i++) {
         const kom = komoditas[i];
+        console.log(monthNames[kom._id.bulan]);
+        let value = 0;
+        if (jenisStatistik == 'produksi') {
+          value = kom.jumlahPanen;
+        } else {
+          value = kom.averageHargaJual;
+        }
         response[kom._id.komoditas] = {
-          [kom._id.bulan]: {
-            averageHargaJual: kom.averageHargaJual,
-            jumlahPanen: kom.jumlahPanen,
+          [monthNames[kom._id.bulan]]: {
+            data: value,
           },
         };
       }
