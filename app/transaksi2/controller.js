@@ -15,7 +15,7 @@ module.exports = {
     try {
       const {
         lahan,
-        tipeCabai,
+        komoditas,
         tanggalPencatatan,
         jumlahDijual,
         hargaJual,
@@ -43,7 +43,7 @@ module.exports = {
           if (!pembeli) {
             let newTransaksi = new Transaksi({
               tanggalPencatatan,
-              tipeCabai,
+              komoditas,
               penjual,
               jumlahDijual: convjumlahDijual,
               hargaJual,
@@ -58,7 +58,7 @@ module.exports = {
           } else {
             let newTransaksi = new Transaksi({
               tanggalPencatatan,
-              tipeCabai,
+              komoditas,
               penjual,
               jumlahDijual: convjumlahDijual,
               hargaJual,
@@ -86,7 +86,7 @@ module.exports = {
           if (!pembeli) {
             let newTransaksi = new Transaksi({
               lahan,
-              tipeCabai: cekLahan.tipeCabai,
+              komoditas: cekLahan.komoditas,
               tanggalPencatatan,
               penjual,
               jumlahDijual: convjumlahDijual,
@@ -107,7 +107,7 @@ module.exports = {
             await myFunction.updateDataLahan(lahan, penjual);
 
             return newTransaksi.populate([
-              { path: 'lahan', select: '_id tipeCabai namaLahan tanggalTanam' },
+              { path: 'lahan', select: '_id komoditas namaLahan tanggalTanam' },
               { path: 'penjual', select: 'id name role' },
             ]);
           }
@@ -115,7 +115,7 @@ module.exports = {
           else {
             let newTransaksi = new Transaksi({
               lahan,
-              tipeCabai: cekLahan.tipeCabai,
+              komoditas: cekLahan.komoditas,
               tanggalPencatatan,
               penjual,
               jumlahDijual: convjumlahDijual,
@@ -133,7 +133,7 @@ module.exports = {
             await myFunction.updateDataLahan(lahan, penjual);
 
             return newTransaksi.populate([
-              { path: 'lahan', select: '_id tipeCabai namaLahan tanggalTanam' },
+              { path: 'lahan', select: '_id komoditas namaLahan tanggalTanam' },
               { path: 'penjual', select: 'id name role' },
               { path: 'pembeli', select: 'id name role' },
             ]);
@@ -211,7 +211,7 @@ module.exports = {
 
         let newTransaksi = new Transaksi({
           lahan,
-          tipeCabai: lahanDetail.tipeCabai,
+          komoditas: lahanDetail.komoditas,
           tanggalPencatatan,
           penjual,
           jumlahDijual: jumlahDijualtoKg.toFixed(3),
@@ -227,7 +227,7 @@ module.exports = {
         await addTransaksitoLahan(newTransaksi._id);
 
         return newTransaksi.populate([
-          { path: 'lahan', select: '_id tipeCabai namaLahan tanggalTanam' },
+          { path: 'lahan', select: '_id komoditas namaLahan tanggalTanam' },
           { path: 'penjual', select: 'id name role' },
         ]);
       };
@@ -238,7 +238,7 @@ module.exports = {
 
         let newTransaksi = new Transaksi({
           lahan,
-          tipeCabai: lahanDetail.tipeCabai,
+          komoditas: lahanDetail.komoditas,
           tanggalPencatatan,
           penjual,
           jumlahDijual: jumlahDijualtoKg.toFixed(3),
@@ -252,7 +252,7 @@ module.exports = {
         await addTransaksitoLahan(newTransaksi._id);
 
         return newTransaksi.populate([
-          { path: 'lahan', select: '_id tipeCabai namaLahan tanggalTanam' },
+          { path: 'lahan', select: '_id komoditas namaLahan tanggalTanam' },
           { path: 'penjual', select: 'id name role' },
           { path: 'pembeli', select: 'id name role' },
         ]);
@@ -289,7 +289,7 @@ module.exports = {
     try {
       const {
         tanggalPencatatan,
-        tipeCabai,
+        komoditas,
         jumlahDijual,
         hargaJual,
         grade,
@@ -315,7 +315,7 @@ module.exports = {
       const transaksiWithoutAkun = async () => {
         let newTransaksi = new Transaksi({
           tanggalPencatatan,
-          tipeCabai,
+          komoditas,
           penjual,
           jumlahDijual: jumlahDijualtoKg.toFixed(3),
           hargaJual,
@@ -333,7 +333,7 @@ module.exports = {
       const transaksiWithAkun = async () => {
         let newTransaksi = new Transaksi({
           tanggalPencatatan,
-          tipeCabai,
+          komoditas,
           penjual,
           jumlahDijual: jumlahDijualtoKg.toFixed(3),
           hargaJual,
@@ -387,7 +387,7 @@ module.exports = {
         })
         .populate('pembeli', '_id name role')
         .populate('penjual', '_id name role')
-        .populate('lahan', '_id namaLahan tipeCabai tanggalTanam');
+        .populate('lahan', '_id namaLahan komoditas tanggalTanam');
 
       if (findTransaksi.length == 0 || !findTransaksi) {
         res.status(404).json({
@@ -439,7 +439,7 @@ module.exports = {
       })
         .populate('pembeli', '_id name role')
         .populate('penjual', '_id name role')
-        .populate('lahan', '_id namaLahan tipeCabai tanggalTanam');
+        .populate('lahan', '_id namaLahan komoditas tanggalTanam');
 
       if (!findTransaksi) {
         res.status(404).json({
@@ -472,7 +472,7 @@ module.exports = {
       })
         .populate('pembeli', '_id name role')
         .populate('penjual', '_id name role')
-        .populate('lahan', '_id namaLahan tipeCabai tanggalTanam');
+        .populate('lahan', '_id namaLahan komoditas tanggalTanam');
 
       if (!findTransaksi) {
         res.status(404).json({
@@ -584,7 +584,7 @@ module.exports = {
   changeStatusAjukan: async (req, res) => {
     try {
       const idTransaksi = req.params.idTransaksi;
-      const { tipeCabai, jumlahDijual, hargaJual } = req.body;
+      const { komoditas, jumlahDijual, hargaJual } = req.body;
 
       let jumlahDijualtoKg = jumlahDijual / 100;
 
@@ -597,7 +597,7 @@ module.exports = {
           ],
         },
         {
-          tipeCabai,
+          komoditas,
           jumlahDijual: jumlahDijualtoKg.toFixed(3),
           hargaJual,
           statusTransaksi: statusEnum.diajukan,
@@ -631,7 +631,7 @@ module.exports = {
     try {
       const findTransaksi = await Transaksi.find({
         $or: [{ pembeli: req.userData.id }, { penjual: req.userData.id }],
-      }).populate('lahan', '_id tipeCabai');
+      }).populate('lahan', '_id komoditas');
 
       if (findTransaksi[0] == undefined) {
         res.status(200).json({
@@ -662,7 +662,7 @@ module.exports = {
       } else {
         const stokCabai = (value) => {
           const sum = findTransaksi
-            .filter((obj) => obj.tipeCabai == value && obj.statusTransaksi == 2)
+            .filter((obj) => obj.komoditas == value && obj.statusTransaksi == 2)
             .reduce((accumulator, object) => {
               if (object.pembeli == req.userData.id) {
                 accumulator += object.jumlahDijual;
@@ -678,7 +678,7 @@ module.exports = {
           const sum = findTransaksi
             .filter(
               (obj) =>
-                obj.tipeCabai == value &&
+                obj.komoditas == value &&
                 obj.penjual == req.userData.id &&
                 obj.totalProduksi &&
                 obj.statusTransaksi == 2
@@ -764,7 +764,7 @@ module.exports = {
       const findTransaksi = await Transaksi.find({
         $or: [{ pembeli: req.userData.id }, { penjual: req.userData.id }],
         tanggalPencatatan: { $gte: start, $lte: end },
-      }).populate('lahan', '_id tipeCabai');
+      }).populate('lahan', '_id komoditas');
 
       if (findTransaksi[0] == undefined) {
         res.status(200).json({
@@ -795,7 +795,7 @@ module.exports = {
       } else {
         const stokCabai = (value) => {
           const sum = findTransaksi
-            .filter((obj) => obj.tipeCabai == value && obj.statusTransaksi == 2)
+            .filter((obj) => obj.komoditas == value && obj.statusTransaksi == 2)
             .reduce((accumulator, object) => {
               if (object.pembeli == req.userData.id) {
                 accumulator += object.jumlahDijual;
@@ -811,7 +811,7 @@ module.exports = {
           const sum = findTransaksi
             .filter(
               (obj) =>
-                obj.tipeCabai == value &&
+                obj.komoditas == value &&
                 obj.penjual == req.userData.id &&
                 obj.totalProduksi &&
                 obj.statusTransaksi == 2

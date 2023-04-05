@@ -5,6 +5,33 @@ const lihatFunction = require('../function/lihatBlanko');
 const Transaksi = require('../transaksi2/model');
 
 module.exports = {
+  addBlankoCadangan: async (req, res) => {
+    try {
+      const { tanggalPencatatan } = req.body;
+      const idUser = req.userData.id;
+
+      // parsing tanggalPencatatan -> bulan dan tahun ini
+      const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
+      const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
+
+      const start = `${tahun}-${bulan}-01`;
+      const end = `${tahun}-${bulan}-31`;
+
+      //Cek blanko bulan ini udah ada atau belum
+      const isBlankoCreated = await Blanko2.find({
+        user: idUser,
+        tanggalPencatatan: { $gte: start, $lte: end },
+      });
+
+      //kalau sudah ada
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
+    }
+  },
+
   addBlanko: async (req, res) => {
     try {
       const { tanggalPencatatan, komoditas } = req.body;
