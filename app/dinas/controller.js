@@ -1,4 +1,3 @@
-const Blangko = require('../blanko2/model');
 const { totalBulanLahan } = require('../constants/lahans');
 const Lahan = require('../lahan/model');
 

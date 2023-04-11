@@ -3,8 +3,31 @@ const User = require('../users/model');
 const myFunction = require('../function/function');
 const lihatFunction = require('../function/lihatBlanko');
 const Transaksi = require('../transaksi2/model');
+const ExcelJS = require('exceljs');
 
 module.exports = {
+  exportBlanko: async (req, res) => {
+    try {
+      const workbook = new ExcelJS.Workbook();
+      const sheet = workbook.addWorksheet('Blanko');
+
+      res.setHeader(
+        'Content-Type',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      );
+      res.setHeader(
+        'Content-Disposition',
+        'attachment;filename=' + 'blanko.xlsx'
+      );
+
+      workbook.xlsx.write(res);
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message || `Internal server error`,
+      });
+    }
+  },
   addBlankoCadangan: async (req, res) => {
     try {
       const { tanggalPencatatan } = req.body;

@@ -12,7 +12,7 @@ let transaksi2Schema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Lahan',
     },
-    tipeCabai: {
+    komoditas: {
       type: String,
       enum: ['cabaiMerahBesar', 'cabaiMerahKeriting', 'cabaiRawitMerah'],
     },

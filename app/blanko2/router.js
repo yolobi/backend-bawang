@@ -7,6 +7,7 @@ const {
   checkIsianBlanko,
   getBlankoAll,
   getBlankobyID,
+  exportBlanko,
 } = require('./controller');
 
 const authenticateUser = require('../middleware/authentication');
@@ -22,6 +23,8 @@ router.put('/sinkron', authenticateUser, checkIfPetani, sinkronBlanko);
 router.get('/', authenticateUser, checkIfPetani, getBlankoAll);
 
 router.get('/view/:idBlanko', authenticateUser, checkIfPetani, getBlankobyID);
+
+router.get('/export', authenticateUser, exportBlanko);
 
 // DEPRECATED
 router.post('/tambahblanko', authenticateUser, checkIfPetani, addBlanko);
