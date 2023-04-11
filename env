@@ -1,4 +1,0 @@
-MODE=prod
-SERVICE_NAME=backend-sphsbs
-MONGO_URL=mongodb+srv://dimdimdimas:htfBZZl1sjBQt8wP@backend-sphsbs.aowci0u.mongodb.net/?retryWrites=true&w=majority
-SECRET=SECRET
