@@ -9,7 +9,13 @@ module.exports = {
       const idUser = req.userData.id;
       const idLahan = req.params.idLahan;
 
-      const { modalBenih, modalPupuk, modalPestisida, modalPekerja } = req.body;
+      const {
+        modalBenih,
+        modalPupuk,
+        modalPestisida,
+        modalPekerja,
+        jenisPupuk,
+      } = req.body;
       let totalModal =
         Number(modalBenih) +
         Number(modalPupuk) +
@@ -51,6 +57,7 @@ module.exports = {
           modalPupuk: Number(modalPupuk).toFixed(3),
           modalPestisida: Number(modalPestisida).toFixed(3),
           modalPekerja: Number(modalPekerja).toFixed(3),
+          jenisPupuk: jenisPupuk,
           totalModal: totalModal.toFixed(3),
         });
         await modalBaru.save();
