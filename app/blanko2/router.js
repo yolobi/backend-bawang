@@ -24,7 +24,7 @@ router.get('/', authenticateUser, checkIfPetani, getBlankoAll);
 
 router.get('/view/:idBlanko', authenticateUser, checkIfPetani, getBlankobyID);
 
-router.get('/export', authenticateUser, exportBlanko);
+router.get('/export/:bulan/:tahun', authenticateUser, exportBlanko);
 
 // DEPRECATED
 router.post('/tambahblanko', authenticateUser, checkIfPetani, addBlanko);
