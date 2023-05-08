@@ -4,7 +4,11 @@ const Lahan = require('../lahan/model');
 module.exports = {
   index: async (req, res) => {
     try {
-      const { jenisStatistik, provinsi, kabupaten, kecamatan } = req.query;
+      //const { jenisStatistik, provinsi, kabupaten, kecamatan } = req.query;
+      const jenisStatistik = req.params.jenisStatistik;
+      const provinsi = req.params.provinsi;
+      const kabupaten = req.params.kabupaten;
+      const kecamatan = req.params.kecamatan;
       const today = new Date();
       const monthNames = [
         'January',
