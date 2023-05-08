@@ -13,8 +13,7 @@ module.exports = {
       await workbook.xlsx.readFile('app/blanko2/TEMPLATE_BLANKO.xlsx');
       const worksheet = workbook.getWorksheet('Sheet1');
 
-      const bulan = req.params.bulan;
-      const tahun = req.params.tahun;
+     const { bulan, tahun } = req.query;
       const idUser = req.userData.id;
       const user = await User.findById(idUser).select(
         '_id provinsi kabupaten kecamatan'
