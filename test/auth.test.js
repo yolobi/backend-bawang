@@ -17,7 +17,6 @@ describe('Signup User', () => {
       role: 'dinas',
     };
     const res = await request(url).post('/auth/daftar').send(user);
-    console.log('response', res.status);
     expect(res.status).toBe(201);
   });
 

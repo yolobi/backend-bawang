@@ -1,5 +1,6 @@
 const { totalBulanLahan } = require('../constants/lahans');
 const Lahan = require('../lahan/model');
+const Blanko = require('../blanko2/model');
 
 module.exports = {
   index: async (req, res) => {
@@ -36,7 +37,7 @@ module.exports = {
 
       const query = {
         $match: {
-          tanggalTanam: {
+          tanggalPencatatan: {
             $gte: new Date(startDate),
             $lte: new Date(endDate),
           },
@@ -55,18 +56,18 @@ module.exports = {
         query['$match']['kecamatan'] = kecamatan;
       }
 
-      const komoditas = await Lahan.aggregate([
+      const komoditas = await Blanko.aggregate([
         query,
         {
           $group: {
             _id: {
               komoditas: '$komoditas',
               bulan: {
-                $month: '$tanggalTanam',
+                $month: '$tanggalPencatatan',
               },
             },
-            averageHargaJual: { $avg: '$rataanHargaJual' },
-            jumlahPanen: { $sum: '$jumlahPanen' },
+            averageHargaJual: { $avg: '$rataHargaJual' },
+            jumlahPanen: { $sum: '$prodPanenHabis' },
           },
         },
       ]);

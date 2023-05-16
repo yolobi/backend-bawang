@@ -5,6 +5,6 @@ const authenticateUser = require('../middleware/authentication');
 const { checkIfDinas } = require('../middleware/check-role');
 
 /* GET home page. */
-router.get('/:jenisStatisik', authenticateUser, checkIfDinas, index);
+router.get('/', authenticateUser, checkIfDinas, index);
 
 module.exports = router;
