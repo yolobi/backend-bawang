@@ -68,6 +68,7 @@ module.exports = {
       cellTahun.value = tahun;
 
       const today = new Date();
+      today.setMonth(bulan);
       const startDate = new Date(
         `${today.getFullYear()}-${today.toISOString().slice(5, 7)}-01`
       );
@@ -78,77 +79,86 @@ module.exports = {
       //Bawang Merah
       const bawangMerah = await Blanko.findOne({
         komoditas: 'bawangMerah',
-        updatedAt: { $gte: new Date(startDate), $lte: new Date(endDate) },
+        updatedAt: {
+          $gte: new Date(startDate),
+          $lte: new Date(endDate),
+        },
       });
       if (bawangMerah) {
-        const luasTanamanAkhirBulanLalu = worksheet.getCell('D12');
+        const luasTanamanAkhirBulanLalu = worksheet.getCell('D10');
         luasTanamanAkhirBulanLalu.value = bawangMerah.luasTanamanAkhirBulanLalu;
 
-        const luasPanenHabis = worksheet.getCell('E12');
+        const luasPanenHabis = worksheet.getCell('E10');
         luasPanenHabis.value = bawangMerah.luasPanenHabis;
 
-        const luasPanenBelumHabis = worksheet.getCell('F12');
+        const luasPanenBelumHabis = worksheet.getCell('F10');
         luasPanenBelumHabis.value = bawangMerah.luasPanenBelumHabis;
 
-        const luasRusak = worksheet.getCell('G12');
+        const luasRusak = worksheet.getCell('G10');
         luasRusak.value = bawangMerah.luasRusak;
 
-        const luasPenanamanBaru = worksheet.getCell('H12');
+        const luasPenanamanBaru = worksheet.getCell('H10');
         luasPenanamanBaru.value = bawangMerah.luasPenanamanBaru;
 
-        const luasTanamanAkhirBulanLaporan = worksheet.getCell('I12');
+        const luasTanamanAkhirBulanLaporan = worksheet.getCell('I10');
         luasTanamanAkhirBulanLaporan.value =
           bawangMerah.luasTanamanAkhirBulanLaporan;
 
-        const prodPanenHabis = worksheet.getCell('J12');
+        const prodPanenHabis = worksheet.getCell('J10');
         prodPanenHabis.value = bawangMerah.prodPanenHabis;
 
-        const prodBelumHabis = worksheet.getCell('K12');
+        const prodBelumHabis = worksheet.getCell('K10');
         prodBelumHabis.value = bawangMerah.prodBelumHabis;
 
-        const rataHargaJual = worksheet.getCell('L12');
+        const rataHargaJual = worksheet.getCell('L10');
         rataHargaJual.value = bawangMerah.rataHargaJual;
       }
 
       //Bawang Putih
       const bawangPutih = await Blanko.findOne({
         komoditas: 'bawangPutih',
-        updatedAt: { $gte: new Date(startDate), $lte: new Date(endDate) },
+        updatedAt: {
+          $gte: new Date(startDate),
+          $lte: new Date(endDate),
+        },
       });
       if (bawangPutih) {
-        const luasTanamanAkhirBulanLalu = worksheet.getCell('D12');
+        const luasTanamanAkhirBulanLalu = worksheet.getCell('D11');
         luasTanamanAkhirBulanLalu.value = bawangPutih.luasTanamanAkhirBulanLalu;
 
-        const luasPanenHabis = worksheet.getCell('E12');
+        const luasPanenHabis = worksheet.getCell('E11');
         luasPanenHabis.value = bawangPutih.luasPanenHabis;
 
-        const luasPanenBelumHabis = worksheet.getCell('F12');
+        const luasPanenBelumHabis = worksheet.getCell('F11');
         luasPanenBelumHabis.value = bawangPutih.luasPanenBelumHabis;
 
-        const luasRusak = worksheet.getCell('G12');
+        const luasRusak = worksheet.getCell('G11');
         luasRusak.value = bawangPutih.luasRusak;
 
-        const luasPenanamanBaru = worksheet.getCell('H12');
+        const luasPenanamanBaru = worksheet.getCell('H11');
         luasPenanamanBaru.value = bawangPutih.luasPenanamanBaru;
 
-        const luasTanamanAkhirBulanLaporan = worksheet.getCell('I12');
+        const luasTanamanAkhirBulanLaporan = worksheet.getCell('I11');
         luasTanamanAkhirBulanLaporan.value =
           bawangPutih.luasTanamanAkhirBulanLaporan;
 
-        const prodPanenHabis = worksheet.getCell('J12');
+        const prodPanenHabis = worksheet.getCell('J11');
         prodPanenHabis.value = bawangPutih.prodPanenHabis;
 
-        const prodBelumHabis = worksheet.getCell('K12');
+        const prodBelumHabis = worksheet.getCell('K11');
         prodBelumHabis.value = bawangPutih.prodBelumHabis;
 
-        const rataHargaJual = worksheet.getCell('L12');
+        const rataHargaJual = worksheet.getCell('L11');
         rataHargaJual.value = bawangPutih.rataHargaJual;
       }
 
       //Cabai Besar
       const cabaiMerahBesar = await Blanko.findOne({
         komoditas: 'cabaiMerahBesar',
-        updatedAt: { $gte: new Date(startDate), $lte: new Date(endDate) },
+        updatedAt: {
+          $gte: new Date(startDate),
+          $lte: new Date(endDate),
+        },
       });
       if (cabaiMerahBesar) {
         const luasTanamanAkhirBulanLalu = worksheet.getCell('D12');
@@ -184,74 +194,88 @@ module.exports = {
       //Cabai Keriting
       const cabaiMerahKeriting = await Blanko.findOne({
         komoditas: 'cabaiMerahKeriting',
-        updatedAt: { $gte: new Date(startDate), $lte: new Date(endDate) },
+        updatedAt: {
+          $gte: new Date(startDate),
+          $lte: new Date(endDate),
+        },
       });
       if (cabaiMerahKeriting) {
-        const luasTanamanAkhirBulanLalu = worksheet.getCell('D12');
+        const luasTanamanAkhirBulanLalu = worksheet.getCell('D13');
         luasTanamanAkhirBulanLalu.value =
           cabaiMerahKeriting.luasTanamanAkhirBulanLalu;
 
-        const luasPanenHabis = worksheet.getCell('E12');
+        const luasPanenHabis = worksheet.getCell('E13');
         luasPanenHabis.value = cabaiMerahKeriting.luasPanenHabis;
 
-        const luasPanenBelumHabis = worksheet.getCell('F12');
+        const luasPanenBelumHabis = worksheet.getCell('F13');
         luasPanenBelumHabis.value = cabaiMerahKeriting.luasPanenBelumHabis;
 
-        const luasRusak = worksheet.getCell('G12');
+        const luasRusak = worksheet.getCell('G13');
         luasRusak.value = cabaiMerahKeriting.luasRusak;
 
-        const luasPenanamanBaru = worksheet.getCell('H12');
+        const luasPenanamanBaru = worksheet.getCell('H13');
         luasPenanamanBaru.value = cabaiMerahKeriting.luasPenanamanBaru;
 
-        const luasTanamanAkhirBulanLaporan = worksheet.getCell('I12');
+        const luasTanamanAkhirBulanLaporan = worksheet.getCell('I13');
         luasTanamanAkhirBulanLaporan.value =
           cabaiMerahKeriting.luasTanamanAkhirBulanLaporan;
 
-        const prodPanenHabis = worksheet.getCell('J12');
+        const prodPanenHabis = worksheet.getCell('J13');
         prodPanenHabis.value = cabaiMerahKeriting.prodPanenHabis;
 
-        const prodBelumHabis = worksheet.getCell('K12');
+        const prodBelumHabis = worksheet.getCell('K13');
         prodBelumHabis.value = cabaiMerahKeriting.prodBelumHabis;
 
-        const rataHargaJual = worksheet.getCell('L12');
+        const rataHargaJual = worksheet.getCell('L13');
         rataHargaJual.value = cabaiMerahKeriting.rataHargaJual;
       }
 
       //Cabai Rawit
       const cabaiRawitMerah = await Blanko.findOne({
         komoditas: 'cabaiRawitMerah',
-        updatedAt: { $gte: new Date(startDate), $lte: new Date(endDate) },
+        updatedAt: {
+          $gte: new Date(startDate),
+          $lte: new Date(endDate),
+        },
       });
       if (cabaiRawitMerah) {
-        const luasTanamanAkhirBulanLalu = worksheet.getCell('D12');
+        const luasTanamanAkhirBulanLalu = worksheet.getCell('D14');
         luasTanamanAkhirBulanLalu.value =
           cabaiRawitMerah.luasTanamanAkhirBulanLalu;
 
-        const luasPanenHabis = worksheet.getCell('E12');
+        const luasPanenHabis = worksheet.getCell('E14');
         luasPanenHabis.value = cabaiRawitMerah.luasPanenHabis;
 
-        const luasPanenBelumHabis = worksheet.getCell('F12');
+        const luasPanenBelumHabis = worksheet.getCell('F14');
         luasPanenBelumHabis.value = cabaiRawitMerah.luasPanenBelumHabis;
 
-        const luasRusak = worksheet.getCell('G12');
+        const luasRusak = worksheet.getCell('G14');
         luasRusak.value = cabaiRawitMerah.luasRusak;
 
-        const luasPenanamanBaru = worksheet.getCell('H12');
+        const luasPenanamanBaru = worksheet.getCell('H14');
         luasPenanamanBaru.value = cabaiRawitMerah.luasPenanamanBaru;
 
-        const luasTanamanAkhirBulanLaporan = worksheet.getCell('I12');
+        const luasTanamanAkhirBulanLaporan = worksheet.getCell('I14');
         luasTanamanAkhirBulanLaporan.value =
           cabaiRawitMerah.luasTanamanAkhirBulanLaporan;
 
-        const prodPanenHabis = worksheet.getCell('J12');
+        const prodPanenHabis = worksheet.getCell('J14');
         prodPanenHabis.value = cabaiRawitMerah.prodPanenHabis;
 
-        const prodBelumHabis = worksheet.getCell('K12');
+        const prodBelumHabis = worksheet.getCell('K14');
         prodBelumHabis.value = cabaiRawitMerah.prodBelumHabis;
 
-        const rataHargaJual = worksheet.getCell('L12');
+        const rataHargaJual = worksheet.getCell('L14');
         rataHargaJual.value = cabaiRawitMerah.rataHargaJual;
       }
+
+      console.log(
+        cabaiMerahBesar,
+        cabaiMerahKeriting,
+        cabaiRawitMerah,
+        bawangMerah,
+        bawangPutih
+      );
 
       res.setHeader(
         'Content-Type',
