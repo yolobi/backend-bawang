@@ -28,6 +28,7 @@ module.exports = {
         November: 10,
         Desember: 11,
       };
+      const expBulan = bulan;
       bulan = refBulans[bulan];
       console.log('bulan', bulan);
 
@@ -79,7 +80,7 @@ module.exports = {
       cellKecamatan.value = kecamatan;
 
       const cellBulan = worksheet.getCell('L5');
-      cellBulan.value = bulan;
+      cellBulan.value = expBulan;
 
       const cellTahun = worksheet.getCell('L6');
       cellTahun.value = tahun;
