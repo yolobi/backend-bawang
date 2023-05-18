@@ -45,16 +45,17 @@ module.exports = {
       };
 
       if (provinsi) {
-        query['$match']['provinsi'] = provinsi;
+        query['$match']['provinsi'] = Number(provinsi);
       }
 
       if (kabupaten) {
-        query['$match']['kabupaten'] = kabupaten;
+        query['$match']['kabupaten'] = Number(kabupaten);
       }
 
       if (kecamatan) {
-        query['$match']['kecamatan'] = kecamatan;
+        query['$match']['kecamatan'] = Number(kecamatan);
       }
+      console.log('query', query);
 
       const komoditas = await Blanko.aggregate([
         query,
