@@ -68,7 +68,8 @@ module.exports = {
       cellTahun.value = tahun;
 
       const today = new Date();
-      today.setMonth(bulan);
+
+      today.setMonth(Number(bulan));
       const startDate = new Date(
         `${today.getFullYear()}-${today.toISOString().slice(5, 7)}-01`
       );
@@ -273,14 +274,6 @@ module.exports = {
         const rataHargaJual = worksheet.getCell('L14');
         rataHargaJual.value = cabaiRawitMerah.rataHargaJual;
       }
-
-      console.log(
-        cabaiMerahBesar,
-        cabaiMerahKeriting,
-        cabaiRawitMerah,
-        bawangMerah,
-        bawangPutih
-      );
 
       res.setHeader(
         'Content-Type',

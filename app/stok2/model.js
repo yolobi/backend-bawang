@@ -16,6 +16,12 @@ let stok2Schema = new mongoose.Schema(
     stokCRM: {
       type: Number,
     },
+    stokBM: {
+      type: Number,
+    },
+    stokBP: {
+      type: Number,
+    },
   },
   { timestamps: true }
 );

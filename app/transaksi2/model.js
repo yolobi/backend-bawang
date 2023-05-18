@@ -14,7 +14,13 @@ let transaksi2Schema = new mongoose.Schema(
     },
     komoditas: {
       type: String,
-      enum: ['cabaiMerahBesar', 'cabaiMerahKeriting', 'cabaiRawitMerah'],
+      enum: [
+        'cabaiMerahBesar',
+        'cabaiMerahKeriting',
+        'cabaiRawitMerah',
+        'bawangMerah',
+        'bawangPutih',
+      ],
     },
     tanggalPencatatan: {
       type: Date,

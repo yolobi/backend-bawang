@@ -7,7 +7,7 @@ module.exports = {
     try {
       const lihatTransaksi = await Transaksi.find({
         $or: [{ pembeli: req.userData.id }, { penjual: req.userData.id }],
-      }).populate('lahan', '_id tipeCabai');
+      }).populate('lahan', '_id komoditas');
 
       if (lihatTransaksi[0] == undefined) {
         res.status(404).json({
@@ -16,9 +16,9 @@ module.exports = {
             'Belum ada transaksi yang dilakukan atau belum ada transaksi yang disetujui',
         });
       } else {
-        const stokCabai = (value) => {
+        const stokKomoditas = (value) => {
           const sum = lihatTransaksi
-            .filter((obj) => obj.tipeCabai == value && obj.statusTransaksi == 2)
+            .filter((obj) => obj.komoditas == value && obj.statusTransaksi == 2)
             .reduce((accumulator, object) => {
               if (object.pembeli == req.userData.id) {
                 accumulator += object.jumlahDijual;
@@ -30,11 +30,11 @@ module.exports = {
           return sum ? sum.toFixed(3) : 0;
         };
 
-        const penjualanCabai = (value) => {
+        const penjualanKomoditas = (value) => {
           const sum = lihatTransaksi
             .filter(
               (obj) =>
-                obj.tipeCabai == value &&
+                obj.komoditas == value &&
                 obj.penjual == req.userData.id &&
                 obj.totalProduksi &&
                 obj.statusTransaksi == 2
@@ -56,15 +56,23 @@ module.exports = {
             return accumulator + object.totalProduksi;
           }, 0);
 
-        const stokCMB = stokCabai('cabaiMerahBesar');
-        const stokCMK = stokCabai('cabaiMerahKeriting');
-        const stokCRM = stokCabai('cabaiRawitMerah');
+        const stokCMB = stokKomoditas('cabaiMerahBesar');
+        const stokCMK = stokKomoditas('cabaiMerahKeriting');
+        const stokCRM = stokKomoditas('cabaiRawitMerah');
+        const stokBM = stokKomoditas('bawangMerah');
+        const stokBP = stokKomoditas('bawangPutih');
 
-        const pendapatanCMB = penjualanCabai('cabaiMerahBesar');
-        const pendapatanCMK = penjualanCabai('cabaiMerahKeriting');
-        const pendapatanCRM = penjualanCabai('cabaiRawitMerah');
+        const pendapatanCMB = penjualanKomoditas('cabaiMerahBesar');
+        const pendapatanCMK = penjualanKomoditas('cabaiMerahKeriting');
+        const pendapatanCRM = penjualanKomoditas('cabaiRawitMerah');
+        const pendapatanBM = penjualanKomoditas('bawangMerah');
+        const pendapatanBP = penjualanKomoditas('bawangPutih');
         const totalPendapatan =
-          Number(pendapatanCMB) + Number(pendapatanCMK) + Number(pendapatanCRM);
+          Number(pendapatanCMB) +
+          Number(pendapatanCMK) +
+          Number(pendapatanCRM) +
+          Number(pendapatanBM) +
+          Number(pendapatanBP);
 
         const stok = await Stok.findOneAndUpdate(
           { user: req.userData.id },
@@ -72,6 +80,8 @@ module.exports = {
             stokCMB: stokCMB,
             stokCMK: stokCMK,
             stokCRM: stokCRM,
+            stockBM: stokBM,
+            stockBP: stokBP,
           },
           { new: true, upsert: true }
         ).populate('user', '_id name role');
@@ -84,6 +94,8 @@ module.exports = {
             stokCMB: stok.stokCMB,
             stokCMK: stok.stokCMK,
             stokCRM: stok.stokCRM,
+            stokBM: stok.stockBM,
+            stokBP: stok.stokBP,
             totalTransaksi: lihatTransaksi.length,
             transaksiSukses: lihatTransaksi.filter(
               (obj) => obj.statusTransaksi == 2
@@ -92,6 +104,8 @@ module.exports = {
             pendapatanCMB: pendapatanCMB,
             pendapatanCMK: pendapatanCMK,
             pendapatanCRM: pendapatanCRM,
+            pendapatanBM: pendapatanBM,
+            pendapatanBP: pendapatanBP,
             totalPendapatan: totalPendapatan,
           },
         });
@@ -112,7 +126,7 @@ module.exports = {
       const lihatTransaksi = await Transaksi.find({
         $or: [{ pembeli: req.userData.id }, { penjual: req.userData.id }],
         tanggalPencatatan: { $gte: start, $lte: end },
-      }).populate('lahan', '_id tipeCabai');
+      }).populate('lahan', '_id komoditas');
 
       if (lihatTransaksi[0] == undefined) {
         res.status(200).json({
@@ -128,19 +142,23 @@ module.exports = {
             stokCMB: 0,
             stokCMK: 0,
             stokCRM: 0,
+            stokBM: 0,
+            stokBP: 0,
             totalTransaksi: 0,
             transaksiSukses: 0,
             totalPengeluaran: 0,
             pendapatanCMB: 0,
             pendapatanCMK: 0,
             pendapatanCRM: 0,
+            pendapatanBM: 0,
+            pendapatanBP: 0,
             totalPendapatan: 0,
           },
         });
       } else {
-        const stokCabai = (value) => {
+        const stokKomoditas = (value) => {
           const sum = lihatTransaksi
-            .filter((obj) => obj.tipeCabai == value && obj.statusTransaksi == 2)
+            .filter((obj) => obj.komoditas == value && obj.statusTransaksi == 2)
             .reduce((accumulator, object) => {
               if (object.pembeli == req.userData.id) {
                 accumulator += object.jumlahDijual;
@@ -152,11 +170,11 @@ module.exports = {
           return sum ? sum.toFixed(3) : 0;
         };
 
-        const penjualanCabai = (value) => {
+        const penjualanKomoditas = (value) => {
           const sum = lihatTransaksi
             .filter(
               (obj) =>
-                obj.tipeCabai == value &&
+                obj.komoditas == value &&
                 obj.penjual == req.userData.id &&
                 obj.totalProduksi &&
                 obj.statusTransaksi == 2
@@ -178,15 +196,23 @@ module.exports = {
             return accumulator + object.totalProduksi;
           }, 0);
 
-        const stokCMB = stokCabai('cabaiMerahBesar');
-        const stokCMK = stokCabai('cabaiMerahKeriting');
-        const stokCRM = stokCabai('cabaiRawitMerah');
+        const stokCMB = stokKomoditas('cabaiMerahBesar');
+        const stokCMK = stokKomoditas('cabaiMerahKeriting');
+        const stokCRM = stokKomoditas('cabaiRawitMerah');
+        const stokBM = stokKomoditas('bawangMerah');
+        const stokBP = stokKomoditas('bawangPutih');
 
-        const pendapatanCMB = penjualanCabai('cabaiMerahBesar');
-        const pendapatanCMK = penjualanCabai('cabaiMerahKeriting');
-        const pendapatanCRM = penjualanCabai('cabaiRawitMerah');
+        const pendapatanCMB = penjualanKomoditas('cabaiMerahBesar');
+        const pendapatanCMK = penjualanKomoditas('cabaiMerahKeriting');
+        const pendapatanCRM = penjualanKomoditas('cabaiRawitMerah');
+        const pendapatanBM = penjualanKomoditas('bawangMerah');
+        const pendapatanBP = penjualanKomoditas('bawangPutih');
         const totalPendapatan =
-          Number(pendapatanCMB) + Number(pendapatanCMK) + Number(pendapatanCRM);
+          Number(pendapatanCMB) +
+          Number(pendapatanCMK) +
+          Number(pendapatanCRM) +
+          Number(pendapatanBM) +
+          Number(pendapatanBP);
 
         res.status(200).json({
           success: true,
@@ -200,6 +226,8 @@ module.exports = {
             stokCMB: stokCMB,
             stokCMK: stokCMK,
             stokCRM: stokCRM,
+            stockBM: stokBM,
+            stokBP: stokBP,
             totalTransaksi: lihatTransaksi.length,
             transaksiSukses: lihatTransaksi.filter(
               (obj) => obj.statusTransaksi == 2
@@ -208,6 +236,8 @@ module.exports = {
             pendapatanCMB: pendapatanCMB,
             pendapatanCMK: pendapatanCMK,
             pendapatanCRM: pendapatanCRM,
+            pendapatanBM: pendapatanBM,
+            pendapatanBP: pendapatanBP,
             totalPendapatan: totalPendapatan,
           },
         });

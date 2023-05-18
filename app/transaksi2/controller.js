@@ -651,16 +651,20 @@ module.exports = {
             stokCMB: 0,
             stokCMK: 0,
             stokCRM: 0,
+            stokBM: 0,
+            stokBP: 0,
             pendapatanCMB: 0,
             pendapatanCMK: 0,
             pendapatanCRM: 0,
+            pendapatanBM: 0,
+            pendapatanBP: 0,
             totalPembelian: 0,
             totalPenjualan: 0,
             totalPendapatan: 0,
           },
         });
       } else {
-        const stokCabai = (value) => {
+        const stokKomoditas = (value) => {
           const sum = findTransaksi
             .filter((obj) => obj.komoditas == value && obj.statusTransaksi == 2)
             .reduce((accumulator, object) => {
@@ -674,7 +678,7 @@ module.exports = {
           return sum ? sum.toFixed(3) : 0;
         };
 
-        const penjualanCabai = (value) => {
+        const penjualanKomoditas = (value) => {
           const sum = findTransaksi
             .filter(
               (obj) =>
@@ -707,15 +711,19 @@ module.exports = {
           (obj) => obj.statusTransaksi == 2 && obj.penjual == req.userData.id
         ).length;
 
-        const stokCMB = stokCabai('cabaiMerahBesar');
-        const stokCMK = stokCabai('cabaiMerahKeriting');
-        const stokCRM = stokCabai('cabaiRawitMerah');
+        const stokCMB = stokKomoditas('cabaiMerahBesar');
+        const stokCMK = stokKomoditas('cabaiMerahKeriting');
+        const stokCRM = stokKomoditas('cabaiRawitMerah');
+        const stokBM = stokKomoditas('bawangMerah');
+        const stokBP = stokKomoditas('bawangPutih');
 
-        const pendapatanCMB = penjualanCabai('cabaiMerahBesar');
-        const pendapatanCMK = penjualanCabai('cabaiMerahKeriting');
-        const pendapatanCRM = penjualanCabai('cabaiRawitMerah');
+        const pendapatanCMB = penjualanKomoditas('cabaiMerahBesar');
+        const pendapatanCMK = penjualanKomoditas('cabaiMerahKeriting');
+        const pendapatanCRM = penjualanKomoditas('cabaiRawitMerah');
+        const pendapatanBM = penjualanKomoditas('bawangMerah');
+        const pendapatanBP = penjualanKomoditas('bawangPutih');
         const totalPenjualan =
-          Number(pendapatanCMB) + Number(pendapatanCMK) + Number(pendapatanCRM);
+          Number(pendapatanCMB) + Number(pendapatanCMK) + Number(pendapatanCRM + Number(pendapatanBM) + Number(pendapatanBP);
 
         const totalPendapatan =
           totalPenjualan - pembelianCabai < 0
@@ -739,9 +747,13 @@ module.exports = {
             stokCMB: Number(stokCMB),
             stokCMK: Number(stokCMK),
             stokCRM: Number(stokCRM),
+            stokBM: Number(stokBM),
+            stokBP: Number(stokBP),
             pendapatanCMB: Number(pendapatanCMB),
             pendapatanCMK: Number(pendapatanCMK),
             pendapatanCRM: Number(pendapatanCRM),
+            pendapatanBM: Number(pendapatanBM),
+            pendapatanBP: Number(pendapatanBP),
             totalPembelian: Number(pembelianCabai.toFixed(3)),
             totalPenjualan: totalPenjualan,
             totalPendapatan: Number(totalPendapatan),
@@ -784,16 +796,20 @@ module.exports = {
             stokCMB: 0,
             stokCMK: 0,
             stokCRM: 0,
+            stokBM: 0,
+            stokBP: 0,
             pendapatanCMB: 0,
             pendapatanCMK: 0,
             pendapatanCRM: 0,
+            pendapatanBM: 0,
+            pendapatanBP: 0,
             totalPembelian: 0,
             totalPenjualan: 0,
             totalPendapatan: 0,
           },
         });
       } else {
-        const stokCabai = (value) => {
+        const stokKomoditas = (value) => {
           const sum = findTransaksi
             .filter((obj) => obj.komoditas == value && obj.statusTransaksi == 2)
             .reduce((accumulator, object) => {
@@ -807,7 +823,7 @@ module.exports = {
           return sum ? sum.toFixed(3) : 0;
         };
 
-        const penjualanCabai = (value) => {
+        const penjualanKomoditas = (value) => {
           const sum = findTransaksi
             .filter(
               (obj) =>
@@ -840,15 +856,19 @@ module.exports = {
           (obj) => obj.statusTransaksi == 2 && obj.penjual == req.userData.id
         ).length;
 
-        const stokCMB = stokCabai('cabaiMerahBesar');
-        const stokCMK = stokCabai('cabaiMerahKeriting');
-        const stokCRM = stokCabai('cabaiRawitMerah');
+        const stokCMB = stokKomoditas('cabaiMerahBesar');
+        const stokCMK = stokKomoditas('cabaiMerahKeriting');
+        const stokCRM = stokKomoditas('cabaiRawitMerah');
+        const stokBM = stokKomoditas('bawangMerah');
+        const stokBP = stokKomoditas('bawangPutih');
 
-        const pendapatanCMB = penjualanCabai('cabaiMerahBesar');
-        const pendapatanCMK = penjualanCabai('cabaiMerahKeriting');
-        const pendapatanCRM = penjualanCabai('cabaiRawitMerah');
+        const pendapatanCMB = penjualanKomoditas('cabaiMerahBesar');
+        const pendapatanCMK = penjualanKomoditas('cabaiMerahKeriting');
+        const pendapatanCRM = penjualanKomoditas('cabaiRawitMerah');
+        const pendapatanBM = penjualanKomoditas('bawangMerah');
+        const pendapatanBP = penjualanKomoditas('bawangPutih');
         const totalPenjualan =
-          Number(pendapatanCMB) + Number(pendapatanCMK) + Number(pendapatanCRM);
+          Number(pendapatanCMB) + Number(pendapatanCMK) + Number(pendapatanCRM) + Number(pendapatanBM) + Number(pendapatanBP);
 
         const totalPendapatan =
           totalPenjualan - pembelianCabai < 0
@@ -872,9 +892,13 @@ module.exports = {
             stokCMB: Number(stokCMB),
             stokCMK: Number(stokCMK),
             stokCRM: Number(stokCRM),
+            stokBM: Number(stokBM),
+            stokBP: Number(stokBP),
             pendapatanCMB: Number(pendapatanCMB),
             pendapatanCMK: Number(pendapatanCMK),
             pendapatanCRM: Number(pendapatanCRM),
+            pendapatanBM: Number(pendapatanBM),
+            pendapatanBP: Number(pendapatanBP),
             totalPembelian: Number(pembelianCabai.toFixed(3)),
             totalPenjualan: totalPenjualan,
             totalPendapatan: Number(totalPendapatan),
