@@ -83,6 +83,7 @@ module.exports = {
           $gte: new Date(startDate),
           $lte: new Date(endDate),
         },
+        kecamatan: user.kecamatan,
       });
       if (bawangMerah) {
         const luasTanamanAkhirBulanLalu = worksheet.getCell('D10');
@@ -121,6 +122,7 @@ module.exports = {
           $gte: new Date(startDate),
           $lte: new Date(endDate),
         },
+        kecamatan: user.kecamatan,
       });
       if (bawangPutih) {
         const luasTanamanAkhirBulanLalu = worksheet.getCell('D11');
@@ -159,6 +161,7 @@ module.exports = {
           $gte: new Date(startDate),
           $lte: new Date(endDate),
         },
+        kecamatan: user.kecamatan,
       });
       if (cabaiMerahBesar) {
         const luasTanamanAkhirBulanLalu = worksheet.getCell('D12');
@@ -198,6 +201,7 @@ module.exports = {
           $gte: new Date(startDate),
           $lte: new Date(endDate),
         },
+        kecamatan: user.kecamatan,
       });
       if (cabaiMerahKeriting) {
         const luasTanamanAkhirBulanLalu = worksheet.getCell('D13');
@@ -237,6 +241,7 @@ module.exports = {
           $gte: new Date(startDate),
           $lte: new Date(endDate),
         },
+        kecamatan: user.kecamatan,
       });
       if (cabaiRawitMerah) {
         const luasTanamanAkhirBulanLalu = worksheet.getCell('D14');
