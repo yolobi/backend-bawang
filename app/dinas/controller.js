@@ -55,7 +55,6 @@ module.exports = {
       if (kecamatan) {
         query['$match']['kecamatan'] = Number(kecamatan);
       }
-      console.log('query', query);
 
       const komoditas = await Blanko.aggregate([
         query,
@@ -77,21 +76,40 @@ module.exports = {
         ...new Set(komoditas.map((k) => k._id.komoditas)),
       ];
 
-      const response = {};
+      let percentage = {
+        bawangMerah: 0,
+        bawangPutih: 0,
+        cabaiMerahBesar: 0,
+        cabaiMerahKeriting: 0,
+        cabaiRawitMerah: 0,
+      };
+      const response = {
+        bawangMerah: [],
+        bawangPutih: [],
+        cabaiMerahBesar: [],
+        cabaiMerahKeriting: [],
+        cabaiRawitMerah: [],
+      };
       for (let i = 0; i < komoditas.length; i++) {
         const kom = komoditas[i];
-        console.log(monthNames[kom._id.bulan]);
+
         let value = 0;
         if (jenisStatistik == 'produksi') {
           value = kom.jumlahPanen;
         } else {
           value = kom.averageHargaJual;
         }
-        response[kom._id.komoditas] = {
-          [monthNames[kom._id.bulan]]: {
-            data: value,
-          },
-        };
+        response[kom._id.komoditas].push([monthNames[kom._id.bulan], value]);
+      }
+      for (const key in response) {
+        const value = response[key];
+        const len = value.length;
+        if (len > 1) {
+          percentage[key] =
+            ((value[len - 1][1] - value[len - 2][1]) / value[len - 2][1]) * 100;
+        } else if (len > 0) {
+          percentage[key] = 100;
+        } else percentage[key] = 0;
       }
 
       return res.status(200).json({
@@ -99,6 +117,7 @@ module.exports = {
         data: {
           user: req.userData,
           komoditas: response,
+          persentase: percentage,
         },
       });
     } catch (error) {

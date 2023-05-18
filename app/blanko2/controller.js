@@ -12,7 +12,24 @@ module.exports = {
       const workbook = new ExcelJS.Workbook();
       await workbook.xlsx.readFile('app/blanko2/TEMPLATE_BLANKO.xlsx');
       const worksheet = workbook.getWorksheet('Sheet1');
-      const { bulan, tahun } = req.query;
+      let { bulan, tahun } = req.query;
+
+      const refBulans = {
+        Januari: 0,
+        Februari: 1,
+        Maret: 2,
+        April: 3,
+        Mei: 4,
+        Juni: 5,
+        Juli: 6,
+        Agustus: 7,
+        September: 8,
+        Oktober: 9,
+        November: 10,
+        Desember: 11,
+      };
+      bulan = refBulans[bulan];
+      console.log('bulan', bulan);
 
       const idUser = req.userData.id;
       const user = await User.findById(idUser).select(
@@ -70,6 +87,7 @@ module.exports = {
       const today = new Date();
 
       today.setMonth(Number(bulan));
+      today.setFullYear(Number(tahun));
       const startDate = new Date(
         `${today.getFullYear()}-${today.toISOString().slice(5, 7)}-01`
       );
