@@ -723,7 +723,11 @@ module.exports = {
         const pendapatanBM = penjualanKomoditas('bawangMerah');
         const pendapatanBP = penjualanKomoditas('bawangPutih');
         const totalPenjualan =
-          Number(pendapatanCMB) + Number(pendapatanCMK) + Number(pendapatanCRM + Number(pendapatanBM) + Number(pendapatanBP);
+          Number(pendapatanCMB) +
+          Number(pendapatanCMK) +
+          Number(pendapatanCRM) +
+          Number(pendapatanBM) +
+          Number(pendapatanBP);
 
         const totalPendapatan =
           totalPenjualan - pembelianCabai < 0
@@ -868,7 +872,11 @@ module.exports = {
         const pendapatanBM = penjualanKomoditas('bawangMerah');
         const pendapatanBP = penjualanKomoditas('bawangPutih');
         const totalPenjualan =
-          Number(pendapatanCMB) + Number(pendapatanCMK) + Number(pendapatanCRM) + Number(pendapatanBM) + Number(pendapatanBP);
+          Number(pendapatanCMB) +
+          Number(pendapatanCMK) +
+          Number(pendapatanCRM) +
+          Number(pendapatanBM) +
+          Number(pendapatanBP);
 
         const totalPendapatan =
           totalPenjualan - pembelianCabai < 0
