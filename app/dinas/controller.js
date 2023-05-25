@@ -23,6 +23,21 @@ module.exports = {
         'December',
       ];
 
+      const monthInt = {
+        January: 1,
+        February: 2,
+        March: 3,
+        April: 4,
+        May: 5,
+        June: 6,
+        July: 7,
+        August: 8,
+        September: 9,
+        October: 10,
+        November: 11,
+        December: 12,
+      };
+
       const fiveMonthAgo = new Date();
       fiveMonthAgo.setMonth(fiveMonthAgo.getMonth() - (totalBulanLahan - 1));
 
@@ -41,9 +56,6 @@ module.exports = {
             $gte: new Date(startDate),
             $lte: new Date(endDate),
           },
-        },
-        $sort: {
-          tanggalPencatatan: 1,
         },
       };
 
@@ -104,8 +116,10 @@ module.exports = {
         }
         response[kom._id.komoditas].push([monthNames[kom._id.bulan], value]);
       }
+
       for (const key in response) {
         const value = response[key];
+        response[key].sort((a, b) => monthInt[a[0]] - monthInt[b[0]]);
         const len = value.length;
         if (len > 1) {
           percentage[key] =
