@@ -127,6 +127,8 @@ module.exports = {
         } else if (len > 0) {
           percentage[key] = 100;
         } else percentage[key] = 0;
+
+        percentage[key] = percentage[key].toFixed(1);
       }
 
       return res.status(200).json({
