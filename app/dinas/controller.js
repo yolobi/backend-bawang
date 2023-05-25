@@ -42,6 +42,9 @@ module.exports = {
             $lte: new Date(endDate),
           },
         },
+        $sort: {
+          tanggalPencatatan: 1,
+        },
       };
 
       if (provinsi) {

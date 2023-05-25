@@ -27,6 +27,27 @@ describe('Tambah Lahan', () => {
     expect(res.status).toBe(201);
   });
 
+  test('Data Salah', async () => {
+    const data = {
+      komoditas: 'bawangHijau',
+      namaLahan: 'lahan 1',
+      tanggalTanam: '2023-03-10',
+      jumlahBatang: '100',
+      luasLahan: '50',
+      modalBenih: '50000',
+      modalPupuk: '100000',
+      modalPestisida: '200000',
+      modalPekerja: '500000',
+      jenisPupuk: 'za',
+    };
+
+    const res = await request(url)
+      .post('/lahan/tambah')
+      .send(data)
+      .set('Authorization', `Bearer ${petaniToken}`);
+    expect(res.status).toBe(500);
+  });
+
   test('Forbidden', async () => {
     const data = {
       komoditas: 'bawangMerah',
@@ -49,8 +70,14 @@ describe('Tambah Lahan', () => {
   });
 });
 
-// describe('Edit Luas Rusak', () => {
-//   test('Lahan ditemukan', (async) => {});
+describe('Get All Lahan', () => {});
 
-//   test('idLahan salah', (async) => {});
-// });
+describe('Get Lahan By Id', () => {});
+
+describe('Edit Luas Lahan Rusak', () => {});
+
+describe('Lahan Selesai', () => {});
+
+describe('Aktifkan Lahan', () => {});
+
+describe('Hapus Lahan', () => {});

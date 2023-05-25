@@ -108,7 +108,7 @@ module.exports = {
       if (!findUser)
         return res.status(403).json({
           success: false,
-          message: 'Email belum terdaftar',
+          message: 'Email / No HP belum terdaftar',
         });
 
       const checkPassword = await bcrypt.compare(password, findUser.password);
