@@ -73,11 +73,3 @@ describe('Tambah Lahan', () => {
 describe('Get All Lahan', () => {});
 
 describe('Get Lahan By Id', () => {});
-
-describe('Edit Luas Lahan Rusak', () => {});
-
-describe('Lahan Selesai', () => {});
-
-describe('Aktifkan Lahan', () => {});
-
-describe('Hapus Lahan', () => {});

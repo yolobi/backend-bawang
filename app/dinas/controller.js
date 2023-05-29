@@ -125,7 +125,7 @@ module.exports = {
           percentage[key] =
             ((value[len - 1][1] - value[len - 2][1]) / value[len - 2][1]) * 100;
         } else if (len > 0) {
-          percentage[key] = 100;
+          percentage[key] = 0;
         } else percentage[key] = 0;
 
         percentage[key] = percentage[key].toFixed(1);
