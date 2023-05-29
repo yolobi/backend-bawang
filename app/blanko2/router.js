@@ -11,7 +11,7 @@ const {
 } = require('./controller');
 
 const authenticateUser = require('../middleware/authentication');
-const { checkIfPetani } = require('../middleware/check-role');
+const { checkIfPetani, checkIfDinas } = require('../middleware/check-role');
 
 // ENDPOPINT BARU
 router.post('/tambah', authenticateUser, checkIfPetani, addBlanko);
@@ -24,7 +24,7 @@ router.get('/', authenticateUser, checkIfPetani, getBlankoAll);
 
 router.get('/view/:idBlanko', authenticateUser, checkIfPetani, getBlankobyID);
 
-router.get('/export', authenticateUser, exportBlanko);
+router.get('/export', authenticateUser, checkIfDinas, exportBlanko);
 
 // DEPRECATED
 router.post('/tambahblanko', authenticateUser, checkIfPetani, addBlanko);
