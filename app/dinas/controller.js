@@ -128,7 +128,7 @@ module.exports = {
           percentage[key] = 0;
         } else percentage[key] = 0;
 
-        percentage[key] = percentage[key].toFixed(1);
+        percentage[key] = Number(percentage[key].toFixed(1));
         if (percentage[key] < 0) percentage[key] *= -1;
       }
 
