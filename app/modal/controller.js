@@ -26,6 +26,13 @@ module.exports = {
         _id: idLahan,
         user: idUser,
       }).select('modalBenih modalPupuk modalPestisida modalPekerja totalModal');
+      if (!modalAwal) {
+        res.status(400).json({
+          sucess: false,
+          message: 'Lahan tidak ditemukan',
+        });
+        return;
+      }
 
       const updateModal = await Lahan.findOneAndUpdate(
         { _id: idLahan, user: idUser },
@@ -72,6 +79,7 @@ module.exports = {
         });
       }
     } catch (error) {
+      console.log(error.message);
       res.status(500).json({
         sucess: false,
         message: error.message || `Internal server error`,
