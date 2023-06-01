@@ -98,7 +98,7 @@ module.exports = {
       });
 
       if (findModal.length == 0 || !findModal) {
-        res.status(404).json({
+        res.status(400).json({
           success: false,
           message: 'Belum ada modal yang ditambahkan',
         });
@@ -190,6 +190,7 @@ module.exports = {
         });
       }
     } catch (error) {
+      console.log(error.message);
       res.status(500).json({
         sucess: false,
         message: error.message || `Internal server error`,
@@ -206,7 +207,7 @@ module.exports = {
       });
 
       if (!findModal) {
-        res.status(404).json({
+        res.status(400).json({
           success: false,
           message: 'Modal tidak ditemukan',
         });

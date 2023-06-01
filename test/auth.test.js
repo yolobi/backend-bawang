@@ -6,9 +6,9 @@ describe('Signup User', () => {
   test('Data lengkap', async () => {
     const hashPassword = await bcrypt.hashSync('password', 10);
     const user = {
-      name: 'jest5',
-      email: 'testing5@jest.com',
-      phone: '08123912300000',
+      name: 'jest8',
+      email: 'testing8@jest.com',
+      phone: '08123912300003',
       password: hashPassword,
       kecamatan: '7504021',
       kabupaten: '7504',
