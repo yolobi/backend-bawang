@@ -85,6 +85,10 @@ let blanko2Schema = new mongoose.Schema(
         message: 'id kabupaten/kota yang dimasukkan harus berjumlah 2 digit',
       },
     },
+    musim: {
+      type: String,
+      default: null,
+    },
   },
   { timestamps: true }
 );

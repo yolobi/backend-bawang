@@ -159,7 +159,7 @@ module.exports = {
     }
   },
 
-  cekBlanko: async (idUser, tanggalPencatatan, komoditas) => {
+  cekBlanko: async (idUser, tanggalPencatatan, komoditas, musimPanen) => {
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
 
@@ -184,6 +184,7 @@ module.exports = {
         provinsi: teritory.provinsi,
         kabupaten: teritory.kabupaten,
         kecamatan: teritory.kecamatan,
+        musim: musimPanen,
       });
       await blanko.save();
       return blanko;
