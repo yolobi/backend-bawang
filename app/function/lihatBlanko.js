@@ -5,7 +5,7 @@ const Lahan = require('../lahan/model');
 const Blanko2 = require('../blanko2/model');
 
 module.exports = {
-  lihatKolom5: async (idUser, tanggalPencatatan, tipeCabai) => {
+  lihatKolom5: async (idUser, tanggalPencatatan, komoditas) => {
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
 
@@ -14,9 +14,9 @@ module.exports = {
 
     const findLahan = await Lahan.find({
       user: idUser,
-      tipeCabai: tipeCabai,
+      komoditas: komoditas,
       tanggalSelesai: { $gte: start, $lte: end },
-    }).select('_id namaLahan tanggalSelesai luasLahan tipeCabai');
+    }).select('_id namaLahan tanggalSelesai luasLahan komoditas');
 
     const sum = findLahan.reduce((accumulator, object) => {
       return accumulator + object.luasLahan;
@@ -25,7 +25,7 @@ module.exports = {
     return Number(sum.toFixed(3));
   },
 
-  lihatKolom7: async (idUser, tanggalPencatatan, tipeCabai) => {
+  lihatKolom7: async (idUser, tanggalPencatatan, komoditas) => {
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
 
@@ -34,9 +34,9 @@ module.exports = {
 
     const findLahan = await Lahan.find({
       user: idUser,
-      tipeCabai: tipeCabai,
+      komoditas: komoditas,
       tanggalSelesai: null || { $gte: start, $lte: end },
-    }).select('_id namaLahan tanggalSelesai luasLahan luasRusak tipeCabai');
+    }).select('_id namaLahan tanggalSelesai luasLahan luasRusak komoditas');
     // console.log(findLahan);
 
     const sum = findLahan.reduce((accumulator, object) => {
@@ -47,7 +47,7 @@ module.exports = {
     return Number(sum.toFixed(3));
   },
 
-  lihatKolom8: async (idUser, tanggalPencatatan, tipeCabai) => {
+  lihatKolom8: async (idUser, tanggalPencatatan, komoditas) => {
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
 
@@ -56,9 +56,9 @@ module.exports = {
 
     const findLahan = await Lahan.find({
       user: idUser,
-      tipeCabai: tipeCabai,
+      komoditas: komoditas,
       tanggalTanam: { $gte: start, $lte: end },
-    }).select('_id namaLahan tanggalTanam luasLahan tipeCabai');
+    }).select('_id namaLahan tanggalTanam luasLahan komoditas');
 
     const sum = findLahan.reduce((accumulator, object) => {
       return accumulator + object.luasLahan;
@@ -68,7 +68,7 @@ module.exports = {
     return Number(sum.toFixed(3));
   },
 
-  lihatKolom10: async (idUser, tanggalPencatatan, tipeCabai) => {
+  lihatKolom10: async (idUser, tanggalPencatatan, komoditas) => {
     console.log('sini masuk kolom 10');
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
@@ -78,10 +78,10 @@ module.exports = {
 
     const findLahan = await Lahan.find({
       user: idUser,
-      tipeCabai: tipeCabai,
+      komoditas: komoditas,
       tanggalSelesai: null,
     })
-      .select('_id namaLahan tanggalTanam tanggalSelesai transaksi tipeCabai')
+      .select('_id namaLahan tanggalTanam tanggalSelesai transaksi komoditas')
       .populate({
         path: 'transaksi',
         select: '_id jumlahDijual tanggalPencatatan',
@@ -112,7 +112,7 @@ module.exports = {
     }
   },
 
-  lihatKolom11: async (idUser, tanggalPencatatan, tipeCabai) => {
+  lihatKolom11: async (idUser, tanggalPencatatan, komoditas) => {
     console.log('sini masuk kolom 11');
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
@@ -122,10 +122,10 @@ module.exports = {
 
     const findLahan = await Lahan.find({
       user: idUser,
-      tipeCabai: tipeCabai,
+      komoditas: komoditas,
       tanggalSelesai: { $gte: start, $lte: end },
     })
-      .select('_id namaLahan tanggalTanam tanggalSelesai transaksi tipeCabai')
+      .select('_id namaLahan tanggalTanam tanggalSelesai transaksi komoditas')
       .populate({
         path: 'transaksi',
         select: '_id jumlahDijual tanggalPencatatan',
@@ -149,12 +149,12 @@ module.exports = {
       return Number(jumlahPanen.toFixed(3));
       // console.log(jumlahPanen);
       // console.log(sum1);
-    } else{
-      return 0
+    } else {
+      return 0;
     }
   },
 
-  lihatKolom12: async (idUser, tanggalPencatatan, tipeCabai) => {
+  lihatKolom12: async (idUser, tanggalPencatatan, komoditas) => {
     console.log('sini masuk kolom 12');
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
@@ -164,9 +164,9 @@ module.exports = {
 
     const findLahan = await Lahan.find({
       user: idUser,
-      tipeCabai: tipeCabai,
+      komoditas: komoditas,
     })
-      .select('_id namaLahan tanggalTanam tanggalSelesai transaksi tipeCabai')
+      .select('_id namaLahan tanggalTanam tanggalSelesai transaksi komoditas')
       .populate({
         path: 'transaksi',
         select: '_id jumlahDijual tanggalPencatatan totalProduksi',
@@ -208,7 +208,7 @@ module.exports = {
     return Number(sum.toFixed(3));
   },
 
-  lihatKolom4: async (idUser, tanggalPencatatan, tipeCabai) => {
+  lihatKolom4: async (idUser, tanggalPencatatan, komoditas) => {
     console.log('masuk kolom 4');
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
@@ -223,13 +223,13 @@ module.exports = {
 
     const prevbulanBlanko = await Blanko2.findOne({
       user: idUser,
-      tipeCabai: tipeCabai,
+      komoditas: komoditas,
       tanggalPencatatan: { $gte: prevstart, $lte: prevend },
     });
 
     const bulanBlanko = await Blanko2.findOne({
       user: idUser,
-      tipeCabai: tipeCabai,
+      komoditas: komoditas,
       tanggalPencatatan: { $gte: start, $lte: end },
     });
 
@@ -241,9 +241,9 @@ module.exports = {
 
       const findLahan = await Lahan.find({
         user: idUser,
-        tipeCabai: tipeCabai,
+        komoditas: komoditas,
         tanggalSelesai: null,
-      }).select('_id namaLahan tanggalTanam luasLahan tipeCabai');
+      }).select('_id namaLahan tanggalTanam luasLahan komoditas');
 
       const sum = findLahan.reduce((accumulator, object) => {
         return accumulator + object.luasLahan;
@@ -253,7 +253,7 @@ module.exports = {
     }
   },
 
-  lihatKolom9: async (idUser, tanggalPencatatan, tipeCabai) => {
+  lihatKolom9: async (idUser, tanggalPencatatan, komoditas) => {
     console.log('masuk sini 9');
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
@@ -263,7 +263,7 @@ module.exports = {
 
     const bulanBlanko = await Blanko2.findOne({
       user: idUser,
-      tipeCabai: tipeCabai,
+      komoditas: komoditas,
       tanggalPencatatan: { $gte: start, $lte: end },
     });
 
@@ -278,7 +278,7 @@ module.exports = {
     return Number(realsum.toFixed(3));
   },
 
-  lihatKolom5baru: async (idUser, tanggalPencatatan, tipeCabai) => {
+  lihatKolom5baru: async (idUser, tanggalPencatatan, komoditas) => {
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
 
@@ -287,13 +287,13 @@ module.exports = {
 
     const findLahan = await Lahan.find({
       user: idUser,
-      tipeCabai: tipeCabai,
+      komoditas: komoditas,
       tanggalSelesai: { $gte: start, $lte: end },
-    }).select('_id namaLahan tanggalTanam tanggalSelesai luasLahan tipeCabai');
+    }).select('_id namaLahan tanggalTanam tanggalSelesai luasLahan komoditas');
 
     const bulanBlanko = await Blanko2.findOne({
       user: idUser,
-      tipeCabai: tipeCabai,
+      komoditas: komoditas,
       tanggalPencatatan: { $gte: start, $lte: end },
     });
 
@@ -307,7 +307,7 @@ module.exports = {
     }
   },
 
-  lihatKolom6: async (idUser, tanggalPencatatan, tipeCabai) => {
+  lihatKolom6: async (idUser, tanggalPencatatan, komoditas) => {
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
 
@@ -316,13 +316,13 @@ module.exports = {
 
     const findLahan = await Lahan.find({
       user: idUser,
-      tipeCabai: tipeCabai,
+      komoditas: komoditas,
       tanggalSelesai: null,
-    }).select('_id namaLahan tanggalTanam tanggalSelesai luasLahan tipeCabai');
+    }).select('_id namaLahan tanggalTanam tanggalSelesai luasLahan komoditas');
 
     const bulanBlanko = await Blanko2.findOne({
       user: idUser,
-      tipeCabai: tipeCabai,
+      komoditas: komoditas,
       tanggalPencatatan: { $gte: start, $lte: end },
     });
 

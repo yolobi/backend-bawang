@@ -407,8 +407,12 @@ module.exports = {
         komoditas,
         musimPanen
       );
+      console.log(blanko);
 
-      const isTransaksi = await Transaksi.findOne({ penjual: idUser });
+      const isTransaksi = await Transaksi.findOne({
+        penjual: idUser,
+        komoditas: komoditas,
+      });
 
       const userDetail = await User.findById(idUser).select('_id name role');
 

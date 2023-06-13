@@ -59,15 +59,15 @@ module.exports = {
         },
       };
 
-      if (provinsi) {
+      if (provinsi && provinsi !== '') {
         query['$match']['provinsi'] = Number(provinsi);
       }
 
-      if (kabupaten) {
+      if (kabupaten && kabupaten !== '') {
         query['$match']['kabupaten'] = Number(kabupaten);
       }
 
-      if (kecamatan) {
+      if (kecamatan && kecamatan !== '') {
         query['$match']['kecamatan'] = Number(kecamatan);
       }
 
@@ -105,8 +105,10 @@ module.exports = {
         cabaiMerahKeriting: [],
         cabaiRawitMerah: [],
       };
+      console.log(komoditas);
       for (let i = 0; i < komoditas.length; i++) {
         const kom = komoditas[i];
+        if (!kom._id.komoditas) continue;
 
         let value = 0;
         if (jenisStatistik == 'produksi') {
@@ -114,6 +116,7 @@ module.exports = {
         } else {
           value = kom.averageHargaJual;
         }
+        console.log(typeof response[kom._id.komoditas], kom._id.komoditas);
         response[kom._id.komoditas].push([monthNames[kom._id.bulan], value]);
       }
 
