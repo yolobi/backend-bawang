@@ -448,6 +448,7 @@ module.exports = {
           kecamatan: blanko.kecamatan,
           kabupaten: blanko.kabupaten,
           provinsi: blanko.provinsi,
+          musimPanen: blanko.musim,
         });
       } else if (blanko) {
         const kolom7 = await lihatFunction.lihatKolom7(
@@ -515,6 +516,7 @@ module.exports = {
           kecamatan: blanko.kecamatan,
           kabupaten: blanko.kabupaten,
           provinsi: blanko.provinsi,
+          musimPanen: blanko.musim,
         });
       } else {
         res.status(400).json({
