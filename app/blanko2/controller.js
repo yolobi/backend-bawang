@@ -397,14 +397,15 @@ module.exports = {
 
   checkIsianBlanko: async (req, res) => {
     try {
-      const { tanggalPencatatan, komoditas } = req.body;
+      const { tanggalPencatatan, komoditas, musimPanen } = req.body;
 
       const idUser = req.userData.id;
 
       const blanko = await myFunction.cekBlanko(
         idUser,
         tanggalPencatatan,
-        komoditas
+        komoditas,
+        musimPanen
       );
 
       const isTransaksi = await Transaksi.findOne({ penjual: idUser });
