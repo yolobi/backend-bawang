@@ -283,7 +283,7 @@ module.exports = {
     );
   },
 
-  updateKolom11: async (idUser, tanggalPencatatan, komoditas) => {
+  updateKolom10: async (idUser, tanggalPencatatan, komoditas) => {
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
 
@@ -320,12 +320,12 @@ module.exports = {
           komoditas: komoditas,
           tanggalPencatatan: { $gte: start, $lte: end },
         },
-        { prodBelumHabis: jumlahPanen.toFixed(3) }
+        { prodPanenHabis: jumlahPanen.toFixed(3) }
       );
     }
   },
 
-  updateKolom10: async (idUser, tanggalPencatatan, komoditas) => {
+  updateKolom11: async (idUser, tanggalPencatatan, komoditas) => {
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
 
@@ -362,7 +362,7 @@ module.exports = {
           komoditas: komoditas,
           tanggalPencatatan: { $gte: start, $lte: end },
         },
-        { prodPanenHabis: jumlahPanen.toFixed(3) }
+        { prodBelumHabis: jumlahPanen.toFixed(3) }
       );
     }
   },

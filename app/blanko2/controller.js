@@ -399,6 +399,12 @@ module.exports = {
     try {
       const { tanggalPencatatan, komoditas, musimPanen } = req.body;
 
+      const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
+      const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
+
+      const start = `${tahun}-${bulan}-01`;
+      const end = `${tahun}-${bulan}-31`;
+
       const idUser = req.userData.id;
 
       const blanko = await myFunction.cekBlanko(
@@ -412,6 +418,7 @@ module.exports = {
       const isTransaksi = await Transaksi.findOne({
         penjual: idUser,
         komoditas: komoditas,
+        tanggalPencatatan: { $gte: start, $lte: end },
       });
 
       const userDetail = await User.findById(idUser).select('_id name role');
