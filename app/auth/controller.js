@@ -32,30 +32,52 @@ module.exports = {
         role,
       } = req.body;
 
-      // check if email is exist
-      let isUserExist = await User.findOne({
-        $or: [{ email: email }, { phone: phone }],
-      });
-      if (isUserExist)
+      let isUserExist = null;
+
+      if (email !== '') {
+        isUserExist = await User.findOne({
+          $or: [{ email: email }, { phone: phone }],
+        });
+      } else {
+        isUserExist = await User.findOne({
+          phone: phone,
+        });
+      }
+
+      if (isUserExist) {
         return res.status(404).json({
           status: false,
           message: 'Akun sudah terdaftar',
         });
-
+      }
+      let user = null;
       // password hashing
       const hashPassword = await bcrypt.hashSync(password, 10);
-
-      const user = new User({
-        name,
-        email,
-        phone,
-        password: hashPassword,
-        kecamatan,
-        kabupaten,
-        provinsi,
-        alamat,
-        role,
-      });
+      if (email !== '') {
+        user = new User({
+          name,
+          email,
+          phone,
+          password: hashPassword,
+          kecamatan,
+          kabupaten,
+          provinsi,
+          alamat,
+          role,
+        });
+      } else {
+        user = new User({
+          name,
+          email: null,
+          phone,
+          password: hashPassword,
+          kecamatan,
+          kabupaten,
+          provinsi,
+          alamat,
+          role,
+        });
+      }
       await user.save();
 
       const token = jwt.sign(

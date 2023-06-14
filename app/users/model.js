@@ -15,7 +15,7 @@ let userSchema = new mongoose.Schema(
       unique: true,
       validate: {
         validator: function (email) {
-          if (email === '') {
+          if (email === '' || email === null) {
             return true;
           }
           return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
