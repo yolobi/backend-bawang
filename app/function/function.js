@@ -283,7 +283,7 @@ module.exports = {
     );
   },
 
-  updateKolom10: async (idUser, tanggalPencatatan, komoditas) => {
+  updateKolom11: async (idUser, tanggalPencatatan, komoditas) => {
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
 
@@ -325,7 +325,7 @@ module.exports = {
     }
   },
 
-  updateKolom11: async (idUser, tanggalPencatatan, komoditas) => {
+  updateKolom10: async (idUser, tanggalPencatatan, komoditas) => {
     const bulan = new Date(tanggalPencatatan).toISOString().slice(5, 7);
     const tahun = new Date(tanggalPencatatan).toISOString().slice(0, 4);
 

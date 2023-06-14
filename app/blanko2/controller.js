@@ -553,7 +553,10 @@ module.exports = {
         tanggalPencatatan: { $gte: start, $lte: end },
       });
 
-      const isTransaksi = await Transaksi.findOne({ penjual: idUser });
+      const isTransaksi = await Transaksi.findOne({
+        penjual: idUser,
+        komoditas: komoditas,
+      });
 
       if (!isTransaksi) {
         await myFunction.updateKolom8(idUser, tanggalPencatatan, komoditas);
