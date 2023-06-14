@@ -12,7 +12,6 @@ let userSchema = new mongoose.Schema(
       type: String,
       trim: true,
       lowercase: true,
-      unique: true,
       validate: {
         validator: function (email) {
           if (email === '' || email === null) {
