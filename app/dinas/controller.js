@@ -24,18 +24,18 @@ module.exports = {
       ];
 
       const monthInt = {
-        January: 1,
-        February: 2,
-        March: 3,
-        April: 4,
-        May: 5,
-        June: 6,
-        July: 7,
-        August: 8,
-        September: 9,
-        October: 10,
-        November: 11,
-        December: 12,
+        January: 0,
+        February: 1,
+        March: 2,
+        April: 3,
+        May: 4,
+        June: 5,
+        July: 6,
+        August: 7,
+        September: 8,
+        October: 9,
+        November: 10,
+        December: 11,
       };
 
       const fiveMonthAgo = new Date();
@@ -105,7 +105,6 @@ module.exports = {
         cabaiMerahKeriting: [],
         cabaiRawitMerah: [],
       };
-      console.log(komoditas);
       for (let i = 0; i < komoditas.length; i++) {
         const kom = komoditas[i];
         if (!kom._id.komoditas) continue;
@@ -116,8 +115,10 @@ module.exports = {
         } else {
           value = kom.averageHargaJual;
         }
-        console.log(typeof response[kom._id.komoditas], kom._id.komoditas);
-        response[kom._id.komoditas].push([monthNames[kom._id.bulan], value]);
+        response[kom._id.komoditas].push([
+          monthNames[kom._id.bulan - 1],
+          value,
+        ]);
       }
 
       for (const key in response) {
