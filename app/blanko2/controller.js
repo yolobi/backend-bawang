@@ -132,7 +132,7 @@ module.exports = {
         prodBelumHabis.value = bawangMerah.prodBelumHabis;
 
         const rataHargaJual = worksheet.getCell('L10');
-        rataHargaJual.value = bawangMerah.rataHargaJual;
+        rataHargaJual.value = integer(bawangMerah.rataHargaJual);
       }
 
       //Bawang Putih
@@ -171,7 +171,7 @@ module.exports = {
         prodBelumHabis.value = bawangPutih.prodBelumHabis;
 
         const rataHargaJual = worksheet.getCell('L11');
-        rataHargaJual.value = bawangPutih.rataHargaJual;
+        rataHargaJual.value = integer(bawangPutih.rataHargaJual);
       }
 
       //Cabai Besar
@@ -211,7 +211,7 @@ module.exports = {
         prodBelumHabis.value = cabaiMerahBesar.prodBelumHabis;
 
         const rataHargaJual = worksheet.getCell('L12');
-        rataHargaJual.value = cabaiMerahBesar.rataHargaJual;
+        rataHargaJual.value = integer(cabaiMerahBesar.rataHargaJual);
       }
 
       //Cabai Keriting
@@ -251,7 +251,7 @@ module.exports = {
         prodBelumHabis.value = cabaiMerahKeriting.prodBelumHabis;
 
         const rataHargaJual = worksheet.getCell('L13');
-        rataHargaJual.value = cabaiMerahKeriting.rataHargaJual;
+        rataHargaJual.value = integer(cabaiMerahKeriting.rataHargaJual);
       }
 
       //Cabai Rawit
@@ -291,7 +291,7 @@ module.exports = {
         prodBelumHabis.value = cabaiRawitMerah.prodBelumHabis;
 
         const rataHargaJual = worksheet.getCell('L14');
-        rataHargaJual.value = cabaiRawitMerah.rataHargaJual;
+        rataHargaJual.value = integer(cabaiRawitMerah.rataHargaJual);
       }
 
       res.setHeader(
