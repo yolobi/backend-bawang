@@ -16,7 +16,7 @@ module.exports = {
         modalPekerja,
         jenisPupuk,
       } = req.body;
-      if (jenisPupuk === '') jenisPupuk = null;
+
       let totalModal =
         Number(modalBenih) +
         Number(modalPupuk) +
@@ -65,7 +65,7 @@ module.exports = {
           modalPupuk: Number(modalPupuk).toFixed(3),
           modalPestisida: Number(modalPestisida).toFixed(3),
           modalPekerja: Number(modalPekerja).toFixed(3),
-          jenisPupuk: jenisPupuk,
+          jenisPupuk: jenisPupuk ?? null,
           totalModal: totalModal.toFixed(3),
         });
         await modalBaru.save();
