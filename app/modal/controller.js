@@ -65,7 +65,7 @@ module.exports = {
           modalPupuk: Number(modalPupuk).toFixed(3),
           modalPestisida: Number(modalPestisida).toFixed(3),
           modalPekerja: Number(modalPekerja).toFixed(3),
-          jenisPupuk: jenisPupuk ?? null,
+          jenisPupuk: jenisPupuk == '' ? null : jenisPupuk,
           totalModal: totalModal.toFixed(3),
         });
         await modalBaru.save();
