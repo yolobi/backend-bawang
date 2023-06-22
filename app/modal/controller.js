@@ -16,6 +16,7 @@ module.exports = {
         modalPekerja,
         jenisPupuk,
       } = req.body;
+      if (jenisPupuk === '') jenisPupuk = null;
       let totalModal =
         Number(modalBenih) +
         Number(modalPupuk) +

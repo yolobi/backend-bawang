@@ -29,7 +29,18 @@ let modal = new mongoose.Schema(
     },
     jenisPupuk: {
       type: String,
-      enum: ['urea', 'tsp', 'za', 'npk', 'npkKhusus', 'organik', 'organikCair'],
+      required: false,
+
+      enum: [
+        'urea',
+        'tsp',
+        'za',
+        'npk',
+        'npkKhusus',
+        'organik',
+        'organikCair',
+        null,
+      ],
     },
   },
   { timestamps: true }
