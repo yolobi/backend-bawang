@@ -51,7 +51,7 @@ module.exports = {
 
       const user = new User({
         name,
-        email: email ?? null,
+        email: email || null,
         phone,
         password: hashPassword,
         kecamatan,

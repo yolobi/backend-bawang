@@ -7,10 +7,16 @@ let usangSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    tipeCabai: {
+    komoditas: {
       type: String,
-      enum: ['cabaiMerahBesar', 'cabaiMerahKeriting', 'cabaiRawitMerah'],
-      required: [true, 'tipeCabai harus diisi'],
+      enum: [
+        'cabaiMerahBesar',
+        'cabaiMerahKeriting',
+        'cabaiRawitMerah',
+        'bawangMerah',
+        'bawangPutih',
+      ],
+      required: [true, 'komoditas harus diisi'],
     },
     jumlahUsang: {
       type: Number,
