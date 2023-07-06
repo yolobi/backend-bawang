@@ -1,14 +1,15 @@
 const request = require('supertest');
+const User = require('../app/users/model');
 const bcrypt = require('bcryptjs');
-const url = 'https://test-deploy-backend-sphsbs.df.r.appspot.com/api/v1';
+const url = '172.18.14.10:4000/api/v1';
 
 describe('Signup User', () => {
   test('Data lengkap', async () => {
     const hashPassword = await bcrypt.hashSync('password', 10);
     const user = {
       name: 'jest8',
-      email: 'testing8@jest.com',
-      phone: '08123912300003',
+      email: 'testing21@jest.com',
+      phone: '08123912300016',
       password: hashPassword,
       kecamatan: '7504021',
       kabupaten: '7504',
